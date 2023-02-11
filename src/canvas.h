@@ -46,6 +46,18 @@ public:
     void setCurrentLightDirection(int ind);
     void resetCurrentLightDirection();
 
+    bool getUseWire();
+    void setUseWire(bool b);
+    void resetUseWire();
+
+    double getWireWidth();
+    void setWireWidth(double w);
+    void resetWireWidth();
+
+    QColor getWireColor();
+    void setWireColor(QColor c);
+    void resetWireColor();
+
 public slots:
     void set_status(const QString& s);
     void clear_status();
@@ -88,17 +100,27 @@ private:
     QList<QString> nameDir;
     QList<QVector3D> listDir;
     int currentLightDirection;
+    bool useWire;
+    float wireWidth;
+    QColor wireColor;
 
     const static QColor defaultAmbientColor;
     const static QColor defaultDirectiveColor;
-    const static float defaultAmbientFactor;
-    const static float defaultDirectiveFactor;
+    const static double defaultAmbientFactor;
+    const static double defaultDirectiveFactor;
     const static int defaultCurrentLightDirection;
+    const static bool defaultUseWire;
+    const static double defaultWireWidth;
+    const static QColor defaultWireColor;
+
     const static QString AMBIENT_COLOR;
     const static QString AMBIENT_FACTOR;
     const static QString DIRECTIVE_COLOR;
     const static QString DIRECTIVE_FACTOR;
     const static QString CURRENT_LIGHT_DIRECTION;
+    const static QString USE_WIRE;
+    const static QString WIRE_WIDTH;
+    const static QString WIRE_COLOR;
 
 
     GLMesh* mesh;
