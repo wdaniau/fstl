@@ -23,11 +23,13 @@ const QKeySequence Window::shortcutDrawModeSettings = Qt::Key_P;
 const QKeySequence Window::shortcutDrawAxes = Qt::Key_A;
 const QKeySequence Window::shortcutHideMenuBar = Qt::Key_M;
 const QKeySequence Window::shortcutFullscreen = Qt::Key_F;
+const QKeySequence Window::shortcutHelp = Qt::Key_H;
 
 Window::Window(QWidget *parent) :
     QMainWindow(parent),
     open_action(new QAction("Open", this)),
     about_action(new QAction("About", this)),
+    help_action(new QAction("Help",this)),
     quit_action(new QAction("Quit", this)),
     perspective_action(new QAction("Perspective", this)),
     orthographic_action(new QAction("Orthographic", this)),
@@ -101,8 +103,13 @@ Window::Window(QWidget *parent) :
     QObject::connect(reload_action, &QAction::triggered,
                      this, &Window::on_reload);
 
+    about_action->setIcon(QIcon(":/qt/icons/fstl_64x64.png"));
     QObject::connect(about_action, &QAction::triggered,
                      this, &Window::on_about);
+
+    help_action->setIcon(QIcon(":/qt/icons/help-browser.png"));
+    help_action->setShortcut(shortcutHelp);
+    connect(help_action,SIGNAL(triggered()),this,SLOT(on_help()));
 
     QObject::connect(recent_files_clear_action, &QAction::triggered,
                      this, &Window::on_clear_recent);
@@ -252,6 +259,7 @@ Window::Window(QWidget *parent) :
 
     auto help_menu = menuBar()->addMenu("Help");
     help_menu->addAction(about_action);
+    help_menu->addAction(help_action);
 
     // Toolbar
     // First group
@@ -296,18 +304,11 @@ Window::Window(QWidget *parent) :
     windowToolBar->addAction(save_screenshot_action);
     windowToolBar->addAction(fullscreen_action);
 
-
-
-
-    // reset view here
-    // select views here
-    // slect shader here
-    // select gl size here
-
-
-
-
-
+    windowToolBar->addSeparator();
+    QWidget* spacer = new QWidget();
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    windowToolBar->addWidget(spacer);
+    windowToolBar->addAction(help_action);
 
     this->addToolBar(windowToolBar);
     load_persist_settings();
@@ -391,16 +392,20 @@ void Window::on_open()
 void Window::on_about()
 {
     QMessageBox::about(this, "",
-        "<p align=\"center\"><b>fstl</b><br>" FSTL_VERSION "</p>"
-        "<p>A fast viewer for <code>.stl</code> files.</p>"
-        "<p>Original version © 2014-2022 Matthew Keeter<br>"
-        "<a href=\"https://github.com/fstl-app/fstl\""
-        "   style=\"color: #93a1a1;\">https://github.com/fstl-app/fstl</a><br>"
-        "<a href=\"mailto:matt.j.keeter@gmail.com\""
-        "   style=\"color: #93a1a1;\">matt.j.keeter@gmail.com</a></p>"
-        "<p>This is a forked version with some additions<br>"
-        "<a href=\"https://github.com/wdaniau/fstl\""
-        "   style=\"color: #93a1a1;\">https://github.com/wdaniau/fstl</a></p>"
+                       "<p align=\"center\">This is <b>fstl-e</b><br>"
+                       "a forked version of <b>fstl</b> " FSTL_VERSION "<br>"
+                       "with some fancy enhancements"
+                       "</p>"
+                       "<p>A fast viewer for <code>.stl</code> files.</p>"
+                       "<p>Original version © 2014-2022 Matthew Keeter<br>"
+                       "<a href=\"https://github.com/fstl-app/fstl\""
+                       "   style=\"color: #93a1a1;\">https://github.com/fstl-app/fstl</a><br>"
+                       "<a href=\"mailto:matt.j.keeter@gmail.com\""
+                       "   style=\"color: #93a1a1;\">matt.j.keeter@gmail.com</a></p>"
+                       "<p>source code of this forked version available here :"
+                       "<a href=\"https://github.com/wdaniau/fstl\""
+                       "   style=\"color: #93a1a1;\">https://github.com/wdaniau/fstl</a></p>"
+
                        );
 }
 
@@ -897,4 +902,31 @@ void Window::setViewportSize(QAction* act) {
     int w = desc.at(1).toInt();
     int h = desc.at(2).toInt();
     setCanvasSize(w, h);
+}
+
+void Window::on_help() {
+    qDebug() << "help!";
+    QMessageBox* helpWin = new QMessageBox(QMessageBox::NoIcon,"Help","",QMessageBox::Ok,this,Qt::Dialog);
+    helpWin->setText(""
+                     "<h2>Help</h2>"
+                     "<h3>Shortcuts</h3>"
+                     "<ul>"
+                     "<li><b>H</b> : Display this help message"
+                     "<li><b>Q</b> : Quit"
+                     "<li><b>O</b> : Open"
+                     "<li><b>R</b> : Reload"
+                     "<li><b>P</b> : Draw Mode Settings for current shader (if available)"
+                     "<li><b>A</b> : Draw Axes (and some informations)"
+                     "<li><b>M</b> : Show/Hide Menu (and Toolbar as well)"
+                     "<li><b>S</b> : Save Screenshot"
+                     "<li><b>F</b> : Toggle Fullscreen"
+                     "<li><b>W</b> : Toggle Wireframe on top of shader (if available)"
+                     "<li><b>Left Arrow</b> : load previous stl file"
+                     "<li><b>Right Arrow</b> : load next stl file"
+                     "<li><b>Up Arrow</b> : use next shader"
+                     "<li><b>Down Arrow</b> : use previous shader"
+                     "</ul>"
+                     );
+    helpWin->show();
+
 }

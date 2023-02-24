@@ -32,6 +32,7 @@ protected:
 public slots:
     void on_open();
     void on_about();
+    void on_help();
     void on_bad_stl();
     void on_empty_mesh();
     void on_missing_file();
@@ -68,6 +69,7 @@ private:
 
     QAction* const open_action;
     QAction* const about_action;
+    QAction* const help_action;
     QAction* const quit_action;
     QAction* const perspective_action;
     QAction* const orthographic_action;
@@ -115,6 +117,7 @@ private:
     const static QKeySequence shortcutDrawAxes;
     const static QKeySequence shortcutHideMenuBar;
     const static QKeySequence shortcutFullscreen;
+    const static QKeySequence shortcutHelp;
 
     QString current_file;
     QString lookup_folder;
