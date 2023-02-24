@@ -19,5 +19,6 @@
         <file>icons/invert_zoom.png</file>
         <file>icons/auto_refresh.png</file>
         <file>icons/resolution_1_32.png</file>
+        <file>icons/help-browser.png</file>
     </qresource>
 </RCC>
