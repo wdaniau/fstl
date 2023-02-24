@@ -905,7 +905,7 @@ void Window::setViewportSize(QAction* act) {
 }
 
 void Window::on_help() {
-    qDebug() << "help!";
+    //qDebug() << "help!";
     QMessageBox* helpWin = new QMessageBox(QMessageBox::NoIcon,"Help","",QMessageBox::Ok,this,Qt::Dialog);
     helpWin->setText(""
                      "<h2>Help</h2>"
