@@ -169,8 +169,19 @@ Mesh* Loader::read_stl_binary(QFile& file)
         // Load vertex data from .stl file into vertices
         for (unsigned i=0; i < 3; ++i)
         {
+// template <typename T> void qFromLittleEndian(const void *src, qsizetype count, void *dest)
+// introduced in Qt 5.12
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
+            v[i].x = qFromLittleEndian<float>(b);
+            b +=  sizeof(float);
+            v[i].y = qFromLittleEndian<float>(b);
+            b += sizeof(float);
+            v[i].z = qFromLittleEndian<float>(b);
+            b += sizeof(float);
+#else
             qFromLittleEndian<float>(b, 3, &v[i]);
             b += 3 * sizeof(float);
+#endif
         }
 
         // Skip face attribute and next face's normal vector

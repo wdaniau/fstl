@@ -237,8 +237,14 @@ void Canvas::paintGL()
     if (drawAxes) {
         QString sWidth = QString("GL Width = %1").arg(width());
         QString sHeight = QString("GL Height = %1").arg(height());
+// in 5.11 QFontMetrics::horizontalAdvance introduced and width deprecated
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+        int sWidthLength = painter.fontMetrics().width(sWidth);
+        int sHeightLength = painter.fontMetrics().width(sHeight);
+#else
         int sWidthLength = painter.fontMetrics().horizontalAdvance(sWidth);
         int sHeightLength = painter.fontMetrics().horizontalAdvance(sHeight);
+#endif
         int origin = std::min(sWidthLength,sHeightLength);
         painter.drawText(width() - origin - 10, textHeight + 10, sWidth);
         painter.drawText(width() - origin - 10, 2* textHeight + 10, sHeight);
