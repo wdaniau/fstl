@@ -7,3 +7,5 @@ Icon=fstlapp-fstl
 Type=Application
 MimeType=model/stl;
 Categories=Utility;
+StartupWMClass=fstl
+
