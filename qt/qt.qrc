@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/qt">
         <file>style.qss</file>
-        <file>icons/fstl_64x64.png</file>
+        <file>icons/fstl-e_64x64.png</file>
         <file>icons/sphere_shader1.png</file>
         <file>icons/sphere_shader2.png</file>
         <file>icons/sphere_shader3.png</file>

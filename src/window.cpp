@@ -53,8 +53,8 @@ Window::Window(QWidget *parent) :
     watcher(new QFileSystemWatcher(this))
 
 {
-    setWindowTitle("fstl");
-    setWindowIcon(QIcon(":/qt/icons/fstl_64x64.png"));
+    setWindowTitle("fstl-e");
+    setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     setAcceptDrops(true);
 
     QSurfaceFormat format;
@@ -342,7 +342,7 @@ void Window::load_persist_settings(){
     currentProjection->setChecked(true);
     on_projection(currentProjection);
 
-    DrawMode draw_mode = (DrawMode)settings.value(DRAW_MODE_KEY, DRAWMODECOUNT).toInt();
+    DrawMode draw_mode = (DrawMode)settings.value(DRAW_MODE_KEY, meshlight).toInt();
     
     if(draw_mode >= DRAWMODECOUNT)
     {
@@ -392,20 +392,21 @@ void Window::on_open()
 void Window::on_about()
 {
     QMessageBox::about(this, "",
-                       "<p align=\"center\">This is <b>fstl-e</b><br>"
-                       "a forked version of <b>fstl</b> " FSTL_VERSION "<br>"
+                       "<p align=\"center\">This is <b>fstl-e</b><br>" FSTLE_VERSION "</p>"
+                       "<p>A fast viewer for <code>.stl</code> files.</p>"
+                       "<p>source code of this version available here :"
+                       "<a href=\"https://github.com/wdaniau/fstl\""
+                       "   style=\"color: #93a1a1;\">https://github.com/wdaniau/fstl</a></p>"
+                       "<font size='small'>"
+                       "<p>It is a forked version of <b>fstl</b> 0.10.0<br>"
                        "with some fancy enhancements"
                        "</p>"
-                       "<p>A fast viewer for <code>.stl</code> files.</p>"
-                       "<p>Original version © 2014-2022 Matthew Keeter<br>"
+                       "<p>Original version © 2014-2024 Matthew Keeter<br>"
                        "<a href=\"https://github.com/fstl-app/fstl\""
                        "   style=\"color: #93a1a1;\">https://github.com/fstl-app/fstl</a><br>"
                        "<a href=\"mailto:matt.j.keeter@gmail.com\""
                        "   style=\"color: #93a1a1;\">matt.j.keeter@gmail.com</a></p>"
-                       "<p>source code of this forked version available here :"
-                       "<a href=\"https://github.com/wdaniau/fstl\""
-                       "   style=\"color: #93a1a1;\">https://github.com/wdaniau/fstl</a></p>"
-
+                       "</font>"
                        );
 }
 
