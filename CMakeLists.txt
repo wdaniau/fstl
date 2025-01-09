@@ -14,8 +14,8 @@ set(CXX_STANDARD_REQUIRED ON)
 
 # Set the version number
 # Renumerotation for fstl-e
-set (FSTLE_VERSION_MAJOR "0")
-set (FSTLE_VERSION_MINOR "1")
+set (FSTLE_VERSION_MAJOR "1")
+set (FSTLE_VERSION_MINOR "0")
 set (FSTLE_VERSION_PATCH "0")
 set (PROJECT_VERSION "${FSTLE_VERSION_MAJOR}.${FSTLE_VERSION_MINOR}.${FSTLE_VERSION_PATCH}")
 
@@ -62,6 +62,14 @@ find_package(Threads REQUIRED)
 
 #add resources to RCC
 qt5_add_resources(Project_Resources_RCC ${Project_Resources})
+
+if(LINUX)
+    find_program(XDG_MIME_BIN xdg-mime REQUIRED)
+    find_program(XDG_DESKTOP_MENU_BIN xdg-desktop-menu REQUIRED)
+    find_program(XDG_ICON_RESOURCE_bin xdg-icon-resource REQUIRED)
+    set(XDG_Resources xdg/)
+endif(LINUX)
+
 
 #tell CMake AUTOGEN to skip autogen on the generated qrc files
 set_property(SOURCE ${Project_Resources_RCC} PROPERTY SKIP_AUTOGEN ON)
@@ -151,10 +159,21 @@ elseif(APPLE)
     set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
     set(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/app/fstl-e.icns")
 else()
+    # install target
     install(TARGETS fstl-e RUNTIME DESTINATION bin)
+    # install desktop file
+    install(FILES xdg/fstlapp-fstl-e.desktop DESTINATION share/applications)
+    # install icons
+    install(FILES xdg/icons/fstlapp-fstl-e_16x16.png DESTINATION share/icons/hicolor/16x16/apps RENAME fstlapp-fstl-e.png)
+    install(FILES xdg/icons/fstlapp-fstl-e_22x22.png DESTINATION share/icons/hicolor/22x22/apps RENAME fstlapp-fstl-e.png)
+    install(FILES xdg/icons/fstlapp-fstl-e_32x32.png DESTINATION share/icons/hicolor/32x32/apps RENAME fstlapp-fstl-e.png)
+    install(FILES xdg/icons/fstlapp-fstl-e_48x48.png DESTINATION share/icons/hicolor/48x48/apps RENAME fstlapp-fstl-e.png)
+    install(FILES xdg/icons/fstlapp-fstl-e_64x64.png DESTINATION share/icons/hicolor/64x64/apps RENAME fstlapp-fstl-e.png)
+    install(FILES xdg/icons/fstlapp-fstl-e_128x128.png DESTINATION share/icons/hicolor/128x128/apps RENAME fstlapp-fstl-e.png)
+    install(FILES xdg/icons/fstlapp-fstl-e_256x256.png DESTINATION share/icons/hicolor/256x256/apps RENAME fstlapp-fstl-e.png)
 
-    set(CPACK_GENERATOR "DEB;RPM")
-    set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
+    #set(CPACK_GENERATOR "DEB;RPM")
+    #set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
 endif(WIN32)
 
 include(CPack)
