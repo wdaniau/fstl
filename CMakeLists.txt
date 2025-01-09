@@ -172,8 +172,10 @@ else()
     install(FILES xdg/icons/fstlapp-fstl-e_128x128.png DESTINATION share/icons/hicolor/128x128/apps RENAME fstlapp-fstl-e.png)
     install(FILES xdg/icons/fstlapp-fstl-e_256x256.png DESTINATION share/icons/hicolor/256x256/apps RENAME fstlapp-fstl-e.png)
 
-    #set(CPACK_GENERATOR "DEB;RPM")
-    #set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
+    set(CPACK_PACKAGE_CONTACT "William Daniau")
+    set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+    set(CPACK_GENERATOR "TGZ;DEB")
+    set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}")
 endif(WIN32)
 
 include(CPack)
