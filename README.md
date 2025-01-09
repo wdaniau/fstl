@@ -1,120 +1,99 @@
-# fstl
+# fstl-e
 
-`fstl` is a very fast [.stl file](http://en.wikipedia.org/wiki/STL_\(file_format\)) viewer.
+`fstl-e` is a fork of `fstl` a very fast [.stl file](http://en.wikipedia.org/wiki/STL_\(file_format\)) viewer, available on github at [https://github.com/fstl-app/fstl](https://github.com/fstl-app/fstl). After making some contributions to it, I forked this version which retains `fstl` core functionalities but with some fancy enhancements.
 
-It was originally written by [Matt Keeter](https://mattkeeter.com),
-and is now primarily maintained by [@DeveloperPaul123](https://github.com/DeveloperPaul123).
+## Screenshots
+![](./images/screenshot_fstl-e_20230205.jpg)
+![](./images/screenshot_fstl-e_20230212.jpg)
 
-It is designed to quickly load and render very high-polygon models;
-showing 2 million triangles at 60+ FPS on a mid-range laptop.
+## Usage
+Usage should be straightforward. Either use desktop integration to open a `stl` file or type `fstl-e myfile.stl` in a terminal.
 
-For more details, see the [project page](http://mattkeeter.com/projects/fstl).
+### Shortcuts
 
-Issues and minor pull requests are welcome;
-the project is under 1K lines of code and should be fairly approachable.
+  * H : Display help message
+  * Q : Quit
+  * O : Open
+  * R : Reload
+  * P : Draw Mode Settings for current shader (if available)
+  * A : Draw Axes (and some informations)
+  * M : Show/Hide Menu (and Toolbar as well)
+  * S : Save Screenshot
+  * F : Toggle Fullscreen
+  * W : Toggle Wireframe on top of shader (if available)
+  * Left Arrow : load previous stl file
+  * Right Arrow : load next stl file
+  * Up Arrow : use next shader
+  * Down Arrow : use previous shader
 
-## Screenshot
+## Build and Install
 
-![Eiffel tower](http://mattkeeter.com/projects/fstl/eiffel.png)
-(credit to [Pranav Panchal](https://grabcad.com/pranav.panchal))
-
-## Setting `fstl` as the Default STL Viewer
-
-### Windows
-
-1. Right-click an STL file
-2. Select `Open With` >>> `Choose another app`
-3. Select `More Apps` and `Look for another app on this PC`
-4. Enter the path to the `fstl` EXE file
-
-### MacOS
-
-1. Ctrl+click an STL file
-2. Select `Get Info`
-3. Navigate to the `Open with` section
-4. Select `fstl` in the dropdown
-5. Click `Change All`
+The only dependencies to build for `fstl-e` are [`Qt 5`](https://www.qt.io), [`cmake`](https://cmake.org/) and [`OpenGL`](https://www.opengl.org)
 
 ### Linux
 
-If `mimeopen` is available on your system, it can be used to set `fstl` as the default viewer for STL files.
-Run the following in your terminal:
+fstl-e is available as :
 
-```bash
-# replace example.stl with an actual file
-mimeopen -d example.stl
+  * flatpak : planned
+  * snap : planned
+  * AppImage : planned
+  * Ubuntu package : planned
+  * Source (see below for instructions)
+
+#### Building and installing from source
+```
+$ git clone https://github.com/wdaniau/fstl
+$ cd fstl
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_INSTALL_PREFIX:PATH=/some/path ..
+$ make
 ```
 
-The following output will result:
+Choose `/some/path` according to where you want to install `fstl-e`. By runing `make install`, the following files will be installed :
 
-```
-Please choose a default application for files of type model/stl
+  * `fstl-e` executable in `/some/path/bin`
+  * desktop file in `/some/path/share/applications`
+  * icons in `/some/path/share/icons/apps`
 
-	1) Other...
+Standard choices are :
 
-use application #
-```
+  * `/usr/local` : this is the default if `-DCMAKE_INSTALL_PREFIX` is omitted. Needs root privileges
+  * `/usr` : not a good choice in my opinion as it may interfere with system packages. Needs root privileges
+  * `$HOME/.local` : in most modern systems it is a good choice for a user installation as `$HOME/.local/bin` will be in `PATH` variable as well as `$HOME/.local/share` will be in `XDG_DATA_DIRS` variable.
 
-Select the `Other` option and type `fstl` as the desired command to open STL files.
-This will now become the system default, even when opening files from the file manager.
+##### Create a package using cpack
+Alternatively after having run `make`, you can use `cpack` the packaging system integrated with `cmake` to build a package :
 
-## Building
+  * `cpack -G TGZ` will produce a `.tar.gz` package
+  * `cpack -G DEB` will produce a `.deb` package
+  * Although not tested as I'm not under a `rpm` distribution, running `cpack -G RPM` should produce a rpm package.
 
-The only dependency for `fstl` is [Qt 5](https://www.qt.io),
-plus [`cmake`](https://cmake.org/) for building.
+
+
+###Windows
+I'm mainly a linux user and have very little skill under windows. However I managed to compile `fstl-e` by installing [Visual studio community edition](https://visualstudio.microsoft.com/fr/vs/community/) and [Qt Opensource](https://www.qt.io/download-thank-you?os=windows) and it was quite straightforward using qtcreator on CMakeLists.txt as project.
+
 
 ### macOS
+I have absolutely no experience under macOS, however this should be possible to compile `fstl-e` by following the instructions on the [fstl github page](https://github.com/fstl-app/fstl).
 
-Install Qt from their website or [Homebrew](brew.sh).
-
-Install `cmake` through Homebrew or equivalent.
-
-Then, run through the following set of commands in a shell:
-
-```
-git clone https://github.com/fstl-app/fstl
-cd fstl
-mkdir build
-cd build
-cmake -DCMAKE_PREFIX_PATH=/usr/local/Cellar/qt/5.15.0/ ..
-make -j8
-./fstl.app/Contents/MacOS/fstl
-```
-
-You may need to edit the Qt path depending on your installation.
-
-To package a standalone app, go to the app directory and run `package.sh`
-
-```
-cd ../app
-./package.sh
-```
-
-This should produce two new files in the root directory:
-- `fstl.app` is a standalone application that can be copied to `/Applications`
-- `fstl.dmg` is a disk image that can be given to a friend
-
-### Linux
-
-Install Qt with your distro's package manager (required libraries are Core, Gui,
-Widgets and OpenGL, e.g. `qt5-default` and `libqt5opengl5-dev` on Debian).
-
-You can build fstl with CMake:
-```
-git clone https://github.com/fstl-app/fstl
-cd fstl
-mkdir build
-cd build
-cmake ..
-make -j8
-./fstl
-```
 
 --------------------------------------------------------------------------------
+# fstl License
 
-# License
+Copyright (c) 2014-2024 Matthew Keeter
 
-Copyright (c) 2014-2017 Matthew Keeter
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+--------------------------------------------------------------------------------
+# fstl-e License
+
+Copyright (c) 2023-2025 William Daniau
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
