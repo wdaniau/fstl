@@ -1,11 +1,11 @@
 [Desktop Entry]
-Name=fstl
+Name=fstl-e
 GenericName=Fast STL Viewer
-Exec=fstl %U
+Exec=fstl-e %U
 Terminal=false
-Icon=fstlapp-fstl
+Icon=fstlapp-fstl-e
 Type=Application
 MimeType=model/stl;
 Categories=Utility;
-StartupWMClass=fstl
+StartupWMClass=fstl-e
 
