@@ -4,12 +4,11 @@
     <launchable type="desktop-id">fstlapp-fstl-e.desktop</launchable>
     <name>fstl-e</name>
     <summary>Fast stl viewer</summary>
-
     <url type="homepage">https://github.com/wdaniau/fstl</url>
 
     <metadata_license>MIT</metadata_license>
     <project_license>MIT</project_license>
-
+    <content_rating type="oars-1.1" />
     <recommends>
         <control>keyboard</control>
         <control>pointing</control>
@@ -27,7 +26,8 @@
     </screenshots>
     <description>
         <p>
-            Fast stl viewer
+		fstl-e is a fast, easy to use stl file viewer.
+		It is a fork of fstl with some fancy enhancements.
         </p>
     </description>
     <releases>
