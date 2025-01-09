@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<component type="desktop">
+    <id>io.github.wdaniau.fstl</id>
+    <launchable type="desktop-id">fstlapp-fstl-e.desktop</launchable>
+    <name>fstl-e</name>
+    <summary>Fast stl viewer</summary>
+
+    <url type="homepage">https://github.com/wdaniau/fstl</url>
+
+    <metadata_license>MIT</metadata_license>
+    <project_license>MIT</project_license>
+
+    <recommends>
+        <control>keyboard</control>
+        <control>pointing</control>
+    </recommends>
+
+    <screenshots>
+        <screenshot type="default">
+            <image>https://raw.githubusercontent.com/wdaniau/fstl/refs/heads/fstl-e/images/screenshot_fstl-e_20230205.jpg</image>
+            <caption>Screenshot 1</caption>
+        </screenshot>
+        <screenshot>
+            <image>https://raw.githubusercontent.com/wdaniau/fstl/refs/heads/fstl-e/images/screenshot_fstl-e_20230212.jpg</image>
+            <caption>Screenshot 2</caption>
+        </screenshot>
+    </screenshots>
+    <description>
+        <p>
+            Fast stl viewer
+        </p>
+    </description>
+    <releases>
+        <release version="1.0.0" date="2025-01-09">
+
+        </release>
+
+    </releases>
+</component>

@@ -163,6 +163,8 @@ else()
     install(FILES xdg/icons/fstlapp-fstl-e_64x64.png DESTINATION share/icons/hicolor/64x64/apps RENAME fstlapp-fstl-e.png)
     install(FILES xdg/icons/fstlapp-fstl-e_128x128.png DESTINATION share/icons/hicolor/128x128/apps RENAME fstlapp-fstl-e.png)
     install(FILES xdg/icons/fstlapp-fstl-e_256x256.png DESTINATION share/icons/hicolor/256x256/apps RENAME fstlapp-fstl-e.png)
+    # install metadata
+    install(FILES metainfo/io.github.wdaniau.fstl.metainfo.xml DESTINATION share/metainfo)
 
     set(CPACK_PACKAGE_CONTACT "William Daniau")
     set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
