@@ -63,14 +63,6 @@ find_package(Threads REQUIRED)
 #add resources to RCC
 qt5_add_resources(Project_Resources_RCC ${Project_Resources})
 
-if(LINUX)
-    find_program(XDG_MIME_BIN xdg-mime REQUIRED)
-    find_program(XDG_DESKTOP_MENU_BIN xdg-desktop-menu REQUIRED)
-    find_program(XDG_ICON_RESOURCE_bin xdg-icon-resource REQUIRED)
-    set(XDG_Resources xdg/)
-endif(LINUX)
-
-
 #tell CMake AUTOGEN to skip autogen on the generated qrc files
 set_property(SOURCE ${Project_Resources_RCC} PROPERTY SKIP_AUTOGEN ON)
 
