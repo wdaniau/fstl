@@ -71,7 +71,7 @@ Alternatively after having run `make`, you can use `cpack` the packaging system 
 
 
 
-###Windows
+### Windows
 I'm mainly a linux user and have very little skill under windows. However I managed to compile `fstl-e` by installing [Visual studio community edition](https://visualstudio.microsoft.com/fr/vs/community/) and [Qt Opensource](https://www.qt.io/download-thank-you?os=windows) and it was quite straightforward using qtcreator on CMakeLists.txt as project.
 
 
