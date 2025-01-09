@@ -1,7 +1,7 @@
 #### Fast .stl viewer #####
 # Original Project Author: Matt Keeter Copyright 2014-2024
 # Author: Paul Tsouchlos Copyright 2017-2024
-# Author: William Daniau Copyright 2023-2025 (forked version efstl)
+# Author: William Daniau Copyright 2023-2025 (forked version fstl-e)
 
 cmake_minimum_required(VERSION 3.3)
 
