@@ -4,6 +4,9 @@
     <launchable type="desktop-id">fstlapp-fstl-e.desktop</launchable>
     <name>fstl-e</name>
     <summary>Fast stl viewer</summary>
+    <developer id="io.github.wdaniau">
+        <name>William Daniau</name>
+    </developer>
     <url type="homepage">https://github.com/wdaniau/fstl</url>
 
     <metadata_license>MIT</metadata_license>
