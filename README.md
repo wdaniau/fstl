@@ -74,6 +74,8 @@ Alternatively after having run `make`, you can use `cpack` the packaging system 
 ### Windows
 I'm mainly a linux user and have very little skill under windows. However I managed to compile `fstl-e` by installing [Visual studio community edition](https://visualstudio.microsoft.com/fr/vs/community/) and [Qt Opensource](https://www.qt.io/download-thank-you?os=windows) and it was quite straightforward using qtcreator on CMakeLists.txt as project.
 
+  * Windows installer : [fstl-e-1.0.0-win64.exe](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-1.0.0-win64.exe)
+
 
 ### macOS
 I have absolutely no experience under macOS, however this should be possible to compile `fstl-e` by following the instructions on the [fstl github page](https://github.com/fstl-app/fstl).
