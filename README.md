@@ -34,7 +34,7 @@ The only dependencies to build for `fstl-e` are [`Qt 5`](https://www.qt.io), [`c
 
 fstl-e is available as :
 
-  * flatpak : planned
+  * flatpak : [fstl-e](https://flathub.org/apps/io.github.wdaniau.fstl)
   * snap : [fstl-e](https://snapcraft.io/fstl-e)
   * AppImage : [fstl-e-996acf8-x86_64.AppImage](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-996acf8-x86_64.AppImage)
   * Ubuntu package : ubuntu packages are available on [ppa:wdaniau/custom](https://launchpad.net/~wdaniau/+archive/ubuntu/custom)
