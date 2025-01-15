@@ -103,7 +103,7 @@ Window::Window(QWidget *parent) :
     QObject::connect(reload_action, &QAction::triggered,
                      this, &Window::on_reload);
 
-    about_action->setIcon(QIcon(":/qt/icons/fstl_64x64.png"));
+    about_action->setIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     QObject::connect(about_action, &QAction::triggered,
                      this, &Window::on_about);
 
