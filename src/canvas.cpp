@@ -556,6 +556,10 @@ QList<QString> Canvas::getNameDir() {
     return nameDir;
 }
 
+QList<QVector3D> Canvas::getListDir() {
+    return listDir;
+}
+
 int Canvas::getCurrentLightDirection() {
     return currentLightDirection;
 }

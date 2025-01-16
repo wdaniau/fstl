@@ -42,6 +42,7 @@ public:
     void resetDirectiveColor();
 
     QList<QString> getNameDir();
+    QList<QVector3D> getListDir();
     int getCurrentLightDirection();
     void setCurrentLightDirection(int ind);
     void resetCurrentLightDirection();

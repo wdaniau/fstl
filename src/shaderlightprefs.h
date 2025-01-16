@@ -10,6 +10,7 @@ class QComboBox;
 class QCheckBox;
 class QSlider;
 class QFrame;
+class QButtonGroup;
 
 class ShaderLightPrefs : public QDialog
 {
@@ -33,6 +34,7 @@ private slots:
 
     void comboDirectionsChanged(int ind);
     void resetDirection();
+    void radioSourceClicked(int ind);
 
     void checkboxUseWireFrameChanged();
     void buttonWireColorClicked();
@@ -42,6 +44,8 @@ private slots:
 
     void okButtonClicked();
     void onFallbackGlslUpdated(bool b);
+
+    void setRadio(int ind);
 
 private:
     Canvas* canvas;
@@ -56,6 +60,10 @@ private:
     QPushButton* buttonWireColor;
     QLabel* labelWireWidth;
     QSlider* sliderWireWidth;
+
+    QButtonGroup* leftRight;
+    QButtonGroup* topBottom;
+    QButtonGroup* rearFront;
 
     const static QString PREFS_GEOM;
 };
