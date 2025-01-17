@@ -282,6 +282,10 @@ Window::Window(QWidget *parent) :
     resolutionMenu->addAction(setResolution6Action);
     groupResolution->addAction(setResolution6Action);
 
+    QAction *setResolution7Action = new QAction("1920 x 1080 (UHD)",this);
+    resolutionMenu->addAction(setResolution7Action);
+    groupResolution->addAction(setResolution7Action);
+
     resolutionMenu->addSeparator();
 
 //    QAction *setCustomResolutionAction = new QAction("Custom Resolution",this);
