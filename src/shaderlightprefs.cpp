@@ -60,7 +60,7 @@ ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QDialog(p
     editDirectiveFactor->setValidator(new QDoubleValidator);
     editDirectiveFactor->setText(QString("%1").arg(canvas->getDirectiveFactor()));
     middleLayout->addWidget(editDirectiveFactor,1,2,1,2);
-    connect(editDirectiveFactor,SIGNAL(editingFinished()),this,SLOT(editDirectiveFactorFinished()w));
+    connect(editDirectiveFactor,SIGNAL(editingFinished()),this,SLOT(editDirectiveFactorFinished()));
 
     QPushButton* buttonResetDirectiveColor = new QPushButton("Reset");
     middleLayout->addWidget(buttonResetDirectiveColor,1,4);
