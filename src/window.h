@@ -6,6 +6,8 @@
 #include <QFileSystemWatcher>
 #include <QCollator>
 #include <QToolButton>
+#include <QStatusBar>
+#include <QLabel>
 
 class Canvas;
 class ShaderLightPrefs;
@@ -94,6 +96,8 @@ private:
     QToolBar* windowToolBar;
     QMenu* projection_menu;
     QToolButton* projectionButton;
+    QStatusBar* statusBar;
+    QLabel* filenameStatusLabel;
 
     QActionGroup* const recent_files_group;
     QAction* const recent_files_clear_action;

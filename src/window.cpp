@@ -53,7 +53,7 @@ Window::Window(QWidget *parent) :
     watcher(new QFileSystemWatcher(this))
 
 {
-    setWindowTitle("fstl-e");
+    setWindowTitle("fstl-e " FSTLE_VERSION);
     setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     setAcceptDrops(true);
 
@@ -64,7 +64,6 @@ Window::Window(QWidget *parent) :
     format.setProfile(QSurfaceFormat::CoreProfile);
 
     QSurfaceFormat::setDefaultFormat(format);
-    
     canvas = new Canvas(format, this);
     setCentralWidget(canvas);
     canvas->update();
@@ -311,6 +310,12 @@ Window::Window(QWidget *parent) :
     windowToolBar->addAction(help_action);
 
     this->addToolBar(windowToolBar);
+
+    statusBar = new QStatusBar;
+    filenameStatusLabel = new QLabel("");
+    statusBar->addPermanentWidget(filenameStatusLabel);
+    this->setStatusBar(statusBar);
+
     load_persist_settings();
 }
 
@@ -563,6 +568,8 @@ void Window::on_load_recent(QAction* a)
 void Window::on_loaded(const QString& filename)
 {
     current_file = filename;
+    QFileInfo fileInfo = QFileInfo(current_file);
+    filenameStatusLabel->setText("File:"+fileInfo.fileName());
 }
 
 void Window::on_save_screenshot()
@@ -603,6 +610,7 @@ void Window::on_hide_menuBar()
 {
     menuBar()->setVisible(!hide_menuBar_action->isChecked());
     windowToolBar->setVisible(!hide_menuBar_action->isChecked());
+    statusBar->setVisible(!hide_menuBar_action->isChecked());
     QSettings settings;
     settings.setValue(HIDE_MENU_BAR,hide_menuBar_action->isChecked());
 }
@@ -673,8 +681,9 @@ bool Window::load_stl(const QString& filename, bool is_reload)
 
     if (filename[0] != ':')
     {
-        connect(loader, &Loader::loaded_file,
-                  this, &Window::setWindowTitle);
+        //connect(loader, &Loader::loaded_file,
+        //          this, &Window::setWindowTitle);
+
         connect(loader, &Loader::loaded_file,
                   this, &Window::set_watched);
         connect(loader, &Loader::loaded_file,
