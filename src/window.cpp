@@ -426,8 +426,15 @@ void Window::on_drawModePrefs() {
 
 void Window::on_open()
 {
+    QSettings settings;
+    QString lastDir = QString();
+    QStringList recentFileList = settings.value(RECENT_FILE_KEY).toStringList();
+    if (!recentFileList.isEmpty()) {
+        lastDir = QFileInfo(recentFileList.at(0)).absoluteDir().absolutePath();
+    }
+
     const QString filename = QFileDialog::getOpenFileName(
-                this, "Load .stl file", QString(), "STL files (*.stl *.STL)");
+                this, "Load .stl file", lastDir, "STL files (*.stl *.STL)");
     if (!filename.isNull())
     {
         load_stl(filename);
