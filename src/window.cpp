@@ -53,6 +53,29 @@ Window::Window(QWidget *parent) :
     watcher(new QFileSystemWatcher(this))
 
 {
+    // Define status tip for actions
+    open_action->setStatusTip(open_action->toolTip());
+    about_action->setStatusTip(about_action->toolTip());
+    help_action->setStatusTip(help_action->toolTip());
+    quit_action->setStatusTip(quit_action->toolTip());
+    perspective_action->setStatusTip(perspective_action->toolTip());
+    orthographic_action->setStatusTip(orthographic_action->toolTip());
+    shaded_action->setStatusTip(shaded_action->toolTip());
+    wireframe_action->setStatusTip(wireframe_action->toolTip());
+    surfaceangle_action->setStatusTip(surfaceangle_action->toolTip());
+    meshlight_action->setStatusTip(meshlight_action->toolTip());
+    drawModePrefs_action->setStatusTip(drawModePrefs_action->toolTip());
+    axes_action->setStatusTip(axes_action->toolTip());
+    invert_zoom_action->setStatusTip(invert_zoom_action->toolTip());
+    reload_action->setStatusTip(reload_action->toolTip());
+    autoreload_action->setStatusTip(autoreload_action->toolTip());
+    save_screenshot_action->setStatusTip(save_screenshot_action->toolTip());
+    hide_menuBar_action->setStatusTip(hide_menuBar_action->toolTip());
+    fullscreen_action->setStatusTip(fullscreen_action->toolTip());
+    resetTransformOnLoadAction->setStatusTip(resetTransformOnLoadAction->toolTip());
+    setGLSizeAction->setStatusTip(setGLSizeAction->toolTip());
+    recent_files_clear_action->setStatusTip(recent_files_clear_action->toolTip());
+
     setWindowTitle("fstl-e " FSTLE_VERSION);
     setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     setAcceptDrops(true);
@@ -298,6 +321,7 @@ Window::Window(QWidget *parent) :
     viewportSizeButton->setIcon(resolutionMenu->icon());
     viewportSizeButton->setToolTip(resolutionMenu->title());
     viewportSizeButton->setFocusPolicy(Qt::NoFocus); // we do not want the button to have keyboard focus
+    viewportSizeButton->setStatusTip(viewportSizeButton->toolTip());
     windowToolBar->addWidget(viewportSizeButton);
 
     windowToolBar->addAction(save_screenshot_action);
@@ -484,6 +508,7 @@ void Window::on_projection(QAction* proj)
     projection_menu->setIcon(proj->icon());
     projectionButton->setIcon(proj->icon());
     projectionButton->setToolTip(QString("%1 : %2").arg(projection_menu->title()).arg(proj->toolTip()));
+    projectionButton->setStatusTip(projectionButton->toolTip());
 }
 
 void Window::on_drawMode(QAction* act)
@@ -517,6 +542,7 @@ void Window::on_drawMode(QAction* act)
     draw_menu->setIcon(act->icon());
     shaderButton->setIcon(act->icon());
     shaderButton->setToolTip(QString("%1 : %2").arg(draw_menu->title()).arg(act->toolTip()));
+    shaderButton->setStatusTip(shaderButton->toolTip());
 }
 
 void Window::on_drawAxes(bool d)
