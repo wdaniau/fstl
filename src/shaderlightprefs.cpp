@@ -69,24 +69,21 @@ ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QDialog(p
 
     // Fill in directions
 
+    QFrame* lightSourceWidget = new QFrame;
+    lightSourceWidget->setFrameStyle(QFrame::Raised | QFrame::Box);
+    QGridLayout* lightSourceWidgetLayout = new QGridLayout;
+    lightSourceWidget->setLayout(lightSourceWidgetLayout);
+
+    QLabel* sourcePositionLabel = new QLabel("Light\nSource\nPosition");
+    sourcePositionLabel->setAlignment(Qt::AlignCenter);
+    lightSourceWidgetLayout->addWidget(sourcePositionLabel,0,0,4,1);
+
     comboDirections = new QComboBox;
     comboDirections->setFocusPolicy(Qt::NoFocus);
-    middleLayout->addWidget(comboDirections,2,1,1,3);
+    lightSourceWidgetLayout->addWidget(comboDirections,0,1,1,3);
     comboDirections->addItems(canvas->getNameDir());
     comboDirections->setCurrentIndex(canvas->getCurrentLightDirection());
     connect(comboDirections,SIGNAL(currentIndexChanged(int)),this,SLOT(comboDirectionsChanged(int)));
-
-    QPushButton* buttonResetDirection = new QPushButton("Reset");
-    //middleLayout->addWidget(buttonResetDirection,2,4);
-    middleLayout->addWidget(buttonResetDirection,3,4);
-    buttonResetDirection->setFocusPolicy(Qt::NoFocus);
-    connect(buttonResetDirection,SIGNAL(clicked(bool)),this,SLOT(resetDirection()));
-
-
-    QFrame* radioWidget = new QFrame;
-    radioWidget->setFrameStyle(QFrame::Raised | QFrame::Box);
-    QGridLayout* radioWidgetLayout = new QGridLayout;
-    radioWidget->setLayout(radioWidgetLayout);
 
     leftRight = new QButtonGroup;
     topBottom = new QButtonGroup;
@@ -104,9 +101,9 @@ ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QDialog(p
     leftRight->button(0)->setChecked(true);
 
 
-    radioWidgetLayout->addWidget(radioLeftButton,0,0);
-    radioWidgetLayout->addWidget(radioRightButton,0,1);
-    radioWidgetLayout->addWidget(radioLRNoneButton,0,2);
+    lightSourceWidgetLayout->addWidget(radioLeftButton,1,1);
+    lightSourceWidgetLayout->addWidget(radioRightButton,1,2);
+    lightSourceWidgetLayout->addWidget(radioLRNoneButton,1,3);
 
     QRadioButton* radioTopButton = new QRadioButton;
     radioTopButton->setText("Top");
@@ -119,9 +116,9 @@ ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QDialog(p
     topBottom->addButton(radioTBNoneButton,1);
     topBottom->button(0)->setChecked(true);
 
-    radioWidgetLayout->addWidget(radioTopButton,1,0);
-    radioWidgetLayout->addWidget(radioBottomButton,1,1);
-    radioWidgetLayout->addWidget(radioTBNoneButton,1,2);
+    lightSourceWidgetLayout->addWidget(radioTopButton,2,1);
+    lightSourceWidgetLayout->addWidget(radioBottomButton,2,2);
+    lightSourceWidgetLayout->addWidget(radioTBNoneButton,2,3);
 
     QRadioButton* radioRearButton = new QRadioButton;
     radioRearButton->setText("Rear");
@@ -135,20 +132,21 @@ ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QDialog(p
     rearFront->button(0)->setChecked(true);
 
 
-    radioWidgetLayout->addWidget(radioRearButton,2,0);
-    radioWidgetLayout->addWidget(radioFrontButton,2,1);
-    radioWidgetLayout->addWidget(radioRFNoneButton,2,2);
-
-    middleLayout->addWidget(radioWidget,3,1,3,3);
+    lightSourceWidgetLayout->addWidget(radioRearButton,3,1);
+    lightSourceWidgetLayout->addWidget(radioFrontButton,3,2);
+    lightSourceWidgetLayout->addWidget(radioRFNoneButton,3,3);
 
     connect(leftRight,SIGNAL(buttonClicked(int)),this,SLOT(radioSourceClicked(int)));
     connect(topBottom,SIGNAL(buttonClicked(int)),this,SLOT(radioSourceClicked(int)));
     connect(rearFront,SIGNAL(buttonClicked(int)),this,SLOT(radioSourceClicked(int)));
     setRadio(canvas->getCurrentLightDirection());
 
-    QLabel* sourcePositionLabel = new QLabel("Light\nSource\nPosition");
-    sourcePositionLabel->setAlignment(Qt::AlignCenter);
-    middleLayout->addWidget(sourcePositionLabel,3,0);
+    QPushButton* buttonResetDirection = new QPushButton("Reset");
+    lightSourceWidgetLayout->addWidget(buttonResetDirection,0,4,4,1);
+    buttonResetDirection->setFocusPolicy(Qt::NoFocus);
+    connect(buttonResetDirection,SIGNAL(clicked(bool)),this,SLOT(resetDirection()));
+
+    middleLayout->addWidget(lightSourceWidget,2,0,4,5);
 
     groupWireFrame = new QFrame;
     QGridLayout* groupWireFrameLayout = new QGridLayout;
