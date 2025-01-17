@@ -52,6 +52,7 @@ private slots:
     void on_resetTransformOnLoad(bool d);
     void on_watched_change(const QString& filename);
     void on_reload();
+    void on_reset();
     void on_autoreload_triggered(bool r);
     void on_clear_recent();
     void on_load_recent(QAction* a);
@@ -83,6 +84,7 @@ private:
     QAction* const axes_action;
     QAction* const invert_zoom_action;
     QAction* const reload_action;
+    QAction* const reset_action;
     QAction* const autoreload_action;
     QAction* const save_screenshot_action;
     QAction* const hide_menuBar_action;
@@ -115,6 +117,7 @@ private:
 
     const static QKeySequence shortcutOpen;
     const static QKeySequence shortcutReload;
+    const static QKeySequence shortcutReset;
     const static QKeySequence shortcutScreenshot;
     const static QKeySequence shortcutQuit;
     const static QKeySequence shortcutDrawModeSettings;

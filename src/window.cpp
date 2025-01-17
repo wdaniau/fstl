@@ -17,6 +17,7 @@ const QString Window::HIDE_MENU_BAR = "hideMenuBar";
 
 const QKeySequence Window::shortcutOpen = Qt::Key_O;
 const QKeySequence Window::shortcutReload = Qt::Key_R;
+const QKeySequence Window::shortcutReset = Qt::CTRL + Qt::Key_R;
 const QKeySequence Window::shortcutScreenshot = Qt::Key_S;
 const QKeySequence Window::shortcutQuit = Qt::Key_Q;
 const QKeySequence Window::shortcutDrawModeSettings = Qt::Key_P;
@@ -41,6 +42,7 @@ Window::Window(QWidget *parent) :
     axes_action(new QAction("Draw Axes", this)),
     invert_zoom_action(new QAction("Invert Zoom", this)),
     reload_action(new QAction("Reload", this)),
+    reset_action(new QAction("Reload and reset view", this)),
     autoreload_action(new QAction("Autoreload", this)),
     save_screenshot_action(new QAction("Save Screenshot", this)),
     hide_menuBar_action(new QAction("Hide Menu Bar", this)),
@@ -67,8 +69,9 @@ Window::Window(QWidget *parent) :
     drawModePrefs_action->setStatusTip(drawModePrefs_action->toolTip());
     axes_action->setStatusTip(axes_action->toolTip());
     invert_zoom_action->setStatusTip(invert_zoom_action->toolTip());
-    reload_action->setStatusTip(reload_action->toolTip());
-    autoreload_action->setStatusTip(autoreload_action->toolTip());
+    reload_action->setStatusTip("Reload the file");
+    reset_action->setStatusTip("Reload the file and reset the view");
+    autoreload_action->setStatusTip("Automatically reload file on file change");
     save_screenshot_action->setStatusTip(save_screenshot_action->toolTip());
     hide_menuBar_action->setStatusTip(hide_menuBar_action->toolTip());
     fullscreen_action->setStatusTip(fullscreen_action->toolTip());
@@ -125,6 +128,13 @@ Window::Window(QWidget *parent) :
     QObject::connect(reload_action, &QAction::triggered,
                      this, &Window::on_reload);
 
+    reset_action->setShortcut(shortcutReset);
+    reset_action->setIcon(QIcon(":/qt/icons/view-reset.png"));
+    this->addAction(reset_action);
+    reset_action->setEnabled(false);
+    QObject::connect(reset_action, &QAction::triggered,
+                     this, &Window::on_reset);
+
     about_action->setIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     QObject::connect(about_action, &QAction::triggered,
                      this, &Window::on_about);
@@ -152,6 +162,7 @@ Window::Window(QWidget *parent) :
     file_menu->addMenu(recent_files);
     file_menu->addSeparator();
     file_menu->addAction(reload_action);
+    file_menu->addAction(reset_action);
     file_menu->addAction(autoreload_action);
     file_menu->addAction(save_screenshot_action);
     file_menu->addAction(quit_action);
@@ -289,6 +300,7 @@ Window::Window(QWidget *parent) :
     windowToolBar->addAction(quit_action);
     windowToolBar->addAction(open_action);
     windowToolBar->addAction(reload_action);
+    windowToolBar->addAction(reset_action);
     windowToolBar->addAction(autoreload_action);
 
     // preferences button here
@@ -682,6 +694,15 @@ void Window::on_reload()
     }
 }
 
+void Window::on_reset()
+{
+    auto fs = watcher->files();
+    if (fs.size() == 1)
+    {
+        load_stl(fs[0], false);
+    }
+}
+
 bool Window::load_stl(QString filename, bool is_reload)
 {
     if (!open_action->isEnabled())  return false;
@@ -734,6 +755,7 @@ bool Window::load_stl(QString filename, bool is_reload)
         connect(loader, &Loader::loaded_file,
                   this, &Window::on_loaded);
         reload_action->setEnabled(true);
+        reset_action->setEnabled(true);
     }
 
     loader->start();
@@ -969,7 +991,8 @@ void Window::on_help() {
                      "<li><b>H</b> : Display this help message"
                      "<li><b>Q</b> : Quit"
                      "<li><b>O</b> : Open"
-                     "<li><b>R</b> : Reload"
+                     "<li><b>R</b> : Reload the file"
+                     "<li><b>CTRL-R</b> : Reload the file and reset the view"
                      "<li><b>P</b> : Draw Mode Settings for current shader (if available)"
                      "<li><b>A</b> : Draw Axes (and some informations)"
                      "<li><b>M</b> : Show/Hide Menu (and Toolbar as well)"

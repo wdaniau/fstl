@@ -20,5 +20,6 @@
         <file>icons/auto_refresh.png</file>
         <file>icons/resolution_1_32.png</file>
         <file>icons/help-browser.png</file>
+        <file>icons/view-reset.png</file>
     </qresource>
 </RCC>
