@@ -679,9 +679,25 @@ void Window::on_reload()
     }
 }
 
-bool Window::load_stl(const QString& filename, bool is_reload)
+bool Window::load_stl(QString filename, bool is_reload)
 {
     if (!open_action->isEnabled())  return false;
+
+    // is it a directory?
+    bool isDir = QFileInfo(filename).isDir();
+    if (isDir) {
+        QDir searchDir = QDir(filename, "*.stl",QDir::SortFlag::DirsFirst | QDir::SortFlag::Name);
+        QStringList listFiles = searchDir.entryList();
+        if (!listFiles.isEmpty()) {
+            filename = filename+"/"+listFiles.at(0);
+        }
+        // try to find stl file in directory
+        // QDirIterator dirIterator(filename, QStringList() << "*.stl", QDir::Files | QDir::Readable | QDir::Hidden);
+        // if (dirIterator.hasNext()) {
+        //     dirIterator.next();
+        //     filename = filename+"/"+dirIterator.fileName();
+        // }
+    }
 
     canvas->set_status("Loading " + filename);
 

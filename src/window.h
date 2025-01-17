@@ -17,7 +17,7 @@ class Window : public QMainWindow
     Q_OBJECT
 public:
     explicit Window(QWidget* parent=0);
-    bool load_stl(const QString& filename, bool is_reload=false);
+    bool load_stl(QString filename, bool is_reload=false);
     bool load_prev(void);
     bool load_next(void);
     int getCurrentShader();
