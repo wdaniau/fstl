@@ -336,7 +336,7 @@ Window::Window(QWidget *parent) :
     this->addToolBar(windowToolBar);
 
     statusBar = new QStatusBar;
-    filenameStatusLabel = new QLabel("");
+    filenameStatusLabel = new QLabel("File:none");
     statusBar->addPermanentWidget(filenameStatusLabel);
     this->setStatusBar(statusBar);
 
