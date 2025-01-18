@@ -469,6 +469,7 @@ void Window::on_bad_stl()
                           "This <code>.stl</code> file is invalid or corrupted.<br>"
                           "Please export it from the original source, verify, and retry.");
     load_stl(":/gl/sphere.stl");
+    filenameStatusLabel->setText("File:none");
 }
 
 void Window::on_empty_mesh()
@@ -477,6 +478,7 @@ void Window::on_empty_mesh()
                           "<b>Error:</b><br>"
                           "This file is syntactically correct<br>but contains no triangles.");
     load_stl(":/gl/sphere.stl");
+    filenameStatusLabel->setText("File:none");
 }
 
 void Window::on_missing_file()
@@ -485,6 +487,7 @@ void Window::on_missing_file()
                           "<b>Error:</b><br>"
                           "The target file is missing.<br>");
     load_stl(":/gl/sphere.stl");
+    filenameStatusLabel->setText("File:none");
 }
 
 void Window::enable_open()
