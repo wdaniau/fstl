@@ -61,11 +61,12 @@ public:
 
     bool isFallbackGlsl();
 
+    void resetView();
+
 public slots:
     void set_status(const QString& s);
     void clear_status();
     void load_mesh(Mesh* m, bool is_reload);
-    void resetView();
 
 protected:
     void paintGL() override;
