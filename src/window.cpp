@@ -726,12 +726,6 @@ bool Window::load_stl(QString filename, bool is_reload)
         if (!listFiles.isEmpty()) {
             filename = filename+"/"+listFiles.at(0);
         }
-        // try to find stl file in directory
-        // QDirIterator dirIterator(filename, QStringList() << "*.stl", QDir::Files | QDir::Readable | QDir::Hidden);
-        // if (dirIterator.hasNext()) {
-        //     dirIterator.next();
-        //     filename = filename+"/"+dirIterator.fileName();
-        // }
     }
 
     canvas->set_status("Loading " + filename);
