@@ -65,6 +65,7 @@ public slots:
     void set_status(const QString& s);
     void clear_status();
     void load_mesh(Mesh* m, bool is_reload);
+    void resetView();
 
 protected:
     void paintGL() override;
@@ -135,7 +136,9 @@ private:
     Axis* axis;
 
     QVector3D center;
+    QVector3D centerOrg;
     float scale;
+    float scaleOrg;
     float zoom;
     QMatrix4x4 currentTransform;
 

@@ -142,8 +142,11 @@ void Canvas::load_mesh(Mesh* m, bool is_reload)
     QVector3D upper(m->xmax(), m->ymax(), m->zmax());
     if (!is_reload)
     {
+        // centerOrg and scaleOrg are used to reset the view
         center = (lower + upper) / 2;
+        centerOrg = center;
         scale = 2 / (upper - lower).length();
+        scaleOrg = scale;
 
         // Reset other camera parameters
         zoom = 1;
@@ -618,4 +621,11 @@ void Canvas::resetWireColor() {
 
 bool Canvas::isFallbackGlsl() {
     return fallbackGlsl;
+}
+
+void Canvas::resetView() {
+    center = centerOrg;
+    scale = scaleOrg;
+    zoom = 1;
+    resetTransform();
 }

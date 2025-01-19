@@ -710,12 +710,9 @@ void Window::on_reload()
 
 void Window::on_reset()
 {
-    auto fs = watcher->files();
-    if (fs.size() == 1)
-    {
-        load_stl(fs[0], false);
-    }
-}
+    canvas->resetView();
+    canvas->update();
+ }
 
 bool Window::load_stl(QString filename, bool is_reload)
 {
