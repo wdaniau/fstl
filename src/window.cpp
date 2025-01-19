@@ -42,7 +42,7 @@ Window::Window(QWidget *parent) :
     axes_action(new QAction("Draw Axes", this)),
     invert_zoom_action(new QAction("Invert Zoom", this)),
     reload_action(new QAction("Reload", this)),
-    reset_action(new QAction("Reload and reset view", this)),
+    reset_action(new QAction("Reset view", this)),
     autoreload_action(new QAction("Autoreload", this)),
     save_screenshot_action(new QAction("Save Screenshot", this)),
     hide_menuBar_action(new QAction("Hide Menu Bar", this)),
@@ -70,7 +70,7 @@ Window::Window(QWidget *parent) :
     axes_action->setStatusTip(axes_action->toolTip());
     invert_zoom_action->setStatusTip(invert_zoom_action->toolTip());
     reload_action->setStatusTip("Reload the file");
-    reset_action->setStatusTip("Reload the file and reset the view");
+    reset_action->setStatusTip("Reset the view");
     autoreload_action->setStatusTip("Automatically reload file on file change");
     save_screenshot_action->setStatusTip(save_screenshot_action->toolTip());
     hide_menuBar_action->setStatusTip(hide_menuBar_action->toolTip());
@@ -997,7 +997,7 @@ void Window::on_help() {
                      "<li><b>Q</b> : Quit"
                      "<li><b>O</b> : Open"
                      "<li><b>R</b> : Reload the file"
-                     "<li><b>CTRL-R</b> : Reload the file and reset the view"
+                     "<li><b>CTRL-R</b> : Reset the view"
                      "<li><b>P</b> : Draw Mode Settings for current shader (if available)"
                      "<li><b>A</b> : Draw Axes (and some informations)"
                      "<li><b>M</b> : Show/Hide Menu (and Toolbar as well)"
