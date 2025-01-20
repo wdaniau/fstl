@@ -63,6 +63,7 @@ private slots:
     void on_drawModePrefs();
     void setViewportSize(QAction* act);
     void on_centerView();
+    void onApplyView(QAction* act);
 
 private:
     void rebuild_recent_files();
@@ -93,6 +94,7 @@ private:
     QAction* const setGLSizeAction;
     QActionGroup* defaultViewAction;
     QAction* centerAction;
+    QAction* applyDefaultViewAction;
 
     QMenu* const recent_files;
     QMenu* defaultViewMenu;

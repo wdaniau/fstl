@@ -66,6 +66,7 @@ public:
     bool isFallbackGlsl();
 
     void resetView();
+    void applyRotation(QString name);
 
 public slots:
     void set_status(const QString& s);
@@ -98,7 +99,6 @@ private:
     void resetTransform();
     QPointF changeMouseCoordinates(QPoint p);
     void calcArcballTransform(QPointF p1, QPointF p2);
-    void applyRotation(QString name);
 
     QOpenGLShader* mesh_vertshader;
     QOpenGLShaderProgram mesh_shader;

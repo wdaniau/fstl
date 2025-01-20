@@ -324,6 +324,62 @@ Window::Window(QWidget *parent) :
                      this, &Window::on_centerView);
 
 
+    QMenu *applyViewMenu = view_menu->addMenu("Apply Specific View");
+    applyViewMenu->setIcon(QIcon(":/qt/icons/eye_64x64.png"));
+    applyViewMenu->menuAction()->setIconVisibleInMenu(true);
+    QActionGroup* groupApplyViewAction = new QActionGroup(applyViewMenu);
+
+    applyDefaultViewAction = new QAction("Default View");
+    applyDefaultViewAction->setStatusTip(applyDefaultViewAction->toolTip());
+    applyDefaultViewAction->setIcon(defaultViewMenu->icon());
+    applyDefaultViewAction->setShortcut(shortcutDefaultView);
+    applyViewMenu->addAction(applyDefaultViewAction);
+    groupApplyViewAction->addAction(applyDefaultViewAction);
+
+    QAction* applyTopViewAction = new QAction("Top View");
+    applyTopViewAction->setStatusTip(applyTopViewAction->toolTip());
+    applyTopViewAction->setIcon(QIcon(":/qt/icons/top_XY_64x64.png"));
+    applyTopViewAction->setShortcut(shortcutTopView);
+    applyViewMenu->addAction(applyTopViewAction);
+    groupApplyViewAction->addAction(applyTopViewAction);
+
+    QAction* applyBottomViewAction = new QAction("Bottom View");
+    applyBottomViewAction->setStatusTip(applyBottomViewAction->toolTip());
+    applyBottomViewAction->setIcon(QIcon(":/qt/icons/bottom_X-Y_64x64.png"));
+    applyBottomViewAction->setShortcut(shortcutBottomView);
+    applyViewMenu->addAction(applyBottomViewAction);
+    groupApplyViewAction->addAction(applyBottomViewAction);
+
+    QAction* applyFrontViewAction = new QAction("Front View");
+    applyFrontViewAction->setStatusTip(applyFrontViewAction->toolTip());
+    applyFrontViewAction->setIcon(QIcon(":/qt/icons/front_XZ_64x64.png"));
+    applyFrontViewAction->setShortcut(shortcutFrontView);
+    applyViewMenu->addAction(applyFrontViewAction);
+    groupApplyViewAction->addAction(applyFrontViewAction);
+
+    QAction* applyRearViewAction = new QAction("Rear View");
+    applyRearViewAction->setStatusTip(applyRearViewAction->toolTip());
+    applyRearViewAction->setIcon(QIcon(":/qt/icons/rear_-XZ_64x64.png"));
+    applyRearViewAction->setShortcut(shortcutRearView);
+    applyViewMenu->addAction(applyRearViewAction);
+    groupApplyViewAction->addAction(applyRearViewAction);
+
+    QAction* applyLeftViewAction = new QAction("Left View");
+    applyLeftViewAction->setStatusTip(applyLeftViewAction->toolTip());
+    applyLeftViewAction->setIcon(QIcon(":/qt/icons/left_-YZ_64x64.png"));
+    applyLeftViewAction->setShortcut(shortcutLeftView);
+    applyViewMenu->addAction(applyLeftViewAction);
+    groupApplyViewAction->addAction(applyLeftViewAction);
+
+    QAction* applyRightViewAction = new QAction("Right View");
+    applyRightViewAction->setStatusTip(applyRightViewAction->toolTip());
+    applyRightViewAction->setIcon(QIcon(":/qt/icons/right_YZ_64x64.png"));
+    applyRightViewAction->setShortcut(shortcutRightView);
+    applyViewMenu->addAction(applyRightViewAction);
+    groupApplyViewAction->addAction(applyRightViewAction);
+
+    connect(groupApplyViewAction,SIGNAL(triggered(QAction*)),this,SLOT(onApplyView(QAction*)));
+
     auto help_menu = menuBar()->addMenu("Help");
     help_menu->addAction(about_action);
     help_menu->addAction(help_action);
@@ -376,6 +432,17 @@ Window::Window(QWidget *parent) :
     windowToolBar->addWidget(viewportSizeButton);
 
     windowToolBar->addAction(centerAction);
+
+    QToolButton* applyViewButton = new QToolButton;
+    applyViewButton->setPopupMode(QToolButton::InstantPopup);
+    applyViewButton->setMenu(applyViewMenu);
+    applyViewButton->setIcon(applyViewMenu->icon());
+    applyViewButton->setToolTip(applyViewMenu->title());
+    applyViewButton->setFocusPolicy(Qt::NoFocus); // we do not want the button to have keyboard focus
+    applyViewButton->setStatusTip(applyViewButton->toolTip());
+    windowToolBar->addWidget(applyViewButton);
+
+
 
     windowToolBar->addAction(save_screenshot_action);
     windowToolBar->addAction(fullscreen_action);
@@ -627,6 +694,7 @@ void Window::on_defaultView(QAction* view) {
     defaultViewButton->setToolTip(QString("Default load view : %1").arg(view->toolTip()));
     defaultViewButton->setStatusTip(QString("Default load view : %1").arg(view->toolTip()));
     QSettings().setValue(DEFAULT_VIEW_KEY,view->text());
+    applyDefaultViewAction->setIcon(defaultViewButton->icon());
 }
 
 void Window::on_drawAxes(bool d)
@@ -1065,5 +1133,25 @@ void Window::on_help() {
 
 void Window::on_centerView() {
     canvas->recenterView();
+    canvas->update();
+}
+
+void Window::onApplyView(QAction* act) {
+    QString t = act->text();
+    QRegExp rx = QRegExp("^\\s*(\\S+)\\s+.*$");
+    rx.indexIn(t);
+    QStringList desc = rx.capturedTexts();
+    QString name = desc.at(1);
+
+    if (name == "Default") {
+        for ( QAction* a : defaultViewAction->actions()) {
+            if (a->isChecked()) {
+                canvas->applyRotation(a->text());
+                break;
+            }
+        }
+    } else {
+        canvas->applyRotation(name);
+    }
     canvas->update();
 }
