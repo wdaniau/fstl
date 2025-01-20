@@ -62,6 +62,7 @@ private slots:
     void on_hide_menuBar();
     void on_drawModePrefs();
     void setViewportSize(QAction* act);
+    void on_centerView();
 
 private:
     void rebuild_recent_files();
@@ -91,6 +92,7 @@ private:
     QAction* const resetTransformOnLoadAction;
     QAction* const setGLSizeAction;
     QActionGroup* defaultViewAction;
+    QAction* centerAction;
 
     QMenu* const recent_files;
     QMenu* defaultViewMenu;
@@ -119,7 +121,6 @@ private:
 
     const static QKeySequence shortcutOpen;
     const static QKeySequence shortcutReload;
-    const static QKeySequence shortcutReset;
     const static QKeySequence shortcutScreenshot;
     const static QKeySequence shortcutQuit;
     const static QKeySequence shortcutDrawModeSettings;
@@ -128,7 +129,7 @@ private:
     const static QKeySequence shortcutFullscreen;
     const static QKeySequence shortcutHelp;
 
-    const static QKeySequence shortcutRecenterView;
+    const static QKeySequence shortcutCenterView;
     const static QKeySequence shortcutDefaultView;
     const static QKeySequence shortcutTopView;
     const static QKeySequence shortcutBottomView;

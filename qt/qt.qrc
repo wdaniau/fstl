@@ -31,5 +31,6 @@
         <file>icons/rear_-XZ_64x64.png</file>
         <file>icons/right_YZ_64x64.png</file>
         <file>icons/top_XY_64x64.png</file>
+        <file>icons/eye_64x64.png</file>
     </qresource>
 </RCC>

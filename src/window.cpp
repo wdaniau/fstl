@@ -19,7 +19,6 @@ const QString Window::DEFAULT_VIEW_KEY = "defaultView";
 
 const QKeySequence Window::shortcutOpen = Qt::Key_O;
 const QKeySequence Window::shortcutReload = Qt::Key_R;
-const QKeySequence Window::shortcutReset = Qt::CTRL + Qt::Key_R;
 const QKeySequence Window::shortcutScreenshot = Qt::Key_S;
 const QKeySequence Window::shortcutQuit = Qt::Key_Q;
 const QKeySequence Window::shortcutDrawModeSettings = Qt::Key_P;
@@ -28,7 +27,7 @@ const QKeySequence Window::shortcutHideMenuBar = Qt::Key_M;
 const QKeySequence Window::shortcutFullscreen = Qt::Key_F;
 const QKeySequence Window::shortcutHelp = Qt::Key_H;
 
-const QKeySequence Window::shortcutRecenterView = Qt::Key_C;
+const QKeySequence Window::shortcutCenterView = Qt::Key_C;
 const QKeySequence Window::shortcutDefaultView = Qt::Key_0;
 const QKeySequence Window::shortcutTopView = Qt::Key_1;
 const QKeySequence Window::shortcutBottomView = Qt::Key_2;
@@ -315,6 +314,16 @@ Window::Window(QWidget *parent) :
 
     connect(groupResolution,SIGNAL(triggered(QAction*)),this,SLOT(setViewportSize(QAction*)));
 
+    centerAction = new QAction("Center View");
+    centerAction->setStatusTip(centerAction->toolTip());
+    centerAction->setShortcut(shortcutCenterView);
+    centerAction->setIcon(QIcon(":/qt/icons/center_64x64.png"));
+    centerAction->setCheckable(false);
+    view_menu->addAction(centerAction);
+    QObject::connect(centerAction, &QAction::triggered,
+                     this, &Window::on_centerView);
+
+
     auto help_menu = menuBar()->addMenu("Help");
     help_menu->addAction(about_action);
     help_menu->addAction(help_action);
@@ -365,6 +374,8 @@ Window::Window(QWidget *parent) :
     viewportSizeButton->setFocusPolicy(Qt::NoFocus); // we do not want the button to have keyboard focus
     viewportSizeButton->setStatusTip(viewportSizeButton->toolTip());
     windowToolBar->addWidget(viewportSizeButton);
+
+    windowToolBar->addAction(centerAction);
 
     windowToolBar->addAction(save_screenshot_action);
     windowToolBar->addAction(fullscreen_action);
@@ -1041,6 +1052,7 @@ void Window::on_help() {
                      "<li><b>S</b> : Save Screenshot"
                      "<li><b>F</b> : Toggle Fullscreen"
                      "<li><b>W</b> : Toggle Wireframe on top of shader (if available)"
+                     "<li><b>C</b> : Center View"
                      "<li><b>Left Arrow</b> : load previous stl file"
                      "<li><b>Right Arrow</b> : load next stl file"
                      "<li><b>Up Arrow</b> : use next shader"
@@ -1049,4 +1061,9 @@ void Window::on_help() {
                      );
     helpWin->show();
 
+}
+
+void Window::on_centerView() {
+    canvas->recenterView();
+    canvas->update();
 }
