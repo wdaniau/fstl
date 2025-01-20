@@ -11,6 +11,7 @@
 const float Canvas::P_PERSPECTIVE = 0.25f;
 const float Canvas::P_ORTHOGRAPHIC = 0.0f;
 
+// Name used in QSettings
 const QString Canvas::AMBIENT_COLOR = "ambientColor";
 const QString Canvas::AMBIENT_FACTOR = "ambientFactor";
 const QString Canvas::DIRECTIVE_COLOR = "directiveColor";
@@ -20,6 +21,7 @@ const QString Canvas::USE_WIRE = "useWire";
 const QString Canvas::WIRE_WIDTH = "wireWidth";
 const QString Canvas::WIRE_COLOR = "wireColor";
 
+// default values
 const QColor Canvas::defaultAmbientColor = QColor::fromRgbF(0.22,0.8,1.0);
 const QColor Canvas::defaultDirectiveColor = QColor(255,255,255);
 const double Canvas::defaultAmbientFactor = 0.67;
@@ -28,6 +30,7 @@ const int Canvas::defaultCurrentLightDirection = 1;
 const bool Canvas::defaultUseWire = false;
 const double Canvas::defaultWireWidth = 1.0;
 const QColor Canvas::defaultWireColor = QColor(255,128,0);
+const QString Canvas::defaultDefaultView = QString("default 1");
 
 Canvas::Canvas(const QSurfaceFormat& format, QWidget *parent)
     : QOpenGLWidget(parent), mesh(nullptr),
@@ -51,6 +54,43 @@ Canvas::Canvas(const QSurfaceFormat& format, QWidget *parent)
     useWire = settings.value(USE_WIRE,defaultUseWire).value<bool>();
     wireWidth = settings.value(WIRE_WIDTH,defaultWireWidth).value<float>();
     wireColor = settings.value(WIRE_COLOR,defaultWireColor).value<QColor>();
+
+    // predefines rotations : name of the rotation, followed by a list of rotations
+    // 4 values by rotation, angle then the rotating vector
+    predefinedRotations["default 1"] = {      -90.0,      1.0,                  0.0, 0.0,   // original default
+                                         180.0+15.0,      0.0,                  0.0, 1.0,
+                                               15.0,      1.0, (float)-sin(M_PI/12), 0.0};
+
+    predefinedRotations["default 2"] = { -90.0, 1.0, 0.0, 0.0,
+                                        225.0, 0.0, 0.0, 1.0,
+                                         35.0, 1.0, -1.0, 0.0};
+
+    predefinedRotations["default 3"] = { -90.0, 1.0, 0.0, 0.0,
+                                        45.0, 0.0, 0.0, 1.0,
+                                        -35.0, 1.0, -1.0, 0.0};
+
+    predefinedRotations["top"] =    { 180.0, 0.0, 1.0, 0.0};  //  X  Y
+
+    predefinedRotations["bottom"] = { 180.0, 0.0, 1.0, 0.0,
+                                      180.0, 1.0, 0.0, 0.0};  //  X -Y
+
+    predefinedRotations["front"] =  { 180.0, 0.0, 1.0, 0.0,
+                                      -90.0, 1.0, 0.0, 0.0};  //  X  Z
+
+    predefinedRotations["rear"] =   { -90.0, 1.0, 0.0, 0.0};  // -X  Z
+
+    predefinedRotations["left"] =   { -90.0, 0.0, 0.0, 1.0,
+                                      -90.0, 0.0, 1.0, 0.0};  // -Y  Z
+
+    predefinedRotations["right"] =  {  90.0, 0.0, 0.0, 1.0,   //  Y  Z
+                                       90.0, 0.0, 1.0, 0.0};
+
+
+    wireColor = settings.value(WIRE_COLOR,defaultWireColor).value<QColor>();
+    defaultView = "default 1";
+
+    // qDebug() << "Nom : " + predefinedRotations.at(0).first;
+    // qDebug() << "Values : " << predefinedRotations.at(0).second;
 
     // Fill direction list
     // Fill in directions
@@ -125,12 +165,13 @@ void Canvas::setResetTransformOnLoad(bool d) {
 }
 
 void Canvas::resetTransform() {
-    currentTransform.setToIdentity();
-    // apply some rotations to define initial orientation
-    currentTransform.rotate(-90.0, QVector3D(1, 0, 0));
-    currentTransform.rotate(180.0 + 15.0, QVector3D(0, 0, 1));
-    currentTransform.rotate(15.0, QVector3D(1, -sin(M_PI/12), 0));
-    
+    // currentTransform.setToIdentity();
+    // // apply some rotations to define initial orientation
+    // currentTransform.rotate(-90.0, QVector3D(1, 0, 0));
+    // currentTransform.rotate(180.0 + 15.0, QVector3D(0, 0, 1));
+    // currentTransform.rotate(15.0, QVector3D(1, -sin(M_PI/12), 0));
+    applyRotation(defaultView);
+    //currentTransform.setToIdentity();
     zoom = 1;
 }
 
@@ -624,8 +665,36 @@ bool Canvas::isFallbackGlsl() {
 }
 
 void Canvas::resetView() {
+    zoom = 1;
+    recenterView();
+    resetTransform();
+}
+
+void Canvas::applyRotation(QString name) {
+    QString rot = name.toLower();
+    // if name is not valid we use "default 1"
+    if (!predefinedRotations.keys().contains(rot)) {
+        rot = "default 1";
+    }
+    currentTransform.setToIdentity();
+    QList<float> q = predefinedRotations.value(rot);
+    int nrot = q.size() / 4;
+    for (int i = 0; i < nrot; i++) {
+        currentTransform.rotate(q.at(i*4),q.at(i*4+1),q.at(i*4+2),q.at(i*4+3));
+    }
+}
+
+QString Canvas::getDefaultView() {
+    return defaultView;
+}
+
+void Canvas::setDefaultView(QString v) {
+    if (predefinedRotations.keys().contains(v.toLower())) {
+        defaultView = v;
+    }
+}
+
+void Canvas::recenterView() {
     center = centerOrg;
     scale = scaleOrg;
-    zoom = 1;
-    resetTransform();
 }

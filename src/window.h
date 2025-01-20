@@ -47,12 +47,12 @@ public slots:
 private slots:
     void on_projection(QAction* proj);
     void on_drawMode(QAction* mode);
+    void on_defaultView(QAction* view);
     void on_drawAxes(bool d);
     void on_invertZoom(bool d);
     void on_resetTransformOnLoad(bool d);
     void on_watched_change(const QString& filename);
     void on_reload();
-    void on_reset();
     void on_autoreload_triggered(bool r);
     void on_clear_recent();
     void on_load_recent(QAction* a);
@@ -84,20 +84,22 @@ private:
     QAction* const axes_action;
     QAction* const invert_zoom_action;
     QAction* const reload_action;
-    QAction* const reset_action;
     QAction* const autoreload_action;
     QAction* const save_screenshot_action;
     QAction* const hide_menuBar_action;
     QAction* const fullscreen_action;
     QAction* const resetTransformOnLoadAction;
     QAction* const setGLSizeAction;
+    QActionGroup* defaultViewAction;
 
     QMenu* const recent_files;
+    QMenu* defaultViewMenu;
     QMenu* draw_menu;
     QToolButton* shaderButton;
     QToolBar* windowToolBar;
     QMenu* projection_menu;
     QToolButton* projectionButton;
+    QToolButton* defaultViewButton;
     QStatusBar* statusBar;
     QLabel* filenameStatusLabel;
 
@@ -113,7 +115,7 @@ private:
     const static QString WINDOW_GEOM_KEY;
     const static QString RESET_TRANSFORM_ON_LOAD_KEY;
     const static QString HIDE_MENU_BAR;
-
+    const static QString DEFAULT_VIEW_KEY;
 
     const static QKeySequence shortcutOpen;
     const static QKeySequence shortcutReload;
@@ -125,6 +127,15 @@ private:
     const static QKeySequence shortcutHideMenuBar;
     const static QKeySequence shortcutFullscreen;
     const static QKeySequence shortcutHelp;
+
+    const static QKeySequence shortcutRecenterView;
+    const static QKeySequence shortcutDefaultView;
+    const static QKeySequence shortcutTopView;
+    const static QKeySequence shortcutBottomView;
+    const static QKeySequence shortcutFrontView;
+    const static QKeySequence shortcutRearView;
+    const static QKeySequence shortcutLeftView;
+    const static QKeySequence shortcutRightView;
 
     QString current_file;
     QString lookup_folder;

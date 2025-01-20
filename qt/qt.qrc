@@ -21,5 +21,15 @@
         <file>icons/resolution_1_32.png</file>
         <file>icons/help-browser.png</file>
         <file>icons/view-reset.png</file>
+        <file>icons/bottom_X-Y_64x64.png</file>
+        <file>icons/center_64x64.png</file>
+        <file>icons/default_1_64x64.png</file>
+        <file>icons/default_3_64x64.png</file>
+        <file>icons/default_2_64x64.png</file>
+        <file>icons/front_XZ_64x64.png</file>
+        <file>icons/left_-YZ_64x64.png</file>
+        <file>icons/rear_-XZ_64x64.png</file>
+        <file>icons/right_YZ_64x64.png</file>
+        <file>icons/top_XY_64x64.png</file>
     </qresource>
 </RCC>

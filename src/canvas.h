@@ -59,6 +59,10 @@ public:
     void setWireColor(QColor c);
     void resetWireColor();
 
+    QString getDefaultView();
+    void setDefaultView(QString v);
+    void recenterView();
+
     bool isFallbackGlsl();
 
     void resetView();
@@ -94,6 +98,7 @@ private:
     void resetTransform();
     QPointF changeMouseCoordinates(QPoint p);
     void calcArcballTransform(QPointF p1, QPointF p2);
+    void applyRotation(QString name);
 
     QOpenGLShader* mesh_vertshader;
     QOpenGLShaderProgram mesh_shader;
@@ -113,6 +118,9 @@ private:
     QColor wireColor;
     bool fallbackGlsl;
 
+    QHash<QString,QList<float>> predefinedRotations;
+    QString defaultView;
+
     const static QColor defaultAmbientColor;
     const static QColor defaultDirectiveColor;
     const static double defaultAmbientFactor;
@@ -121,6 +129,7 @@ private:
     const static bool defaultUseWire;
     const static double defaultWireWidth;
     const static QColor defaultWireColor;
+    const static QString defaultDefaultView;
 
     const static QString AMBIENT_COLOR;
     const static QString AMBIENT_FACTOR;
@@ -130,7 +139,7 @@ private:
     const static QString USE_WIRE;
     const static QString WIRE_WIDTH;
     const static QString WIRE_COLOR;
-
+    const static QString DEFAULT_VIEW;
 
     GLMesh* mesh;
     Backdrop* backdrop;

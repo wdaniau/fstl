@@ -14,6 +14,8 @@ const QString Window::DRAW_MODE_KEY = "drawMode";
 const QString Window::WINDOW_GEOM_KEY = "windowGeometry";
 const QString Window::RESET_TRANSFORM_ON_LOAD_KEY = "resetTransformOnLoad";
 const QString Window::HIDE_MENU_BAR = "hideMenuBar";
+const QString Window::DEFAULT_VIEW_KEY = "defaultView";
+
 
 const QKeySequence Window::shortcutOpen = Qt::Key_O;
 const QKeySequence Window::shortcutReload = Qt::Key_R;
@@ -25,6 +27,15 @@ const QKeySequence Window::shortcutDrawAxes = Qt::Key_A;
 const QKeySequence Window::shortcutHideMenuBar = Qt::Key_M;
 const QKeySequence Window::shortcutFullscreen = Qt::Key_F;
 const QKeySequence Window::shortcutHelp = Qt::Key_H;
+
+const QKeySequence Window::shortcutRecenterView = Qt::Key_C;
+const QKeySequence Window::shortcutDefaultView = Qt::Key_0;
+const QKeySequence Window::shortcutTopView = Qt::Key_1;
+const QKeySequence Window::shortcutBottomView = Qt::Key_2;
+const QKeySequence Window::shortcutFrontView = Qt::Key_3;
+const QKeySequence Window::shortcutRearView = Qt::Key_4;
+const QKeySequence Window::shortcutLeftView = Qt::Key_5;
+const QKeySequence Window::shortcutRightView = Qt::Key_6;
 
 Window::Window(QWidget *parent) :
     QMainWindow(parent),
@@ -42,7 +53,6 @@ Window::Window(QWidget *parent) :
     axes_action(new QAction("Draw Axes", this)),
     invert_zoom_action(new QAction("Invert Zoom", this)),
     reload_action(new QAction("Reload", this)),
-    reset_action(new QAction("Reset view", this)),
     autoreload_action(new QAction("Autoreload", this)),
     save_screenshot_action(new QAction("Save Screenshot", this)),
     hide_menuBar_action(new QAction("Hide Menu Bar", this)),
@@ -70,7 +80,6 @@ Window::Window(QWidget *parent) :
     axes_action->setStatusTip(axes_action->toolTip());
     invert_zoom_action->setStatusTip(invert_zoom_action->toolTip());
     reload_action->setStatusTip("Reload the file");
-    reset_action->setStatusTip("Reset the view");
     autoreload_action->setStatusTip("Automatically reload file on file change");
     save_screenshot_action->setStatusTip(save_screenshot_action->toolTip());
     hide_menuBar_action->setStatusTip(hide_menuBar_action->toolTip());
@@ -128,12 +137,6 @@ Window::Window(QWidget *parent) :
     QObject::connect(reload_action, &QAction::triggered,
                      this, &Window::on_reload);
 
-    reset_action->setShortcut(shortcutReset);
-    reset_action->setIcon(QIcon(":/qt/icons/view-reset.png"));
-    this->addAction(reset_action);
-    reset_action->setEnabled(false);
-    QObject::connect(reset_action, &QAction::triggered,
-                     this, &Window::on_reset);
 
     about_action->setIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     QObject::connect(about_action, &QAction::triggered,
@@ -162,7 +165,6 @@ Window::Window(QWidget *parent) :
     file_menu->addMenu(recent_files);
     file_menu->addSeparator();
     file_menu->addAction(reload_action);
-    file_menu->addAction(reset_action);
     file_menu->addAction(autoreload_action);
     file_menu->addAction(save_screenshot_action);
     file_menu->addAction(quit_action);
@@ -182,6 +184,25 @@ Window::Window(QWidget *parent) :
     projections->setExclusive(true);
     QObject::connect(projections, &QActionGroup::triggered,
                      this, &Window::on_projection);
+
+    defaultViewMenu = view_menu->addMenu("Default load view");
+    QAction* default1ViewAction = new QAction(QIcon(":/qt/icons/default_1_64x64.png"),"Default 1");
+    default1ViewAction->setStatusTip("Define default load view model 1");
+    QAction* default2ViewAction = new QAction(QIcon(":/qt/icons/default_2_64x64.png"),"Default 2");
+    default2ViewAction->setStatusTip("Define default load view model 2");
+    QAction* default3ViewAction = new QAction(QIcon(":/qt/icons/default_3_64x64.png"),"Default 3");
+    default3ViewAction->setStatusTip("Define default load view model 3");
+    defaultViewMenu->addAction(default1ViewAction);
+    defaultViewMenu->addAction(default2ViewAction);
+    defaultViewMenu->addAction(default3ViewAction);
+    defaultViewAction = new QActionGroup(defaultViewMenu);
+    for (QAction* p : {default1ViewAction, default2ViewAction, default3ViewAction}) {
+        defaultViewAction->addAction(p);
+        p->setCheckable(true);
+    }
+    defaultViewAction->setExclusive(true);
+    QObject::connect(defaultViewAction, &QActionGroup::triggered,
+                     this, &Window::on_defaultView);
 
     draw_menu = view_menu->addMenu("Draw Mode");
     draw_menu->addAction(shaded_action);
@@ -304,7 +325,6 @@ Window::Window(QWidget *parent) :
     windowToolBar->addAction(quit_action);
     windowToolBar->addAction(open_action);
     windowToolBar->addAction(reload_action);
-    windowToolBar->addAction(reset_action);
     windowToolBar->addAction(autoreload_action);
 
     // preferences button here
@@ -316,6 +336,12 @@ Window::Window(QWidget *parent) :
     projectionButton->setMenu(projection_menu);
     projectionButton->setFocusPolicy(Qt::NoFocus); // we do not want the button to have keyboard focus
     windowToolBar->addWidget(projectionButton);
+
+    defaultViewButton = new QToolButton;
+    defaultViewButton->setPopupMode(QToolButton::InstantPopup);
+    defaultViewButton->setMenu(defaultViewMenu);
+    defaultViewButton->setFocusPolicy(Qt::NoFocus);
+    windowToolBar->addWidget(defaultViewButton);
 
     shaderButton = new QToolButton;
     shaderButton->setPopupMode(QToolButton::InstantPopup);
@@ -386,6 +412,15 @@ void Window::load_persist_settings(){
     }
     currentProjection->setChecked(true);
     on_projection(currentProjection);
+
+    QString defaultView = settings.value(DEFAULT_VIEW_KEY,"default 1").toString();
+    for (QAction* a: defaultViewAction->actions()) {
+        if (a->text().toLower() == defaultView.toLower()) {
+            a->setChecked(true);
+            on_defaultView(a);
+            break;
+        }
+    }
 
     DrawMode draw_mode = (DrawMode)settings.value(DRAW_MODE_KEY, meshlight).toInt();
     
@@ -574,6 +609,15 @@ void Window::on_drawMode(QAction* act)
     shaderButton->setStatusTip(shaderButton->toolTip());
 }
 
+void Window::on_defaultView(QAction* view) {
+    canvas->setDefaultView(view->text());
+    defaultViewMenu->setIcon(view->icon());
+    defaultViewButton->setIcon(view->icon());
+    defaultViewButton->setToolTip(QString("Default load view : %1").arg(view->toolTip()));
+    defaultViewButton->setStatusTip(QString("Default load view : %1").arg(view->toolTip()));
+    QSettings().setValue(DEFAULT_VIEW_KEY,view->text());
+}
+
 void Window::on_drawAxes(bool d)
 {
     canvas->draw_axes(d);
@@ -708,11 +752,6 @@ void Window::on_reload()
     }
 }
 
-void Window::on_reset()
-{
-    canvas->resetView();
-    canvas->update();
- }
 
 bool Window::load_stl(QString filename, bool is_reload)
 {
@@ -760,7 +799,6 @@ bool Window::load_stl(QString filename, bool is_reload)
         connect(loader, &Loader::loaded_file,
                   this, &Window::on_loaded);
         reload_action->setEnabled(true);
-        reset_action->setEnabled(true);
     }
 
     loader->start();
@@ -997,7 +1035,6 @@ void Window::on_help() {
                      "<li><b>Q</b> : Quit"
                      "<li><b>O</b> : Open"
                      "<li><b>R</b> : Reload the file"
-                     "<li><b>CTRL-R</b> : Reset the view"
                      "<li><b>P</b> : Draw Mode Settings for current shader (if available)"
                      "<li><b>A</b> : Draw Axes (and some informations)"
                      "<li><b>M</b> : Show/Hide Menu (and Toolbar as well)"
