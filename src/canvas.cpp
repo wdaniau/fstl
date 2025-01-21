@@ -21,6 +21,8 @@ const QString Canvas::USE_WIRE = "useWire";
 const QString Canvas::WIRE_WIDTH = "wireWidth";
 const QString Canvas::WIRE_COLOR = "wireColor";
 const QString Canvas::AB_FACTOR = "abFactor";
+const QString Canvas::DEFAULT_VIEW = "defaultView";
+
 
 // default values
 const QColor Canvas::defaultAmbientColor = QColor::fromRgbF(0.22,0.8,1.0);
@@ -45,10 +47,10 @@ Canvas::Canvas(const QSurfaceFormat& format, QWidget *parent)
     styleFile.open( QFile::ReadOnly );
     setStyleSheet(styleFile.readAll());
     currentTransform = QMatrix4x4();
-    resetTransform();
 
     fallbackGlsl = false;
     QSettings settings;
+    defaultView = settings.value(DEFAULT_VIEW,defaultDefaultView).value<QString>();
     abFactor = settings.value(AB_FACTOR,defaultAbFactor).value<float>();
     ambientColor = settings.value(AMBIENT_COLOR,defaultAmbientColor).value<QColor>();
     directiveColor = settings.value(DIRECTIVE_COLOR,defaultDirectiveColor).value<QColor>();
@@ -89,9 +91,6 @@ Canvas::Canvas(const QSurfaceFormat& format, QWidget *parent)
                                        90.0, 0.0, 1.0, 0.0};
 
 
-    wireColor = settings.value(WIRE_COLOR,defaultWireColor).value<QColor>();
-    defaultView = "default 1";
-
     // qDebug() << "Nom : " + predefinedRotations.at(0).first;
     // qDebug() << "Values : " << predefinedRotations.at(0).second;
 
@@ -119,6 +118,7 @@ Canvas::Canvas(const QSurfaceFormat& format, QWidget *parent)
         currentLightDirection = defaultCurrentLightDirection;
     }
 
+    resetTransform();
     anim.setDuration(100);
 
 }
@@ -677,10 +677,11 @@ void Canvas::applyRotation(QString name) {
     QString rot = name.toLower();
     // if name is not valid we use "default 1"
     if (!predefinedRotations.keys().contains(rot)) {
-        rot = "default 1";
+        rot = defaultDefaultView;
     }
     currentTransform.setToIdentity();
     QList<float> q = predefinedRotations.value(rot);
+    QList<float> q2 = predefinedRotations.value("default 1");
     int nrot = q.size() / 4;
     for (int i = 0; i < nrot; i++) {
         currentTransform.rotate(q.at(i*4),q.at(i*4+1),q.at(i*4+2),q.at(i*4+3));
@@ -694,6 +695,8 @@ QString Canvas::getDefaultView() {
 void Canvas::setDefaultView(QString v) {
     if (predefinedRotations.keys().contains(v.toLower())) {
         defaultView = v;
+        QSettings settings;
+        settings.setValue(DEFAULT_VIEW,v);
     }
 }
 

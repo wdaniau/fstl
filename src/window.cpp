@@ -14,7 +14,6 @@ const QString Window::DRAW_MODE_KEY = "drawMode";
 const QString Window::WINDOW_GEOM_KEY = "windowGeometry";
 const QString Window::RESET_TRANSFORM_ON_LOAD_KEY = "resetTransformOnLoad";
 const QString Window::HIDE_MENU_BAR = "hideMenuBar";
-const QString Window::DEFAULT_VIEW_KEY = "defaultView";
 
 
 const QKeySequence Window::shortcutOpen = Qt::Key_O;
@@ -514,7 +513,7 @@ void Window::load_persist_settings(){
     currentProjection->setChecked(true);
     on_projection(currentProjection);
 
-    QString defaultView = settings.value(DEFAULT_VIEW_KEY,"default 1").toString();
+    QString defaultView = canvas->getDefaultView();
     for (QAction* a: defaultViewAction->actions()) {
         if (a->text().toLower() == defaultView.toLower()) {
             a->setChecked(true);
@@ -716,7 +715,7 @@ void Window::on_defaultView(QAction* view) {
     defaultViewButton->setIcon(view->icon());
     defaultViewButton->setToolTip(QString("Default load view : %1").arg(view->toolTip()));
     defaultViewButton->setStatusTip(QString("Default load view : %1").arg(view->toolTip()));
-    QSettings().setValue(DEFAULT_VIEW_KEY,view->text());
+    canvas->setDefaultView(view->text());
     applyDefaultViewAction->setIcon(defaultViewButton->icon());
 }
 

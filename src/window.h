@@ -120,7 +120,6 @@ private:
     const static QString WINDOW_GEOM_KEY;
     const static QString RESET_TRANSFORM_ON_LOAD_KEY;
     const static QString HIDE_MENU_BAR;
-    const static QString DEFAULT_VIEW_KEY;
 
     const static QKeySequence shortcutOpen;
     const static QKeySequence shortcutReload;
