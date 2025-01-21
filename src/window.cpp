@@ -448,10 +448,33 @@ Window::Window(QWidget *parent) :
     windowToolBar->addAction(fullscreen_action);
 
     windowToolBar->addSeparator();
+
+    // Just used as a label for now
+    QToolButton* speedMouseButton = new QToolButton;
+    speedMouseButton->setIcon(QIcon(":/qt/icons/speed_mouse_64x64.png"));
+    speedMouseButton->setToolTip("");
+    speedMouseButton->setStatusTip("");
+    speedMouseButton->setFocusPolicy(Qt::NoFocus);
+    speedMouseButton->setDisabled(true);
+    windowToolBar->addWidget(speedMouseButton);
+
+    QSpinBox* arcBallFactorSpinBox = new QSpinBox;
+    arcBallFactorSpinBox->setFocusPolicy(Qt::NoFocus);
+    arcBallFactorSpinBox->setMinimum(1);
+    QLineEdit* arcBallSpinBoxLineEdit = arcBallFactorSpinBox->findChild<QLineEdit*>();
+    arcBallSpinBoxLineEdit->setReadOnly(true);
+    arcBallFactorSpinBox->setToolTip("Set mouse speed");
+    arcBallFactorSpinBox->setStatusTip("Set mouse speed, higher=faster");
+    arcBallFactorSpinBox->setValue((int) canvas->getAbFactor());
+    windowToolBar->addWidget(arcBallFactorSpinBox);
+    connect(arcBallFactorSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onAbFactorChange(int)));
+
+    windowToolBar->addSeparator();
     QWidget* spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     windowToolBar->addWidget(spacer);
     windowToolBar->addAction(help_action);
+
 
     this->addToolBar(windowToolBar);
 
@@ -1155,4 +1178,9 @@ void Window::onApplyView(QAction* act) {
         canvas->applyRotation(name);
     }
     canvas->update();
+}
+
+
+void Window::onAbFactorChange(int i) {
+    canvas->setAbFactor((double)i);
 }

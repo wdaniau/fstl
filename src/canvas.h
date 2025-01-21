@@ -68,6 +68,10 @@ public:
     void resetView();
     void applyRotation(QString name);
 
+    double getAbFactor();
+    void setAbFactor(double f);
+    void resetAbFactor();
+
 public slots:
     void set_status(const QString& s);
     void clear_status();
@@ -130,6 +134,7 @@ private:
     const static double defaultWireWidth;
     const static QColor defaultWireColor;
     const static QString defaultDefaultView;
+    const static double defaultAbFactor;
 
     const static QString AMBIENT_COLOR;
     const static QString AMBIENT_FACTOR;
@@ -140,6 +145,7 @@ private:
     const static QString WIRE_WIDTH;
     const static QString WIRE_COLOR;
     const static QString DEFAULT_VIEW;
+    const static QString AB_FACTOR;
 
     GLMesh* mesh;
     Backdrop* backdrop;
@@ -151,6 +157,7 @@ private:
     float scaleOrg;
     float zoom;
     QMatrix4x4 currentTransform;
+    float abFactor;
 
     float perspective;
     enum DrawMode drawMode;

@@ -20,6 +20,7 @@ const QString Canvas::CURRENT_LIGHT_DIRECTION = "currentLightDirection";
 const QString Canvas::USE_WIRE = "useWire";
 const QString Canvas::WIRE_WIDTH = "wireWidth";
 const QString Canvas::WIRE_COLOR = "wireColor";
+const QString Canvas::AB_FACTOR = "abFactor";
 
 // default values
 const QColor Canvas::defaultAmbientColor = QColor::fromRgbF(0.22,0.8,1.0);
@@ -31,6 +32,7 @@ const bool Canvas::defaultUseWire = false;
 const double Canvas::defaultWireWidth = 1.0;
 const QColor Canvas::defaultWireColor = QColor(255,128,0);
 const QString Canvas::defaultDefaultView = QString("default 1");
+const double Canvas::defaultAbFactor = 1.0;
 
 Canvas::Canvas(const QSurfaceFormat& format, QWidget *parent)
     : QOpenGLWidget(parent), mesh(nullptr),
@@ -47,6 +49,7 @@ Canvas::Canvas(const QSurfaceFormat& format, QWidget *parent)
 
     fallbackGlsl = false;
     QSettings settings;
+    abFactor = settings.value(AB_FACTOR,defaultAbFactor).value<float>();
     ambientColor = settings.value(AMBIENT_COLOR,defaultAmbientColor).value<QColor>();
     directiveColor = settings.value(DIRECTIVE_COLOR,defaultDirectiveColor).value<QColor>();
     ambientFactor = settings.value(AMBIENT_FACTOR,defaultAmbientFactor).value<float>();
@@ -473,7 +476,7 @@ void Canvas::calcArcballTransform(QPointF p1, QPointF p2) {
     double angle = acos(std::min(1.0f,QVector3D::dotProduct(v1, v2))) * 180.0 / M_PI;
     
     // apply transform
-    currentTransform.rotate(angle,v1xv2Obj);
+    currentTransform.rotate(abFactor*angle,v1xv2Obj);
 }
 
 void Canvas::mouseMoveEvent(QMouseEvent* event)
@@ -697,4 +700,18 @@ void Canvas::setDefaultView(QString v) {
 void Canvas::recenterView() {
     center = centerOrg;
     scale = scaleOrg;
+}
+
+double Canvas::getAbFactor() {
+    return (double) abFactor;
+}
+
+void Canvas::setAbFactor(double f) {
+    abFactor = (float) f;
+    QSettings settings;
+    settings.setValue(AB_FACTOR,abFactor);
+}
+
+void Canvas::resetAbFactor() {
+    setAbFactor(defaultAbFactor);
 }

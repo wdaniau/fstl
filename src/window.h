@@ -64,6 +64,7 @@ private slots:
     void setViewportSize(QAction* act);
     void on_centerView();
     void onApplyView(QAction* act);
+    void onAbFactorChange(int i);
 
 private:
     void rebuild_recent_files();
