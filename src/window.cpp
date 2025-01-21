@@ -1121,6 +1121,7 @@ void Window::on_help() {
                      "<li><b>F</b> : Toggle Fullscreen"
                      "<li><b>W</b> : Toggle Wireframe on top of shader (if available)"
                      "<li><b>C</b> : Center View"
+                     "<li><b>0-6</b> : Apply Default,Top,Bottom,Front,Rear,Left,Right view"
                      "<li><b>Left Arrow</b> : load previous stl file"
                      "<li><b>Right Arrow</b> : load next stl file"
                      "<li><b>Up Arrow</b> : use next shader"
