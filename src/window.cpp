@@ -142,6 +142,7 @@ Window::Window(QWidget *parent) :
 
     help_action->setIcon(QIcon(":/qt/icons/help-browser.png"));
     help_action->setShortcut(shortcutHelp);
+    this->addAction(help_action);
     connect(help_action,SIGNAL(triggered()),this,SLOT(on_help()));
 
     QObject::connect(recent_files_clear_action, &QAction::triggered,
@@ -318,6 +319,7 @@ Window::Window(QWidget *parent) :
     centerAction->setShortcut(shortcutCenterView);
     centerAction->setIcon(QIcon(":/qt/icons/center_64x64.png"));
     centerAction->setCheckable(false);
+    this->addAction(centerAction);
     view_menu->addAction(centerAction);
     QObject::connect(centerAction, &QAction::triggered,
                      this, &Window::on_centerView);
@@ -332,6 +334,7 @@ Window::Window(QWidget *parent) :
     applyDefaultViewAction->setStatusTip(applyDefaultViewAction->toolTip());
     applyDefaultViewAction->setIcon(defaultViewMenu->icon());
     applyDefaultViewAction->setShortcut(shortcutDefaultView);
+    this->addAction(applyDefaultViewAction);
     applyViewMenu->addAction(applyDefaultViewAction);
     groupApplyViewAction->addAction(applyDefaultViewAction);
 
@@ -339,6 +342,7 @@ Window::Window(QWidget *parent) :
     applyTopViewAction->setStatusTip(applyTopViewAction->toolTip());
     applyTopViewAction->setIcon(QIcon(":/qt/icons/top_XY_64x64.png"));
     applyTopViewAction->setShortcut(shortcutTopView);
+    this->addAction(applyTopViewAction);
     applyViewMenu->addAction(applyTopViewAction);
     groupApplyViewAction->addAction(applyTopViewAction);
 
@@ -346,6 +350,7 @@ Window::Window(QWidget *parent) :
     applyBottomViewAction->setStatusTip(applyBottomViewAction->toolTip());
     applyBottomViewAction->setIcon(QIcon(":/qt/icons/bottom_X-Y_64x64.png"));
     applyBottomViewAction->setShortcut(shortcutBottomView);
+    this->addAction(applyBottomViewAction);
     applyViewMenu->addAction(applyBottomViewAction);
     groupApplyViewAction->addAction(applyBottomViewAction);
 
@@ -353,6 +358,7 @@ Window::Window(QWidget *parent) :
     applyFrontViewAction->setStatusTip(applyFrontViewAction->toolTip());
     applyFrontViewAction->setIcon(QIcon(":/qt/icons/front_XZ_64x64.png"));
     applyFrontViewAction->setShortcut(shortcutFrontView);
+    this->addAction(applyFrontViewAction);
     applyViewMenu->addAction(applyFrontViewAction);
     groupApplyViewAction->addAction(applyFrontViewAction);
 
@@ -360,6 +366,7 @@ Window::Window(QWidget *parent) :
     applyRearViewAction->setStatusTip(applyRearViewAction->toolTip());
     applyRearViewAction->setIcon(QIcon(":/qt/icons/rear_-XZ_64x64.png"));
     applyRearViewAction->setShortcut(shortcutRearView);
+    this->addAction(applyRearViewAction);
     applyViewMenu->addAction(applyRearViewAction);
     groupApplyViewAction->addAction(applyRearViewAction);
 
@@ -367,6 +374,7 @@ Window::Window(QWidget *parent) :
     applyLeftViewAction->setStatusTip(applyLeftViewAction->toolTip());
     applyLeftViewAction->setIcon(QIcon(":/qt/icons/left_-YZ_64x64.png"));
     applyLeftViewAction->setShortcut(shortcutLeftView);
+    this->addAction(applyLeftViewAction);
     applyViewMenu->addAction(applyLeftViewAction);
     groupApplyViewAction->addAction(applyLeftViewAction);
 
@@ -374,6 +382,7 @@ Window::Window(QWidget *parent) :
     applyRightViewAction->setStatusTip(applyRightViewAction->toolTip());
     applyRightViewAction->setIcon(QIcon(":/qt/icons/right_YZ_64x64.png"));
     applyRightViewAction->setShortcut(shortcutRightView);
+    this->addAction(applyRightViewAction);
     applyViewMenu->addAction(applyRightViewAction);
     groupApplyViewAction->addAction(applyRightViewAction);
 
