@@ -3,8 +3,22 @@
 `fstl-e` is a fork of `fstl` a very fast [.stl file](http://en.wikipedia.org/wiki/STL_\(file_format\)) viewer, available on github at [https://github.com/fstl-app/fstl](https://github.com/fstl-app/fstl). After making some contributions to it, I forked this version which retains `fstl` core functionalities but with some fancy enhancements.
 
 ## Screenshots
-![](./images/screenshot_fstl-e_20230205.jpg)
-![](./images/screenshot_fstl-e_20230212.jpg)
+![Light Source Position](./images/elf_archer_light_source_position.png)
+![Wireframe](./images/elf_archer_wire.png)
+![Adjust Mouse Speed](./images/elf_archer_speed_mouse.png)
+
+## Changelog
+### fstl-e v1.1.0
+  * Add statusbar with statustip and current file name
+  * Add a menu to choose default rotation between 3 models
+  * Add action to recenter the view
+  * Add menu to choose between predefined views
+  * Add new predefined size in viewport size menu
+  * Add slider to adjust mouse speed movement
+  * When using open menu, use most recent file's directory
+  * On the command line, can now open a directory
+  * In shader preferences, add a new way of choosing light source position.
+
 
 ## Usage
 Usage should be straightforward. Either use desktop integration to open a `stl` file or type `fstl-e myfile.stl` in a terminal.
@@ -21,6 +35,8 @@ Usage should be straightforward. Either use desktop integration to open a `stl` 
   * S : Save Screenshot
   * F : Toggle Fullscreen
   * W : Toggle Wireframe on top of shader (if available)
+  * C : Center View
+  * 0-6 : Apply Default, Top, Bottom, Front, Rear, Left, Right view
   * Left Arrow : load previous stl file
   * Right Arrow : load next stl file
   * Up Arrow : use next shader
@@ -34,11 +50,18 @@ The only dependencies to build for `fstl-e` are [`Qt 5`](https://www.qt.io), [`c
 
 fstl-e is available as :
 
+#### v1.1.0
+  * flatpak : coming soon
+  * snap : coming soon
+  * AppImage : coming soon
+  * Ubuntu package : coming soon
+  * Source (see below for instructions)
+
+#### v1.0.0
   * flatpak : [fstl-e](https://flathub.org/apps/io.github.wdaniau.fstl)
   * snap : [fstl-e](https://snapcraft.io/fstl-e)
   * AppImage : [fstl-e-996acf8-x86_64.AppImage](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-996acf8-x86_64.AppImage)
   * Ubuntu package : ubuntu packages are available on [ppa:wdaniau/custom](https://launchpad.net/~wdaniau/+archive/ubuntu/custom)
-  * Source (see below for instructions)
 
 #### Building and installing from source
 ```
