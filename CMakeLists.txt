@@ -76,7 +76,8 @@ if(WIN32)
 elseif(APPLE)
   add_executable(fstl-e MACOSX_BUNDLE ${Project_Sources} ${Project_Headers} ${Project_Resources_RCC} ${Icon_Resource})
 else()
-  add_executable(fstl-e ${Project_Sources} ${Project_Headers} ${Project_Resources_RCC} ${Icon_Resource})
+  add_executable(fstl-e ${Project_Sources} ${Project_Headers} ${Project_Resources_RCC} ${Icon_Resource}
+      src/speedmousedialog.h src/speedmousedialog.cpp)
 endif(WIN32)
 
 target_link_libraries(fstl-e Qt5::Widgets Qt5::Core Qt5::Gui Qt5::OpenGL ${OPENGL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})

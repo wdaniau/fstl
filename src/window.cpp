@@ -4,6 +4,7 @@
 #include "canvas.h"
 #include "loader.h"
 #include "shaderlightprefs.h"
+#include "speedmousedialog.h"
 
 const QString Window::RECENT_FILE_KEY = "recentFiles";
 const QString Window::INVERT_ZOOM_KEY = "invertZoom";
@@ -101,7 +102,10 @@ Window::Window(QWidget *parent) :
     setCentralWidget(canvas);
     canvas->update();
 
+    statusBar = new QStatusBar;
+
     meshlightprefs = new ShaderLightPrefs(this, canvas);
+    speedMouseDialog = new SpeedMouseDialog(this, canvas, statusBar);
 
     QObject::connect(drawModePrefs_action, &QAction::triggered,this,&Window::on_drawModePrefs);
 
@@ -457,25 +461,14 @@ Window::Window(QWidget *parent) :
 
     windowToolBar->addSeparator();
 
-    // Just used as a label for now
-    QToolButton* speedMouseButton = new QToolButton;
+    //
+    speedMouseButton = new QToolButton;
     speedMouseButton->setIcon(QIcon(":/qt/icons/speed_mouse_64x64.png"));
-    speedMouseButton->setToolTip("");
-    speedMouseButton->setStatusTip("");
+    speedMouseButton->setToolTip("Toggle mouse speed adjustment");
+    speedMouseButton->setStatusTip(speedMouseButton->toolTip());
     speedMouseButton->setFocusPolicy(Qt::NoFocus);
-    speedMouseButton->setDisabled(true);
     windowToolBar->addWidget(speedMouseButton);
-
-    QSpinBox* arcBallFactorSpinBox = new QSpinBox;
-    arcBallFactorSpinBox->setFocusPolicy(Qt::NoFocus);
-    arcBallFactorSpinBox->setMinimum(1);
-    QLineEdit* arcBallSpinBoxLineEdit = arcBallFactorSpinBox->findChild<QLineEdit*>();
-    arcBallSpinBoxLineEdit->setReadOnly(true);
-    arcBallFactorSpinBox->setToolTip("Set mouse speed");
-    arcBallFactorSpinBox->setStatusTip("Set mouse speed, higher=faster");
-    arcBallFactorSpinBox->setValue((int) canvas->getAbFactor());
-    windowToolBar->addWidget(arcBallFactorSpinBox);
-    connect(arcBallFactorSpinBox,SIGNAL(valueChanged(int)),this,SLOT(onAbFactorChange(int)));
+    connect(speedMouseButton,SIGNAL(clicked(bool)),this,SLOT(onSpeedMouseButton()));
 
     windowToolBar->addSeparator();
     QWidget* spacer = new QWidget();
@@ -486,7 +479,7 @@ Window::Window(QWidget *parent) :
 
     this->addToolBar(windowToolBar);
 
-    statusBar = new QStatusBar;
+
     filenameStatusLabel = new QLabel("File:none");
     statusBar->addPermanentWidget(filenameStatusLabel);
     this->setStatusBar(statusBar);
@@ -933,12 +926,18 @@ void Window::dropEvent(QDropEvent *event)
 void Window::resizeEvent(QResizeEvent *event)
 {
     QSettings().setValue(WINDOW_GEOM_KEY, saveGeometry());
+    if (speedMouseDialog->isVisible()) {
+        speedMouseDialog->hide();
+    }
     QWidget::resizeEvent(event);
 }
 
 void Window::moveEvent(QMoveEvent *event)
 {
     QSettings().setValue(WINDOW_GEOM_KEY, saveGeometry());
+    if (speedMouseDialog->isVisible()) {
+        speedMouseDialog->hide();
+    }
     QWidget::moveEvent(event);
 }
 
@@ -1074,6 +1073,8 @@ void Window::keyPressEvent(QKeyEvent* event)
     } else if (event->key() == Qt::Key_Escape && !menuBar()->isVisible()) { // this is if user did not noticed the hide menu key
         hide_menuBar_action->toggle();
         return;
+    } else if (event->key() == Qt::Key_Escape && speedMouseDialog->isVisible()) {
+        speedMouseDialog->hide();
     } else if (event->key() == Qt::Key_W) {
         if (dm_acts.at(getCurrentShader()) == meshlight_action) {
             meshlightprefs->toggleUseWire();
@@ -1189,6 +1190,24 @@ void Window::onApplyView(QAction* act) {
 }
 
 
-void Window::onAbFactorChange(int i) {
-    canvas->setAbFactor((double)i);
+void Window::onSpeedMouseButton() {
+    // toggle
+    if (speedMouseDialog->isVisible()) {
+        speedMouseDialog->hide();
+        return;
+    }
+    // get button geometry and position
+    int buttonWidth = speedMouseButton->geometry().width();
+    int buttonHeight = speedMouseButton->geometry().height();
+    QPoint dialogPos = speedMouseButton->mapToGlobal(QPoint(0,0));
+    // dialoPos is now upper left corner of speedMouseButton in global coordinates
+    // modify it
+    dialogPos.setX(dialogPos.x()+buttonWidth);
+    dialogPos.setY(dialogPos.y()+buttonHeight/2);
+    // show dialog before getting geometry
+    speedMouseDialog->show();
+    int dialogWidth = speedMouseDialog->geometry().width();
+    int dialogHeight = speedMouseDialog->geometry().height();
+    speedMouseDialog->setGeometry(dialogPos.x(),dialogPos.y(),dialogWidth,dialogHeight);
 }
+

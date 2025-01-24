@@ -11,6 +11,7 @@
 
 class Canvas;
 class ShaderLightPrefs;
+class SpeedMouseDialog;
 
 class Window : public QMainWindow
 {
@@ -64,7 +65,7 @@ private slots:
     void setViewportSize(QAction* act);
     void on_centerView();
     void onApplyView(QAction* act);
-    void onAbFactorChange(int i);
+    void onSpeedMouseButton();
 
 private:
     void rebuild_recent_files();
@@ -107,6 +108,7 @@ private:
     QToolButton* defaultViewButton;
     QStatusBar* statusBar;
     QLabel* filenameStatusLabel;
+    QToolButton* speedMouseButton;
 
     QActionGroup* const recent_files_group;
     QAction* const recent_files_clear_action;
@@ -149,6 +151,7 @@ private:
     Canvas* canvas;
 
     ShaderLightPrefs* meshlightprefs;
+    SpeedMouseDialog* speedMouseDialog;
     QList<QAction*> dm_acts;
 };
 
