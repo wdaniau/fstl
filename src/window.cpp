@@ -935,8 +935,11 @@ void Window::mousePressEvent(QMouseEvent *event) {
         mimeData->setUrls(urls);
         drag->setMimeData(mimeData);
         drag->setPixmap(QPixmap(":/qt/icons/fstl-e_64x64.png").scaledToWidth(32));
-        drag->exec();
-        //Qt::DropAction dropAction = drag->exec();
+        //drag->exec();
+        // Force LinkAction in exec to avoid moving files to desktop under gnome :-(
+        Qt::DropAction dropAction = drag->exec(Qt::LinkAction);
+        //qDebug() << dropAction;
+
         // accept drops again
         this->setAcceptDrops(true);
     }
