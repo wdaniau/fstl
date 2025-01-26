@@ -9,19 +9,19 @@
 
 ## Changelog
 ### fstl-e v1.1.0
-  * Add statusbar with statustip and current file name
-  * Add a menu to choose default rotation between 3 models
-  * Add action to recenter the view
-  * Add menu to choose between predefined views
-  * Add new predefined size in viewport size menu
-  * Add slider to adjust mouse speed movement
-  * When using open menu, use most recent file's directory
-  * On the command line, can now open a directory
+  * Add statusbar with statustip and current file name which can be used to drop the current file to another application like a slicer.
+  * Add a menu to choose default rotation between 3 models.
+  * Add action to recenter the view.
+  * Add menu to choose between predefined views.
+  * Add new predefined size HD1080 in viewport size menu.
+  * Add slider to adjust mouse speed movement.
+  * When using open menu, use most recent file's directory.
+  * On the command line, can now open a directory.
   * In shader preferences, add a new way of choosing light source position.
 
 
 ## Usage
-Usage should be straightforward. Either use desktop integration to open a `stl` file or type `fstl-e myfile.stl` in a terminal.
+Usage should be straightforward. Either use desktop integration to open a `stl` file or type `fstl-e myfile.stl` in a terminal. A directory can also be given instead of a file name.
 
 ### Shortcuts
 
