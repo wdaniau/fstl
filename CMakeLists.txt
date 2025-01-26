@@ -35,7 +35,8 @@ src/loader.cpp
 src/main.cpp
 src/mesh.cpp
 src/window.cpp
-src/shaderlightprefs.cpp)
+src/shaderlightprefs.cpp
+src/speedmousedialog.cpp)
 
 #set project headers. 
 set(Project_Headers src/app.h
@@ -46,7 +47,8 @@ src/glmesh.h
 src/loader.h
 src/mesh.h
 src/window.h
-src/shaderlightprefs.h)
+src/shaderlightprefs.h
+src/speedmousedialog.h)
 
 #set project resources and icon resource
 set(Project_Resources qt/qt.qrc gl/gl.qrc)
@@ -76,8 +78,7 @@ if(WIN32)
 elseif(APPLE)
   add_executable(fstl-e MACOSX_BUNDLE ${Project_Sources} ${Project_Headers} ${Project_Resources_RCC} ${Icon_Resource})
 else()
-  add_executable(fstl-e ${Project_Sources} ${Project_Headers} ${Project_Resources_RCC} ${Icon_Resource}
-      src/speedmousedialog.h src/speedmousedialog.cpp)
+  add_executable(fstl-e ${Project_Sources} ${Project_Headers} ${Project_Resources_RCC} ${Icon_Resource})
 endif(WIN32)
 
 target_link_libraries(fstl-e Qt5::Widgets Qt5::Core Qt5::Gui Qt5::OpenGL ${OPENGL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
