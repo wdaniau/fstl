@@ -5,6 +5,7 @@
 #include "loader.h"
 #include "shaderlightprefs.h"
 #include "speedmousedialog.h"
+#include <QDrag>
 
 const QString Window::RECENT_FILE_KEY = "recentFiles";
 const QString Window::INVERT_ZOOM_KEY = "invertZoom";
@@ -481,6 +482,7 @@ Window::Window(QWidget *parent) :
 
 
     filenameStatusLabel = new QLabel("File:none");
+    filenameStatusLabel->setStatusTip("Current file (click and hold to drop to another application)");
     statusBar->addPermanentWidget(filenameStatusLabel);
     this->setStatusBar(statusBar);
 
@@ -921,6 +923,24 @@ void Window::dragEnterEvent(QDragEnterEvent *event)
 void Window::dropEvent(QDropEvent *event)
 {
     load_stl(event->mimeData()->urls().front().toLocalFile());
+}
+
+void Window::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton && filenameStatusLabel->underMouse() && !current_file.isEmpty()) {
+        // we do not want to drop on ourselves
+        this->setAcceptDrops(false);
+        QDrag* drag = new QDrag(this);
+        QMimeData* mimeData = new QMimeData;
+        QList<QUrl> urls = QList<QUrl>()<< QUrl::fromLocalFile(current_file);
+        mimeData->setUrls(urls);
+        drag->setMimeData(mimeData);
+        drag->setPixmap(QPixmap(":/qt/icons/fstl-e_64x64.png").scaledToWidth(32));
+        drag->exec();
+        //Qt::DropAction dropAction = drag->exec();
+        // accept drops again
+        this->setAcceptDrops(true);
+    }
+    QMainWindow::mousePressEvent(event);
 }
 
 void Window::resizeEvent(QResizeEvent *event)
