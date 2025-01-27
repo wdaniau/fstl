@@ -141,8 +141,12 @@ ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QDialog(p
     connect(rearFront,SIGNAL(buttonClicked(int)),this,SLOT(radioSourceClicked(int)));
     setRadio(canvas->getCurrentLightDirection());
 
+    labelPix = new QLabel;
+    setPix(canvas->getCurrentLightDirection());
+    lightSourceWidgetLayout->addWidget(labelPix,1,4,3,1);
+
     QPushButton* buttonResetDirection = new QPushButton("Reset");
-    lightSourceWidgetLayout->addWidget(buttonResetDirection,0,4,4,1);
+    lightSourceWidgetLayout->addWidget(buttonResetDirection,0,4,1,1);
     buttonResetDirection->setFocusPolicy(Qt::NoFocus);
     connect(buttonResetDirection,SIGNAL(clicked(bool)),this,SLOT(resetDirection()));
 
@@ -268,6 +272,7 @@ void ShaderLightPrefs::okButtonClicked() {
 
 void ShaderLightPrefs::comboDirectionsChanged(int ind) {
     setRadio(ind);
+    setPix(ind);
     canvas->setCurrentLightDirection(ind);
     canvas->update();
 }
@@ -355,4 +360,8 @@ void ShaderLightPrefs::setRadio(int ind) {
     leftRight->button(1 + QVariant(canvas->getListDir().at(ind).x()).toInt())->setChecked(true);
     topBottom->button(1 + QVariant(canvas->getListDir().at(ind).y()).toInt())->setChecked(true);
     rearFront->button(1 + QVariant(canvas->getListDir().at(ind).z()).toInt())->setChecked(true);
+}
+
+void ShaderLightPrefs::setPix(int ind) {
+    labelPix->setPixmap(QPixmap(QString(":/qt/icons/lightSourcePosition/lsp_%1.png").arg(ind+1)).scaledToWidth(64,Qt::SmoothTransformation));
 }

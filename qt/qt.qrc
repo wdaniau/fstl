@@ -33,5 +33,31 @@
         <file>icons/top_XY_64x64.png</file>
         <file>icons/eye_64x64.png</file>
         <file>icons/speed_mouse_64x64.png</file>
+        <file>icons/lightSourcePosition/lsp_1.png</file>
+        <file>icons/lightSourcePosition/lsp_2.png</file>
+        <file>icons/lightSourcePosition/lsp_3.png</file>
+        <file>icons/lightSourcePosition/lsp_4.png</file>
+        <file>icons/lightSourcePosition/lsp_5.png</file>
+        <file>icons/lightSourcePosition/lsp_6.png</file>
+        <file>icons/lightSourcePosition/lsp_7.png</file>
+        <file>icons/lightSourcePosition/lsp_8.png</file>
+        <file>icons/lightSourcePosition/lsp_9.png</file>
+        <file>icons/lightSourcePosition/lsp_10.png</file>
+        <file>icons/lightSourcePosition/lsp_11.png</file>
+        <file>icons/lightSourcePosition/lsp_12.png</file>
+        <file>icons/lightSourcePosition/lsp_13.png</file>
+        <file>icons/lightSourcePosition/lsp_14.png</file>
+        <file>icons/lightSourcePosition/lsp_15.png</file>
+        <file>icons/lightSourcePosition/lsp_16.png</file>
+        <file>icons/lightSourcePosition/lsp_17.png</file>
+        <file>icons/lightSourcePosition/lsp_18.png</file>
+        <file>icons/lightSourcePosition/lsp_19.png</file>
+        <file>icons/lightSourcePosition/lsp_20.png</file>
+        <file>icons/lightSourcePosition/lsp_21.png</file>
+        <file>icons/lightSourcePosition/lsp_22.png</file>
+        <file>icons/lightSourcePosition/lsp_23.png</file>
+        <file>icons/lightSourcePosition/lsp_24.png</file>
+        <file>icons/lightSourcePosition/lsp_25.png</file>
+        <file>icons/lightSourcePosition/lsp_26.png</file>
     </qresource>
 </RCC>

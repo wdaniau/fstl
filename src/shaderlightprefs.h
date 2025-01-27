@@ -46,6 +46,7 @@ private slots:
     void onFallbackGlslUpdated(bool b);
 
     void setRadio(int ind);
+    void setPix(int ind);
 
 private:
     Canvas* canvas;
@@ -60,6 +61,7 @@ private:
     QPushButton* buttonWireColor;
     QLabel* labelWireWidth;
     QSlider* sliderWireWidth;
+    QLabel* labelPix;
 
     QButtonGroup* leftRight;
     QButtonGroup* topBottom;
