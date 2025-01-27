@@ -521,10 +521,18 @@ Window::Window(QWidget *parent) :
 
     this->addToolBar(windowToolBar);
 
+    QLabel* labelMsaa = new QLabel;
+    int msaaValue = canvas->getMsaa();
+    QString labelMsaaText = msaaValue == -1 ? QString("AA:Off") : QString("AA:%1x").arg(msaaValue);
+    labelMsaa->setText(labelMsaaText);
+    labelMsaa->setStatusTip("Current Anti-Aliasing status");
 
     filenameStatusLabel = new QLabel("File:none");
     filenameStatusLabel->setStatusTip("Current file (click and hold to drop to another application)");
+
     statusBar->addPermanentWidget(filenameStatusLabel);
+    statusBar->addPermanentWidget(labelMsaa);
+
     this->setStatusBar(statusBar);
 
     load_persist_settings();
