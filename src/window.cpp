@@ -5,6 +5,7 @@
 #include "loader.h"
 #include "shaderlightprefs.h"
 #include "speedmousedialog.h"
+#include "helpdialog.h"
 #include <QDrag>
 
 const QString Window::RECENT_FILE_KEY = "recentFiles";
@@ -92,6 +93,9 @@ Window::Window(QWidget *parent) :
     setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     setAcceptDrops(true);
 
+    helpDialog = new HelpDialog(this);
+    helpDialog->hide();
+
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     format.setStencilBufferSize(8);
@@ -148,7 +152,9 @@ Window::Window(QWidget *parent) :
     help_action->setIcon(QIcon(":/qt/icons/help-browser.png"));
     help_action->setShortcut(shortcutHelp);
     this->addAction(help_action);
-    connect(help_action,SIGNAL(triggered()),this,SLOT(on_help()));
+    connect(help_action,&QAction::triggered,[=] {
+        helpDialog->show();
+    });
 
     QObject::connect(recent_files_clear_action, &QAction::triggered,
                      this, &Window::on_clear_recent);
@@ -1207,35 +1213,6 @@ void Window::setViewportSize(QAction* act) {
     int w = desc.at(1).toInt();
     int h = desc.at(2).toInt();
     setCanvasSize(w, h);
-}
-
-void Window::on_help() {
-    //qDebug() << "help!";
-    QMessageBox* helpWin = new QMessageBox(QMessageBox::NoIcon,"Help","",QMessageBox::Ok,this,Qt::Dialog);
-    helpWin->setText(""
-                     "<h2>Help</h2>"
-                     "<h3>Shortcuts</h3>"
-                     "<ul>"
-                     "<li><b>H</b> : Display this help message"
-                     "<li><b>Q</b> : Quit"
-                     "<li><b>O</b> : Open"
-                     "<li><b>R</b> : Reload the file"
-                     "<li><b>P</b> : Draw Mode Settings for current shader (if available)"
-                     "<li><b>A</b> : Draw Axes (and some informations)"
-                     "<li><b>M</b> : Show/Hide Menu (and Toolbar as well)"
-                     "<li><b>S</b> : Save Screenshot"
-                     "<li><b>F</b> : Toggle Fullscreen"
-                     "<li><b>W</b> : Toggle Wireframe on top of shader (if available)"
-                     "<li><b>C</b> : Center View"
-                     "<li><b>0-6</b> : Apply Default,Top,Bottom,Front,Rear,Left,Right view"
-                     "<li><b>Left Arrow</b> : load previous stl file"
-                     "<li><b>Right Arrow</b> : load next stl file"
-                     "<li><b>Up Arrow</b> : use next shader"
-                     "<li><b>Down Arrow</b> : use previous shader"
-                     "</ul>"
-                     );
-    helpWin->show();
-
 }
 
 void Window::on_centerView() {

@@ -12,6 +12,7 @@
 class Canvas;
 class ShaderLightPrefs;
 class SpeedMouseDialog;
+class HelpDialog;
 
 class Window : public QMainWindow
 {
@@ -36,7 +37,6 @@ protected:
 public slots:
     void on_open();
     void on_about();
-    void on_help();
     void on_bad_stl();
     void on_empty_mesh();
     void on_missing_file();
@@ -154,6 +154,7 @@ private:
 
     ShaderLightPrefs* meshlightprefs;
     SpeedMouseDialog* speedMouseDialog;
+    HelpDialog* helpDialog;
     QList<QAction*> dm_acts;
 };
 

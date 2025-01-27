@@ -36,7 +36,8 @@ src/main.cpp
 src/mesh.cpp
 src/window.cpp
 src/shaderlightprefs.cpp
-src/speedmousedialog.cpp)
+src/speedmousedialog.cpp
+src/helpdialog.cpp)
 
 #set project headers. 
 set(Project_Headers src/app.h
@@ -48,7 +49,8 @@ src/loader.h
 src/mesh.h
 src/window.h
 src/shaderlightprefs.h
-src/speedmousedialog.h)
+src/speedmousedialog.h
+src/helpdialog.h)
 
 #set project resources and icon resource
 set(Project_Resources qt/qt.qrc gl/gl.qrc)
