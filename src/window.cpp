@@ -395,8 +395,8 @@ Window::Window(QWidget *parent) :
 
 
     QMenu *msaaMenu = view_menu->addMenu("Anti-aliasing");
-    //aaMenu->setIcon(QIcon(":/qt/icons/eye_64x64.png"));
-    //aaMenu->menuAction()->setIconVisibleInMenu(true);
+    msaaMenu->setIcon(QIcon(":/qt/icons/antialiasing.png"));
+    msaaMenu->menuAction()->setIconVisibleInMenu(true);
     QActionGroup* groupMsaaAction = new QActionGroup(msaaMenu);
     QAction* noMsaaAction = new QAction("No AA");
     noMsaaAction->setData(-1);
@@ -440,6 +440,16 @@ Window::Window(QWidget *parent) :
     windowToolBar->addSeparator();
 
     // Second group
+    QToolButton* msaaButton = new QToolButton;
+    msaaButton->setPopupMode(QToolButton::InstantPopup);
+    msaaButton->setMenu(msaaMenu);
+    msaaButton->setIcon(msaaMenu->icon());
+    msaaButton->setToolTip(msaaMenu->title());
+    msaaButton->setFocusPolicy(Qt::NoFocus); // we do not want the button to have keyboard focus
+    msaaButton->setStatusTip(msaaButton->toolTip()+QString(" (applicable on restart)"));
+    windowToolBar->addWidget(msaaButton);
+
+
     projectionButton = new QToolButton;
     projectionButton->setPopupMode(QToolButton::InstantPopup);
     projectionButton->setMenu(projection_menu);
