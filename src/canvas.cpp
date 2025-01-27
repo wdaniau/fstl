@@ -22,6 +22,7 @@ const QString Canvas::WIRE_WIDTH = "wireWidth";
 const QString Canvas::WIRE_COLOR = "wireColor";
 const QString Canvas::AB_FACTOR = "abFactor";
 const QString Canvas::DEFAULT_VIEW = "defaultView";
+const QString Canvas::MSAA = "glMSAA";
 
 
 // default values
@@ -35,14 +36,16 @@ const double Canvas::defaultWireWidth = 1.0;
 const QColor Canvas::defaultWireColor = QColor(255,128,0);
 const QString Canvas::defaultDefaultView = QString("default 1");
 const double Canvas::defaultAbFactor = 1.0;
+const int Canvas::defaultMsaa = 2;
 
-Canvas::Canvas(const QSurfaceFormat& format, QWidget *parent)
+Canvas::Canvas(QSurfaceFormat format, QWidget *parent)
     : QOpenGLWidget(parent), mesh(nullptr),
       scale(1), zoom(1),
       anim(this, "perspective"), status(" "),
       meshInfo("")
 {
-    setFormat(format);
+    //delay this later for msaa
+    //setFormat(format);
     QFile styleFile(":/qt/style.qss");
     styleFile.open( QFile::ReadOnly );
     setStyleSheet(styleFile.readAll());
@@ -59,6 +62,12 @@ Canvas::Canvas(const QSurfaceFormat& format, QWidget *parent)
     useWire = settings.value(USE_WIRE,defaultUseWire).value<bool>();
     wireWidth = settings.value(WIRE_WIDTH,defaultWireWidth).value<float>();
     wireColor = settings.value(WIRE_COLOR,defaultWireColor).value<QColor>();
+    msaa = settings.value(MSAA,defaultMsaa).value<int>();
+
+    format.setSamples(msaa);
+    qDebug() << format.samples();
+    setFormat(format);
+
 
     // predefines rotations : name of the rotation, followed by a list of rotations
     // 4 values by rotation, angle then the rotating vector
@@ -717,4 +726,18 @@ void Canvas::setAbFactor(double f) {
 
 void Canvas::resetAbFactor() {
     setAbFactor(defaultAbFactor);
+}
+
+int Canvas::getMsaa() {
+    return msaa;
+}
+
+void Canvas::setMsaa(int m) {
+    msaa = m;
+    QSettings settings;
+    settings.setValue(MSAA,msaa);
+}
+
+void Canvas::resetMsaa() {
+    setMsaa(defaultMsaa);
 }

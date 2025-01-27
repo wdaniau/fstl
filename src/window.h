@@ -67,6 +67,7 @@ private slots:
     void on_centerView();
     void onApplyView(QAction* act);
     void onSpeedMouseButton();
+    void onMsaaAction(QAction* act);
 
 private:
     void rebuild_recent_files();

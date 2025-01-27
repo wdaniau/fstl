@@ -17,7 +17,7 @@ class Canvas : public QOpenGLWidget, protected QOpenGLFunctions
     Q_OBJECT
 
 public:
-    explicit Canvas(const QSurfaceFormat& format, QWidget* parent=0);
+    explicit Canvas(QSurfaceFormat format, QWidget* parent=0);
     ~Canvas();
 
     const static float P_PERSPECTIVE;
@@ -71,6 +71,10 @@ public:
     double getAbFactor();
     void setAbFactor(double f);
     void resetAbFactor();
+
+    int getMsaa();
+    void setMsaa(int m);
+    void resetMsaa();
 
 public slots:
     void set_status(const QString& s);
@@ -135,6 +139,7 @@ private:
     const static QColor defaultWireColor;
     const static QString defaultDefaultView;
     const static double defaultAbFactor;
+    const static int defaultMsaa;
 
     const static QString AMBIENT_COLOR;
     const static QString AMBIENT_FACTOR;
@@ -146,6 +151,7 @@ private:
     const static QString WIRE_COLOR;
     const static QString DEFAULT_VIEW;
     const static QString AB_FACTOR;
+    const static QString MSAA;
 
     GLMesh* mesh;
     Backdrop* backdrop;
@@ -158,6 +164,7 @@ private:
     float zoom;
     QMatrix4x4 currentTransform;
     float abFactor;
+    int msaa;
 
     float perspective;
     enum DrawMode drawMode;

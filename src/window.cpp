@@ -393,6 +393,37 @@ Window::Window(QWidget *parent) :
 
     connect(groupApplyViewAction,SIGNAL(triggered(QAction*)),this,SLOT(onApplyView(QAction*)));
 
+
+    QMenu *msaaMenu = view_menu->addMenu("Anti-aliasing");
+    //aaMenu->setIcon(QIcon(":/qt/icons/eye_64x64.png"));
+    //aaMenu->menuAction()->setIconVisibleInMenu(true);
+    QActionGroup* groupMsaaAction = new QActionGroup(msaaMenu);
+    QAction* noMsaaAction = new QAction("No AA");
+    noMsaaAction->setData(-1);
+    QAction* msaa2Action = new QAction("2x");
+    msaa2Action->setData(2);
+    QAction* msaa4Action = new QAction("4x");
+    msaa4Action->setData(4);
+    QAction* msaa8Action = new QAction("8x");
+    msaa8Action->setData(8);
+    groupMsaaAction->setExclusive(true);
+    for (QAction* p : {noMsaaAction, msaa2Action, msaa4Action, msaa8Action})
+    {
+        msaaMenu->addAction(p);
+        groupMsaaAction->addAction(p);
+        p->setCheckable(true);
+    }
+    // Find msaa value and set action
+    int currentMsaa = canvas->getMsaa();
+    for (QAction* p : groupMsaaAction->actions()) {
+        if (p->data().toInt()==currentMsaa) {
+            p->setChecked(true);
+            break;
+        }
+    }
+    // do the work
+    connect(groupMsaaAction,SIGNAL(triggered(QAction*)),this,SLOT(onMsaaAction(QAction*)));
+
     auto help_menu = menuBar()->addMenu("Help");
     help_menu->addAction(about_action);
     help_menu->addAction(help_action);
@@ -1098,9 +1129,11 @@ void Window::keyPressEvent(QKeyEvent* event)
         return;
     } else if (event->key() == Qt::Key_Escape && speedMouseDialog->isVisible()) {
         speedMouseDialog->hide();
+        return;
     } else if (event->key() == Qt::Key_W) {
         if (dm_acts.at(getCurrentShader()) == meshlight_action) {
             meshlightprefs->toggleUseWire();
+            return;
         }
     }
 
@@ -1234,3 +1267,11 @@ void Window::onSpeedMouseButton() {
     speedMouseDialog->setGeometry(dialogPos.x(),dialogPos.y(),dialogWidth,dialogHeight);
 }
 
+void Window::onMsaaAction(QAction* act) {
+    int mssaSetting = act->data().toInt();
+    canvas->setMsaa(act->data().toInt());
+    QString msaaSettingString = mssaSetting == -1 ? QString("Off\n") : QString("%1x\n").arg(mssaSetting);
+    QMessageBox::information(this,"Anti-Aliasing",QString("Anti-Aliasing setting set to : ")
+                                                   + msaaSettingString +
+                                                    QString("It will take effect on next restart."));
+}
