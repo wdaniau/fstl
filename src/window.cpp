@@ -1214,6 +1214,8 @@ void Window::on_help() {
     QMessageBox* helpWin = new QMessageBox(QMessageBox::NoIcon,"Help","",QMessageBox::Ok,this,Qt::Dialog);
     helpWin->setText(""
                      "<h2>Help</h2>"
+                     "<a href=\"https://github.com/wdaniau/fstl/blob/fstl-e/README.md#Usage\""
+                       "   style=\"color: #93a1a1;\">Usage</a>"
                      "<h3>Shortcuts</h3>"
                      "<ul>"
                      "<li><b>H</b> : Display this help message"
