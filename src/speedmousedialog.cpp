@@ -54,6 +54,7 @@ SpeedMouseDialog::SpeedMouseDialog(QWidget* parent, Canvas* _canvas, QStatusBar*
         emit(speedSlider->valueChanged(currentFactor));
     }
 
-    this->setWindowFlags(Qt::Dialog|Qt::FramelessWindowHint);
+    //this->setWindowFlags(Qt::Dialog|Qt::FramelessWindowHint);
+    this->setWindowFlags(Qt::Popup);
     this->hide();
 }
