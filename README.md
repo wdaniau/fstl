@@ -3,25 +3,41 @@
 `fstl-e` is a fork of `fstl` a very fast [.stl file](http://en.wikipedia.org/wiki/STL_\(file_format\)) viewer, available on github at [https://github.com/fstl-app/fstl](https://github.com/fstl-app/fstl). After making some contributions to it, I forked this version which retains `fstl` core functionalities but with some fancy enhancements.
 
 ## Screenshots
-![Light Source Position](./images/elf_archer_light_source_position.png)
-![Wireframe](./images/elf_archer_wire.png)
-![Adjust Mouse Speed](./images/elf_archer_speed_mouse.png)
+![Light Source Position](./images/benchy_light_source_position.png)
+![Wireframe](./images/benchy_wire.png)
 
 ## Changelog
 ### fstl-e v1.1.0
   * Add statusbar with statustip and current file name which can be used to drop the current file to another application like a slicer.
+  * Add anti-aliasing functionality
   * Add a menu to choose default rotation between 3 models.
   * Add action to recenter the view.
   * Add menu to choose between predefined views.
   * Add new predefined size HD1080 in viewport size menu.
-  * Add slider to adjust mouse speed movement.
+  * Add popup slider to adjust mouse speed movement.
   * When using open menu, use most recent file's directory.
   * On the command line, can now open a directory.
   * In shader preferences, add a new way of choosing light source position.
 
 
 ## Usage
-Usage should be straightforward. Either use desktop integration to open a `stl` file or type `fstl-e myfile.stl` in a terminal. A directory can also be given instead of a file name.
+Usage should be quite straightforward. You may :
+
+  * Use Drag & Drop to drop an `stl` file into `fstl-e` main window.
+  * Use desktop integration to open a file
+  * Use `File/Open` menu or toolbar `Open` icon
+  * on the command line launch `fstl-e myfile.stl` or `fstl-e mydirectory`
+
+Afterwards :
+
+  * Left clic : rotate the object
+  * Right clic : translate the object
+  * Wheel : zoom in/out
+  * You may also drag the file name in the statusbar to another application.
+
+Here's an interface panorama :
+
+![Interface](./images/benchy_doc_1024.png)
 
 ### Shortcuts
 
@@ -42,28 +58,26 @@ Usage should be straightforward. Either use desktop integration to open a `stl` 
   * Up Arrow : use next shader
   * Down Arrow : use previous shader
 
-## Build and Install
+## Binary packages
+### Linux
+  * flatpak : [fstl-e](https://flathub.org/apps/io.github.wdaniau.fstl) (version 1.1.0 coming soon)
+  * snap : [fstl-e](https://snapcraft.io/fstl-e) (version 1.1.0 coming soon)
+  * AppImage :
+     * fstl-e v 1.1.0 coming soon
+     * [fstl-e-996acf8-x86_64.AppImage](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-996acf8-x86_64.AppImage) (version 1.0.0)
+  * Ubuntu package : ubuntu packages are available on [ppa:wdaniau/custom](https://launchpad.net/~wdaniau/+archive/ubuntu/custom) (version 1.1.0 coming soon)
+
+### Windows installer : 
+  * fstl-e-1.1.0 : coming soon
+  * [fstl-e-1.0.0-win64.exe](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-1.0.0-win64.exe)
+
+
+
+## Build and Install from source
 
 The only dependencies to build for `fstl-e` are [`Qt 5`](https://www.qt.io), [`cmake`](https://cmake.org/) and [`OpenGL`](https://www.opengl.org)
 
 ### Linux
-
-fstl-e is available as :
-
-#### v1.1.0
-  * flatpak : coming soon
-  * snap : coming soon
-  * AppImage : coming soon
-  * Ubuntu package : coming soon
-  * Source (see below for instructions)
-
-#### v1.0.0
-  * flatpak : [fstl-e](https://flathub.org/apps/io.github.wdaniau.fstl)
-  * snap : [fstl-e](https://snapcraft.io/fstl-e)
-  * AppImage : [fstl-e-996acf8-x86_64.AppImage](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-996acf8-x86_64.AppImage)
-  * Ubuntu package : ubuntu packages are available on [ppa:wdaniau/custom](https://launchpad.net/~wdaniau/+archive/ubuntu/custom)
-
-#### Building and installing from source
 ```
 $ git clone https://github.com/wdaniau/fstl
 $ cd fstl
@@ -85,7 +99,7 @@ Standard choices are :
   * `/usr` : not a good choice in my opinion as it may interfere with system packages. Needs root privileges
   * `$HOME/.local` : in most modern systems it is a good choice for a user installation as `$HOME/.local/bin` will be in `PATH` variable as well as `$HOME/.local/share` will be in `XDG_DATA_DIRS` variable.
 
-##### Create a package using cpack
+#### Create a package using cpack
 Alternatively after having run `make`, you can use `cpack` the packaging system integrated with `cmake` to build a package :
 
   * `cpack -G TGZ` will produce a `.tar.gz` package
@@ -93,11 +107,8 @@ Alternatively after having run `make`, you can use `cpack` the packaging system 
   * Although not tested as I'm not under a `rpm` distribution, running `cpack -G RPM` should produce a rpm package.
 
 
-
 ### Windows
-I'm mainly a linux user and have very little skill under windows. However I managed to compile `fstl-e` by installing [Visual studio community edition](https://visualstudio.microsoft.com/fr/vs/community/) and [Qt Opensource](https://www.qt.io/download-thank-you?os=windows) and it was quite straightforward using qtcreator on CMakeLists.txt as project.
-
-  * Windows installer : [fstl-e-1.0.0-win64.exe](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-1.0.0-win64.exe)
+I'm mainly a linux user and have very little skill under windows. However I managed to compile `fstl-e` by installing [Visual studio community edition](https://visualstudio.microsoft.com/fr/vs/community/) and [Qt Opensource](https://www.qt.io/download-thank-you?os=windows) and it was quite straightforward using qtcreator on CMakeLists.txt as project. The package installer was build with `cpack` and [nsis](https://nsis.sourceforge.io/Main_Page).
 
 
 ### macOS
