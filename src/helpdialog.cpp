@@ -65,7 +65,7 @@ HelpDialog::HelpDialog(QWidget *parent) : QDialog(parent)
     boxButtonLayout->addWidget(spacerL);
     boxButtonLayout->addWidget(okButton);
     this->layout()->addWidget(boxButton);
-    okButton->setFocusPolicy(Qt::NoFocus);
+    //okButton->setFocusPolicy(Qt::NoFocus);
 
     connect(okButton,&QPushButton::clicked,[=]{
         this->hide();
