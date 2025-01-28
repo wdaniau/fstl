@@ -1212,11 +1212,14 @@ void Window::setViewportSize(QAction* act) {
 void Window::on_help() {
     //qDebug() << "help!";
     QMessageBox* helpWin = new QMessageBox(QMessageBox::NoIcon,"Help","",QMessageBox::Ok,this,Qt::Dialog);
+    helpWin->setIconPixmap(QPixmap(":/qt/icons/fstl-e_64x64.png"));
     helpWin->setText(""
                      "<h2>Help</h2>"
+                     "<ul><li>"
                      "<a href=\"https://github.com/wdaniau/fstl/blob/fstl-e/README.md#Usage\""
-                       "   style=\"color: #93a1a1;\">Usage</a>"
-                     "<h3>Shortcuts</h3>"
+                       "   style=\"color: #93a1a1; font-weight: bold;\">Usage</a> (follow link)"
+                     "</li>"
+                     "<li><b>Shortcuts</b></li>"
                      "<ul>"
                      "<li><b>H</b> : Display this help message"
                      "<li><b>Q</b> : Quit"
@@ -1234,7 +1237,7 @@ void Window::on_help() {
                      "<li><b>Right Arrow</b> : load next stl file"
                      "<li><b>Up Arrow</b> : use next shader"
                      "<li><b>Down Arrow</b> : use previous shader"
-                     "</ul>"
+                     "</ul></ul>"
                      );
     helpWin->show();
 
