@@ -100,7 +100,7 @@ private:
     QAction* centerAction;
     QAction* applyDefaultViewAction;
 
-    QMenu* const recent_files;
+    QMenu* recent_files;
     QMenu* defaultViewMenu;
     QMenu* draw_menu;
     QToolButton* shaderButton;

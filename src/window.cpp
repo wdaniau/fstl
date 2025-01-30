@@ -59,12 +59,16 @@ Window::Window(QWidget *parent) :
     fullscreen_action(new QAction("Toggle Fullscreen",this)),
     resetTransformOnLoadAction(new QAction("Reset rotation on load",this)),
     setGLSizeAction(new QAction("Set Viewport Size",this)),
-    recent_files(new QMenu("Open recent", this)),
     recent_files_group(new QActionGroup(this)),
     recent_files_clear_action(new QAction("Clear recent files", this)),
     watcher(new QFileSystemWatcher(this))
 
 {
+    // This is to correct wayland error message
+    // submenu has to be a child of menu
+    QMenu* file_menu = menuBar()->addMenu("File");
+    recent_files = new QMenu("Open recent", file_menu);
+
     qDebug() << QGuiApplication::platformName();
     // Define status tip for actions
     open_action->setStatusTip(open_action->toolTip());
@@ -165,7 +169,8 @@ Window::Window(QWidget *parent) :
     
     rebuild_recent_files();
 
-    auto file_menu = menuBar()->addMenu("File");
+    // file_menu declared at the beginning of the constructor
+    // wayland needs file_menu to be the parent of recent_files
     file_menu->addAction(open_action);
     file_menu->addMenu(recent_files);
     file_menu->addSeparator();
