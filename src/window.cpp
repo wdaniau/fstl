@@ -69,7 +69,11 @@ Window::Window(QWidget *parent) :
     QMenu* file_menu = menuBar()->addMenu("File");
     recent_files = new QMenu("Open recent", file_menu);
 
-    qDebug() << QGuiApplication::platformName();
+    QString currentPlatform = QGuiApplication::platformName();
+    isWayland = QGuiApplication::platformName() == "wayland" ? true : false;
+
+    qDebug() << isWayland << currentPlatform;
+
     // Define status tip for actions
     open_action->setStatusTip(open_action->toolTip());
     about_action->setStatusTip(about_action->toolTip());
@@ -88,10 +92,16 @@ Window::Window(QWidget *parent) :
     autoreload_action->setStatusTip("Automatically reload file on file change");
     save_screenshot_action->setStatusTip(save_screenshot_action->toolTip());
     hide_menuBar_action->setStatusTip(hide_menuBar_action->toolTip());
-    fullscreen_action->setStatusTip(fullscreen_action->toolTip());
     resetTransformOnLoadAction->setStatusTip(resetTransformOnLoadAction->toolTip());
     setGLSizeAction->setStatusTip(setGLSizeAction->toolTip());
     recent_files_clear_action->setStatusTip(recent_files_clear_action->toolTip());
+    if (isWayland) {
+        fullscreen_action->setToolTip("Fullscreen deactivated under Wayland");
+        fullscreen_action->setStatusTip("Fullscreen is deactivated under wayland. "
+                                        "Look at \"Known Issues\" in Help.");
+    } else {
+        fullscreen_action->setStatusTip(fullscreen_action->toolTip());
+    }
 
     setWindowTitle("fstl-e " FSTLE_VERSION);
     setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
@@ -269,8 +279,12 @@ Window::Window(QWidget *parent) :
     fullscreen_action->setShortcut(shortcutFullscreen);
     fullscreen_action->setIcon(QIcon(":/qt/icons/view-fullscreen.png"));
     fullscreen_action->setCheckable(true);
-    QObject::connect(fullscreen_action, &QAction::toggled,
+    if (!isWayland) {
+        QObject::connect(fullscreen_action, &QAction::toggled,
             this, &Window::on_fullscreen);
+    } else {
+        fullscreen_action->setDisabled(true);
+    }
     this->addAction(fullscreen_action);
 
     QMenu *resolutionMenu = view_menu->addMenu("Set Viewport Size");
@@ -1224,6 +1238,10 @@ void Window::on_help() {
                      "<ul><li>"
                      "<a href=\"https://github.com/wdaniau/fstl/blob/fstl-e/README.md#Usage\""
                        "   style=\"color: #93a1a1; font-weight: bold;\">Usage</a> (follow link)"
+                     "</li>"
+                     "<li>"
+                     "<a href=\"https://github.com/wdaniau/fstl/blob/fstl-e/README.md#KnownIssues\""
+                     "   style=\"color: #93a1a1; font-weight: bold;\">Known Issues</a> (follow link)"
                      "</li>"
                      "<li><b>Shortcuts</b></li>"
                      "<ul>"

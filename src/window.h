@@ -147,6 +147,7 @@ private:
     QString current_file;
     QString lookup_folder;
     QStringList lookup_folder_files;
+    bool isWayland;
 
     QFileSystemWatcher* watcher;
 
