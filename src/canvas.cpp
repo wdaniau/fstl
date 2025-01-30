@@ -721,7 +721,7 @@ double Canvas::getAbFactor() {
 void Canvas::setAbFactor(double f) {
     abFactor = (float) f;
     QSettings settings;
-    settings.setValue(AB_FACTOR,abFactor);
+    settings.setValue(AB_FACTOR,f);
 }
 
 void Canvas::resetAbFactor() {
