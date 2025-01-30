@@ -65,6 +65,7 @@ Window::Window(QWidget *parent) :
     watcher(new QFileSystemWatcher(this))
 
 {
+    qDebug() << QGuiApplication::platformName();
     // Define status tip for actions
     open_action->setStatusTip(open_action->toolTip());
     about_action->setStatusTip(about_action->toolTip());
@@ -1276,18 +1277,17 @@ void Window::onSpeedMouseButton() {
         return;
     }
     // get button geometry and position
-    int buttonWidth = speedMouseButton->geometry().width();
-    int buttonHeight = speedMouseButton->geometry().height();
+    int buttonWidth = speedMouseButton->rect().width();
+    int buttonHeight = speedMouseButton->rect().height();
     QPoint dialogPos = speedMouseButton->mapToGlobal(QPoint(0,0));
-    // dialoPos is now upper left corner of speedMouseButton in global coordinates
-    // modify it
+    // dialogPos is now upper left corner of speedMouseButton
+    // in global coordinates for X11 and windows, relative to the mainwindow on Wayland
+    // modifying it
     dialogPos.setX(dialogPos.x()+buttonWidth);
     dialogPos.setY(dialogPos.y()+buttonHeight/2);
-    // show dialog before getting geometry
+    // under X11 and windows the move isglobal, relative to the mainwindow under Wayland
+    speedMouseDialog->move(dialogPos);
     speedMouseDialog->show();
-    int dialogWidth = speedMouseDialog->geometry().width();
-    int dialogHeight = speedMouseDialog->geometry().height();
-    speedMouseDialog->setGeometry(dialogPos.x(),dialogPos.y(),dialogWidth,dialogHeight);
 }
 
 void Window::onMsaaAction(QAction* act) {
