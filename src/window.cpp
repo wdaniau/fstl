@@ -59,12 +59,21 @@ Window::Window(QWidget *parent) :
     fullscreen_action(new QAction("Toggle Fullscreen",this)),
     resetTransformOnLoadAction(new QAction("Reset rotation on load",this)),
     setGLSizeAction(new QAction("Set Viewport Size",this)),
-    recent_files(new QMenu("Open recent", this)),
     recent_files_group(new QActionGroup(this)),
     recent_files_clear_action(new QAction("Clear recent files", this)),
     watcher(new QFileSystemWatcher(this))
 
 {
+    // This is to correct wayland error message
+    // submenu has to be a child of menu
+    QMenu* file_menu = menuBar()->addMenu("File");
+    recent_files = new QMenu("Open recent", file_menu);
+
+    QString currentPlatform = QGuiApplication::platformName();
+    isWayland = QGuiApplication::platformName() == "wayland" ? true : false;
+
+    qDebug() << isWayland << currentPlatform;
+
     // Define status tip for actions
     open_action->setStatusTip(open_action->toolTip());
     about_action->setStatusTip(about_action->toolTip());
@@ -83,10 +92,16 @@ Window::Window(QWidget *parent) :
     autoreload_action->setStatusTip("Automatically reload file on file change");
     save_screenshot_action->setStatusTip(save_screenshot_action->toolTip());
     hide_menuBar_action->setStatusTip(hide_menuBar_action->toolTip());
-    fullscreen_action->setStatusTip(fullscreen_action->toolTip());
     resetTransformOnLoadAction->setStatusTip(resetTransformOnLoadAction->toolTip());
     setGLSizeAction->setStatusTip(setGLSizeAction->toolTip());
     recent_files_clear_action->setStatusTip(recent_files_clear_action->toolTip());
+    if (isWayland) {
+        fullscreen_action->setToolTip("Fullscreen deactivated under Wayland");
+        fullscreen_action->setStatusTip("Fullscreen is deactivated under wayland. "
+                                        "Look at \"Known Issues\" in Help.");
+    } else {
+        fullscreen_action->setStatusTip(fullscreen_action->toolTip());
+    }
 
     setWindowTitle("fstl-e " FSTLE_VERSION);
     setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
@@ -164,7 +179,8 @@ Window::Window(QWidget *parent) :
     
     rebuild_recent_files();
 
-    auto file_menu = menuBar()->addMenu("File");
+    // file_menu declared at the beginning of the constructor
+    // wayland needs file_menu to be the parent of recent_files
     file_menu->addAction(open_action);
     file_menu->addMenu(recent_files);
     file_menu->addSeparator();
@@ -263,8 +279,12 @@ Window::Window(QWidget *parent) :
     fullscreen_action->setShortcut(shortcutFullscreen);
     fullscreen_action->setIcon(QIcon(":/qt/icons/view-fullscreen.png"));
     fullscreen_action->setCheckable(true);
-    QObject::connect(fullscreen_action, &QAction::toggled,
+    if (!isWayland) {
+        QObject::connect(fullscreen_action, &QAction::toggled,
             this, &Window::on_fullscreen);
+    } else {
+        fullscreen_action->setDisabled(true);
+    }
     this->addAction(fullscreen_action);
 
     QMenu *resolutionMenu = view_menu->addMenu("Set Viewport Size");
@@ -984,10 +1004,10 @@ void Window::mousePressEvent(QMouseEvent *event) {
         mimeData->setUrls(urls);
         drag->setMimeData(mimeData);
         drag->setPixmap(QPixmap(":/qt/icons/fstl-e_64x64.png").scaledToWidth(32));
-        //drag->exec();
-        // Force LinkAction in exec to avoid moving files to desktop under gnome :-(
-        Qt::DropAction dropAction = drag->exec(Qt::LinkAction);
-        //qDebug() << dropAction;
+        // Possibly move source file to the drop destination :-(, but works well on every
+        // configurations xcb,wayland,windows
+        Qt::DropAction dropAction = drag->exec();
+        qDebug() << dropAction;
 
         // accept drops again
         this->setAcceptDrops(true);
@@ -1219,6 +1239,10 @@ void Window::on_help() {
                      "<a href=\"https://github.com/wdaniau/fstl/blob/fstl-e/README.md#Usage\""
                        "   style=\"color: #93a1a1; font-weight: bold;\">Usage</a> (follow link)"
                      "</li>"
+                     "<li>"
+                     "<a href=\"https://github.com/wdaniau/fstl/blob/fstl-e/README.md#KnownIssues\""
+                     "   style=\"color: #93a1a1; font-weight: bold;\">Known Issues</a> (follow link)"
+                     "</li>"
                      "<li><b>Shortcuts</b></li>"
                      "<ul>"
                      "<li><b>H</b> : Display this help message"
@@ -1276,18 +1300,17 @@ void Window::onSpeedMouseButton() {
         return;
     }
     // get button geometry and position
-    int buttonWidth = speedMouseButton->geometry().width();
-    int buttonHeight = speedMouseButton->geometry().height();
+    int buttonWidth = speedMouseButton->rect().width();
+    int buttonHeight = speedMouseButton->rect().height();
     QPoint dialogPos = speedMouseButton->mapToGlobal(QPoint(0,0));
-    // dialoPos is now upper left corner of speedMouseButton in global coordinates
-    // modify it
+    // dialogPos is now upper left corner of speedMouseButton
+    // in global coordinates for X11 and windows, relative to the mainwindow on Wayland
+    // modifying it
     dialogPos.setX(dialogPos.x()+buttonWidth);
     dialogPos.setY(dialogPos.y()+buttonHeight/2);
-    // show dialog before getting geometry
+    // under X11 and windows the move isglobal, relative to the mainwindow under Wayland
+    speedMouseDialog->move(dialogPos);
     speedMouseDialog->show();
-    int dialogWidth = speedMouseDialog->geometry().width();
-    int dialogHeight = speedMouseDialog->geometry().height();
-    speedMouseDialog->setGeometry(dialogPos.x(),dialogPos.y(),dialogWidth,dialogHeight);
 }
 
 void Window::onMsaaAction(QAction* act) {
