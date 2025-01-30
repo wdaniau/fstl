@@ -19,6 +19,18 @@
   * On the command line, can now open a directory.
   * In shader preferences, add a new way of choosing light source position.
 
+## Known Issues
+### aarch64 (tested on a raspberry5)
+  * Compile and run perfectly well however :
+    * the wireframe shader do not work without any warning or error message.
+    * available glsl version is 1.40, so the wireframe on top of mesh light shader do not work as 3.3 is needed.
+  * There will be unfortunately no flatpak package as the flathub kde runtime 5.15-24.08 does not support OpenGL but only OpenGL ES and porting to OpenGL ES is not completely trivial as the shaders mut be rewritten.
+
+### Wayland
+  * The fullscreen function do not work under Wayland and therefore is deactivated. If you want it to work you can either:
+    * run X11 instead of Wayland
+    * set the environment variable `QT_QPA_PLATFORM=xcb`
+    * run the program with option `-platform xcb`
 
 ## Usage
 Usage should be quite straightforward. You may :
@@ -33,7 +45,7 @@ Afterwards :
   * Left clic : rotate the object
   * Right clic : translate the object
   * Wheel : zoom in/out
-  * You may also drag the file name in the statusbar to another application.
+  * You may also drag the file name from the statusbar to another application. (Be carefull though as dropping on the desktop will move the file there).
 
 Here's an interface panorama :
 
@@ -97,7 +109,7 @@ Standard choices are :
 
   * `/usr/local` : this is the default if `-DCMAKE_INSTALL_PREFIX` is omitted. Needs root privileges
   * `/usr` : not a good choice in my opinion as it may interfere with system packages. Needs root privileges
-  * `$HOME/.local` : in most modern systems it is a good choice for a user installation as `$HOME/.local/bin` will be in `PATH` variable as well as `$HOME/.local/share` will be in `XDG_DATA_DIRS` variable.
+  * `$HOME/.local` : in most modern systems it is a good choice for a user installation as `$HOME/.local/bin` will be in `PATH` variable as well as `$HOME/.local/share` will be in `XDG_DATA_DIRS` variable. Add these if this is not the case.
 
 #### Create a package using cpack
 Alternatively after having run `make`, you can use `cpack` the packaging system integrated with `cmake` to build a package :
