@@ -22,12 +22,13 @@
 ## Known Issues
 ### aarch64 (tested on a raspberry5)
   * Compile and run perfectly well however :
-    * the wireframe shader do not work without any warning or error message.
+    * the wireframe shader do not work.
     * available glsl version is 1.40, so the wireframe on top of mesh light shader do not work as 3.3 is needed.
-  * There will be unfortunately no flatpak package as the flathub kde runtime 5.15-24.08 does not support OpenGL but only OpenGL ES and porting to OpenGL ES is not completely trivial as the shaders mut be rewritten.
+    * With "Raspberry PI OS (bookworm)", rendering under `Wayland` is a little bit ugly. Either use X11 (`raspi-config`->`Advanced Options`->`Wayland`->`X11`) or force using `xcb` by either setting environment variable `QT_QPA_PLATFORM=xcb` either launch `fstl-e -platform xcb`. With "Ubuntu Desktop 24.04" however rendering is ok using wayland or x11.
+  * It seems that for aarch64, both flatpak and snap runtimes for Qt do not support OpenGL but only OpenGL ES. As porting to OpenGL ES is not completely trivial, there will be not flatpak nor snap package for the moment.
 
 ### Wayland
-  * The fullscreen function do not work under Wayland and therefore is deactivated. If you want it to work you can either:
+  * The fullscreen function do not work under `Wayland` and therefore is deactivated. If you want it to work you can either:
     * run X11 instead of Wayland
     * set the environment variable `QT_QPA_PLATFORM=xcb`
     * run the program with option `-platform xcb`
@@ -71,13 +72,19 @@ Here's an interface panorama :
   * Down Arrow : use previous shader
 
 ## Binary packages
-### Linux
+### Linux x86_64
   * flatpak : [fstl-e](https://flathub.org/apps/io.github.wdaniau.fstl) (version 1.1.0 coming soon)
   * snap : [fstl-e](https://snapcraft.io/fstl-e) (version 1.1.0 coming soon)
   * AppImage :
      * fstl-e v 1.1.0 coming soon
      * [fstl-e-996acf8-x86_64.AppImage](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-996acf8-x86_64.AppImage) (version 1.0.0)
-  * Ubuntu package : ubuntu packages are available on [ppa:wdaniau/custom](https://launchpad.net/~wdaniau/+archive/ubuntu/custom) (version 1.1.0 coming soon)
+  * Ubuntu package : available on [ppa:wdaniau/custom](https://launchpad.net/~wdaniau/+archive/ubuntu/custom) (version 1.1.0 coming soon)
+
+### Linux aarch64
+  * AppImage :
+    *  fstl-e v 1.1.0 coming soon
+    *  [fstl-e-1.0.0-aarch64.AppImage](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-1.0.0-aarch64.AppImage)
+  * Ubuntu package : available on [ppa:wdaniau/custom](https://launchpad.net/~wdaniau/+archive/ubuntu/custom) (version 1.1.0 coming soon)
 
 ### Windows installer : 
   * fstl-e-1.1.0 : coming soon

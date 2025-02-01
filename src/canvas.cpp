@@ -65,7 +65,7 @@ Canvas::Canvas(QSurfaceFormat format, QWidget *parent)
     msaa = settings.value(MSAA,defaultMsaa).value<int>();
 
     format.setSamples(msaa);
-    qDebug() << format.samples();
+    //qDebug() << format.samples();
     setFormat(format);
 
 

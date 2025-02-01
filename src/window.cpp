@@ -72,7 +72,7 @@ Window::Window(QWidget *parent) :
     QString currentPlatform = QGuiApplication::platformName();
     isWayland = QGuiApplication::platformName() == "wayland" ? true : false;
 
-    qDebug() << isWayland << currentPlatform;
+    //qDebug() << isWayland << currentPlatform;
 
     // Define status tip for actions
     open_action->setStatusTip(open_action->toolTip());
@@ -1007,7 +1007,7 @@ void Window::mousePressEvent(QMouseEvent *event) {
         // Possibly move source file to the drop destination :-(, but works well on every
         // configurations xcb,wayland,windows
         Qt::DropAction dropAction = drag->exec();
-        qDebug() << dropAction;
+        //qDebug() << dropAction;
 
         // accept drops again
         this->setAcceptDrops(true);

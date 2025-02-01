@@ -19,21 +19,42 @@
 
     <screenshots>
         <screenshot type="default">
-            <image>https://raw.githubusercontent.com/wdaniau/fstl/refs/heads/fstl-e/images/screenshot_fstl-e_20230205.jpg</image>
-            <caption>Screenshot 1</caption>
+            <image>https://raw.githubusercontent.com/wdaniau/fstl/1a533a4bd93a16820d1f26dca1af18fd5a86c085/images/benchy_light_source_position.png</image>
+            <caption>Changing shader light source position</caption>
         </screenshot>
         <screenshot>
-            <image>https://raw.githubusercontent.com/wdaniau/fstl/refs/heads/fstl-e/images/screenshot_fstl-e_20230212.jpg</image>
-            <caption>Screenshot 2</caption>
+            <image>https://raw.githubusercontent.com/wdaniau/fstl/1a533a4bd93a16820d1f26dca1af18fd5a86c085/images/benchy_wire.png</image>
+            <caption>Adding wireframe on shader</caption>
+        </screenshot>
+        <screenshot>
+            <image>https://raw.githubusercontent.com/wdaniau/fstl/1a533a4bd93a16820d1f26dca1af18fd5a86c085/images/benchy_doc_1024.png</image>
+            <caption>Interface panorama</caption>
         </screenshot>
     </screenshots>
     <description>
         <p>
-		fstl-e is a fast, easy to use stl file viewer.
-		It is a fork of fstl with some fancy enhancements.
+        fstl-e is a fast, easy to use stl file viewer.
+        It is a fork of fstl with some fancy enhancements.
         </p>
     </description>
     <releases>
+        <release version="1.1.0" date="2025-02-01">
+            <url>https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.1.0</url>
+            <description>
+                <ul>
+                <li>Add statusbar with statustip and current file name which can be used to drop the current file to another application like a slicer.</li>
+                <li>Add anti-aliasing functionality</li>
+                <li>Add a menu to choose default rotation between 3 models.</li>
+                <li>Add action to recenter the view.</li>
+                <li>Add menu to choose between predefined views.</li>
+                <li>Add new predefined size HD1080 in viewport size menu.</li>
+                <li>Add popup slider to adjust mouse speed movement.</li>
+                <li>When using open menu, use most recent file's directory.</li>
+                <li>On the command line, can now open a directory.</li>
+                <li>In shader preferences, add a new way of choosing light source position.</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.0.0" date="2025-01-09">
 
         </release>
