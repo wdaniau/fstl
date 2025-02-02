@@ -72,24 +72,12 @@ Here's an interface panorama :
   * Down Arrow : use previous shader
 
 ## Binary packages
-### Linux x86_64
-  * flatpak : [fstl-e](https://flathub.org/apps/io.github.wdaniau.fstl) (version 1.1.0 coming soon)
-  * snap : [fstl-e](https://snapcraft.io/fstl-e) (version 1.1.0 coming soon)
-  * AppImage :
-     * fstl-e v 1.1.0 coming soon
-     * [fstl-e-996acf8-x86_64.AppImage](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-996acf8-x86_64.AppImage) (version 1.0.0)
-  * Ubuntu package : available on [ppa:wdaniau/custom](https://launchpad.net/~wdaniau/+archive/ubuntu/custom) (version 1.1.0 coming soon)
+### Latest
+  * [fstl-e-v1.1.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.1.0)
 
-### Linux aarch64
-  * AppImage :
-    *  fstl-e v 1.1.0 coming soon
-    *  [fstl-e-1.0.0-aarch64.AppImage](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-1.0.0-aarch64.AppImage)
-  * Ubuntu package : available on [ppa:wdaniau/custom](https://launchpad.net/~wdaniau/+archive/ubuntu/custom) (version 1.1.0 coming soon)
-
-### Windows installer : 
-  * fstl-e-1.1.0 : coming soon
-  * [fstl-e-1.0.0-win64.exe](https://github.com/wdaniau/fstl/releases/download/fstl-e-v1.0.0/fstl-e-1.0.0-win64.exe)
-
+### Previous
+  * [fstl-e-v1.0.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.0.0)
+  * [fstl-e-release-1](https://github.com/wdaniau/fstl/releases/tag/fstl-e-release-1)
 
 
 ## Build and Install from source
