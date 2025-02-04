@@ -840,7 +840,7 @@ void Window::on_load_recent(QAction* a)
 
 void Window::on_loaded(const QString& filename)
 {
-    current_file = filename;
+    current_file = QFileInfo(filename).absoluteFilePath();
     QFileInfo fileInfo = QFileInfo(current_file);
     filenameStatusLabel->setText("File:"+fileInfo.fileName());
 }
