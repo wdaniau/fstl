@@ -75,6 +75,20 @@ public:
     int getMsaa();
     void setMsaa(int m);
     void resetMsaa();
+    void setBackdropCorners(const QColor& tl, const QColor& tr, const QColor& bl, const QColor& br);
+    void setBackdropTLCorner(const QColor& color);
+    void setBackdropTRCorner(const QColor& color);
+    void setBackdropBLCorner(const QColor& color);
+    void setBackdropBRCorner(const QColor& color);
+    void setBackdropPresetIndex(int index);
+    int getBackdropPresetIndex();
+
+    QColor backdropTL;
+    QColor backdropTR;
+    QColor backdropBL;
+    QColor backdropBR;
+
+    void loadBackdropFromSettings();
 
 public slots:
     void set_status(const QString& s);
@@ -90,7 +104,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
-    
+
     void set_perspective(float p);
     void view_anim(float v);
 
@@ -152,6 +166,11 @@ private:
     const static QString DEFAULT_VIEW;
     const static QString AB_FACTOR;
     const static QString MSAA;
+    const static QString BACKDROP_TOP_LEFT;
+    const static QString BACKDROP_TOP_RIGHT;
+    const static QString BACKDROP_BOTTOM_LEFT;
+    const static QString BACKDROP_BOTTOM_RIGHT;
+    const static QString BACKDROP_PRESET_INDEX;
 
     GLMesh* mesh;
     Backdrop* backdrop;

@@ -60,5 +60,6 @@
         <file>icons/lightSourcePosition/lsp_25.png</file>
         <file>icons/lightSourcePosition/lsp_26.png</file>
         <file>icons/antialiasing.png</file>
+        <file>icons/backdrop-settings.png</file>
     </qresource>
 </RCC>

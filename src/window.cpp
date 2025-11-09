@@ -4,6 +4,7 @@
 #include "canvas.h"
 #include "loader.h"
 #include "shaderlightprefs.h"
+#include "backdropsettingsdialog.h"
 #include "speedmousedialog.h"
 #include <QDrag>
 
@@ -23,6 +24,7 @@ const QKeySequence Window::shortcutReload = Qt::Key_R;
 const QKeySequence Window::shortcutScreenshot = Qt::Key_S;
 const QKeySequence Window::shortcutQuit = Qt::Key_Q;
 const QKeySequence Window::shortcutDrawModeSettings = Qt::Key_P;
+const QKeySequence Window::shortcutBackdropSettings = Qt::Key_B;
 const QKeySequence Window::shortcutDrawAxes = Qt::Key_A;
 const QKeySequence Window::shortcutHideMenuBar = Qt::Key_M;
 const QKeySequence Window::shortcutFullscreen = Qt::Key_F;
@@ -50,6 +52,7 @@ Window::Window(QWidget *parent) :
     surfaceangle_action(new QAction("Surface Angle", this)),
     meshlight_action(new QAction("Shaded ambient and directive light source", this)),
     drawModePrefs_action(new QAction("Draw Mode Settings")),
+    backdropSettings_action(new QAction("Background Settings")),
     axes_action(new QAction("Draw Axes", this)),
     invert_zoom_action(new QAction("Invert Zoom", this)),
     reload_action(new QAction("Reload", this)),
@@ -86,6 +89,7 @@ Window::Window(QWidget *parent) :
     surfaceangle_action->setStatusTip(surfaceangle_action->toolTip());
     meshlight_action->setStatusTip(meshlight_action->toolTip());
     drawModePrefs_action->setStatusTip(drawModePrefs_action->toolTip());
+    backdropSettings_action->setStatusTip(backdropSettings_action->toolTip());
     axes_action->setStatusTip(axes_action->toolTip());
     invert_zoom_action->setStatusTip(invert_zoom_action->toolTip());
     reload_action->setStatusTip("Reload the file");
@@ -121,9 +125,8 @@ Window::Window(QWidget *parent) :
     statusBar = new QStatusBar;
 
     meshlightprefs = new ShaderLightPrefs(this, canvas);
+    backdropsettingsdialog = new BackdropSettingsDialog(this, canvas);
     speedMouseDialog = new SpeedMouseDialog(this, canvas, statusBar);
-
-    QObject::connect(drawModePrefs_action, &QAction::triggered,this,&Window::on_drawModePrefs);
 
     QObject::connect(watcher, &QFileSystemWatcher::fileChanged,
                      this, &Window::on_watched_change);
@@ -242,11 +245,20 @@ Window::Window(QWidget *parent) :
     drawModes->setExclusive(true);
     QObject::connect(drawModes, &QActionGroup::triggered,
                      this, &Window::on_drawMode);
+
     view_menu->addAction(drawModePrefs_action);
     drawModePrefs_action->setShortcut(shortcutDrawModeSettings);
     drawModePrefs_action->setIcon(QIcon(":/qt/icons/preferences-system.png"));
     this->addAction(drawModePrefs_action);
     drawModePrefs_action->setDisabled(true);
+    QObject::connect(drawModePrefs_action, &QAction::triggered, this, &Window::on_drawModePrefs);
+
+    view_menu->addAction(backdropSettings_action);
+    backdropSettings_action->setShortcut(shortcutBackdropSettings);
+    backdropSettings_action->setIcon(QIcon(":/qt/icons/backdrop-settings.png"));
+    this->addAction(backdropSettings_action);
+    QObject::connect(backdropSettings_action, &QAction::triggered, this, &Window::on_backdropSettings);
+
     view_menu->addAction(axes_action);
     axes_action->setCheckable(true);
     axes_action->setShortcut(shortcutDrawAxes);
@@ -489,6 +501,8 @@ Window::Window(QWidget *parent) :
     windowToolBar->addWidget(shaderButton);
     windowToolBar->addAction(drawModePrefs_action);
 
+    windowToolBar->addAction(backdropSettings_action);
+
     windowToolBar->addAction(axes_action);
     windowToolBar->addAction(invert_zoom_action);
     windowToolBar->addAction(resetTransformOnLoadAction);
@@ -630,6 +644,10 @@ void Window::on_drawModePrefs() {
     } else {
         meshlightprefs->show();
     }
+}
+
+void Window::on_backdropSettings() {
+    backdropsettingsdialog->show();
 }
 
 void Window::on_open()
