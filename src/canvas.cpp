@@ -288,6 +288,7 @@ void Canvas::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     backdrop->draw();
+    glClear(GL_DEPTH_BUFFER_BIT);
     if (mesh)  draw_mesh();
     if (drawAxes) axis->draw(transform_matrix(), view_matrix(),
         orient_matrix(), aspect_matrix(), width() / float(height()));
