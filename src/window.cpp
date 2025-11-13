@@ -1268,6 +1268,7 @@ void Window::on_help() {
                      "<li><b>O</b> : Open"
                      "<li><b>R</b> : Reload the file"
                      "<li><b>P</b> : Draw Mode Settings for current shader (if available)"
+                     "<li><b>B</b> : Background Settings"
                      "<li><b>A</b> : Draw Axes (and some informations)"
                      "<li><b>M</b> : Show/Hide Menu (and Toolbar as well)"
                      "<li><b>S</b> : Save Screenshot"
