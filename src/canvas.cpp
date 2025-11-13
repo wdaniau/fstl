@@ -797,10 +797,10 @@ void Canvas::setBackdropBRCorner(const QColor& color) {
 
 void Canvas::loadBackdropFromSettings() {
     const QSettings settings;
-    backdropTL = settings.value(BACKDROP_TOP_LEFT, QColor(204,212,219)).value<QColor>();
-    backdropTR = settings.value(BACKDROP_TOP_RIGHT, QColor(183,191,199)).value<QColor>();
-    backdropBL = settings.value(BACKDROP_BOTTOM_LEFT, QColor(46,49,56)).value<QColor>();
-    backdropBR = settings.value(BACKDROP_BOTTOM_RIGHT, QColor(66,71,79)).value<QColor>();
+    backdropTL = settings.value(BACKDROP_TOP_LEFT, tlStandardBackdrop).value<QColor>();
+    backdropTR = settings.value(BACKDROP_TOP_RIGHT, trStandardBackdrop).value<QColor>();
+    backdropBL = settings.value(BACKDROP_BOTTOM_LEFT, blStandardBackdrop).value<QColor>();
+    backdropBR = settings.value(BACKDROP_BOTTOM_RIGHT, brStandardBackdrop).value<QColor>();
 }
 
 void Canvas::setBackdropPresetIndex(const int index) {

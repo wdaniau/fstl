@@ -14,11 +14,15 @@ public:
     BackdropSettingsDialog(QWidget* parent, Canvas* _canvas);
 
 private slots:
-    void onPresetChanged(int index) const;
+    void onPresetChanged(int index);
     void onTLColorButtonClicked();
     void onTRColorButtonClicked();
     void onBLColorButtonClicked();
     void onBRColorButtonClicked();
+    static void setCustomBackdropCorners(const QColor& tl, const QColor& tr, const QColor& bl, const QColor& br);
+    void restoreCustomBackdropCorners() const;
+    void applyCustomPreset() const;
+    bool confirmCustomColorChange();
 
 private:
     Canvas* canvas;
@@ -27,6 +31,10 @@ private:
     QPushButton* buttonColorTR;
     QPushButton* buttonColorBL;
     QPushButton* buttonColorBR;
+    const static QString BACKDROP_TOP_LEFT_CUSTOM;
+    const static QString BACKDROP_TOP_RIGHT_CUSTOM;
+    const static QString BACKDROP_BOTTOM_LEFT_CUSTOM;
+    const static QString BACKDROP_BOTTOM_RIGHT_CUSTOM;
 };
 
 #endif // BACKDROPSETTINGSDIALOG_H

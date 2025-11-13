@@ -1,6 +1,11 @@
 #include "backdropsettingsdialog.h"
 #include "canvas.h"
 
+const QString BackdropSettingsDialog::BACKDROP_TOP_LEFT_CUSTOM = "Backdrop/topLeftCustomColor";
+const QString BackdropSettingsDialog::BACKDROP_TOP_RIGHT_CUSTOM = "Backdrop/topRightCustomColor";
+const QString BackdropSettingsDialog::BACKDROP_BOTTOM_LEFT_CUSTOM = "Backdrop/bottomLeftCustomColor";
+const QString BackdropSettingsDialog::BACKDROP_BOTTOM_RIGHT_CUSTOM = "Backdrop/bottomRightCustomColor";
+
 namespace
 {
     auto createColorPatch = [](const QColor& col)
@@ -43,16 +48,17 @@ BackdropSettingsDialog::BackdropSettingsDialog(QWidget* parent, Canvas* _canvas)
     comboBackdropPresets = new QComboBox;
     comboBackdropPresets->setFocusPolicy(Qt::NoFocus);
     comboBackdropPresets->addItem("Custom Colors", 0);
-    comboBackdropPresets->addItem("Neutral", 1);
-    comboBackdropPresets->addItem("Light Grey", 2);
-    comboBackdropPresets->addItem("Blueprint", 3);
-    comboBackdropPresets->addItem("Dark Studio", 4);
-    comboBackdropPresets->addItem("Warm", 5);
-    comboBackdropPresets->addItem("Neon Studio", 6);
-    comboBackdropPresets->addItem("Sunset", 7);
-    comboBackdropPresets->addItem("Cyber Tech", 8);
-    comboBackdropPresets->addItem("Chocolate", 9);
-    comboBackdropPresets->addItem("Extreme RGB", 10);
+    comboBackdropPresets->addItem("Standard", 1);
+    comboBackdropPresets->addItem("Neutral", 2);
+    comboBackdropPresets->addItem("Light Grey", 3);
+    comboBackdropPresets->addItem("Blueprint", 4);
+    comboBackdropPresets->addItem("Dark Studio", 5);
+    comboBackdropPresets->addItem("Warm", 6);
+    comboBackdropPresets->addItem("Neon Studio", 7);
+    comboBackdropPresets->addItem("Sunset", 8);
+    comboBackdropPresets->addItem("Cyber Tech", 9);
+    comboBackdropPresets->addItem("Chocolate", 10);
+    comboBackdropPresets->addItem("Extreme RGB", 11);
     comboBackdropPresets->setCurrentIndex(canvas->getBackdropPresetIndex());
 
     mainGrid->addWidget(comboBackdropPresets, 0, 1);
@@ -100,14 +106,23 @@ BackdropSettingsDialog::BackdropSettingsDialog(QWidget* parent, Canvas* _canvas)
     colorLayoutBottom->addWidget(buttonColorBR);
 }
 
-void BackdropSettingsDialog::onPresetChanged(const int index) const
+void BackdropSettingsDialog::onPresetChanged(const int index)
 {
     const int presetId = comboBackdropPresets->itemData(index).toInt();
     canvas->setBackdropPresetIndex(presetId);
 
     switch (presetId)
     {
+    case 0:
+        restoreCustomBackdropCorners();
+        break;
     case 1:
+        canvas->setBackdropCorners(
+            canvas->tlStandardBackdrop, canvas->trStandardBackdrop,
+            canvas->blStandardBackdrop, canvas->brStandardBackdrop
+        );
+        break;
+    case 2:
         canvas->setBackdropCorners(
             QColor::fromRgbF(0.80f, 0.83f, 0.86f),
             QColor::fromRgbF(0.72f, 0.75f, 0.78f),
@@ -115,7 +130,7 @@ void BackdropSettingsDialog::onPresetChanged(const int index) const
             QColor::fromRgbF(0.26f, 0.28f, 0.31f)
         );
         break;
-    case 2:
+    case 3:
         canvas->setBackdropCorners(
             QColor::fromRgbF(0.90f, 0.90f, 0.92f),
             QColor::fromRgbF(0.88f, 0.88f, 0.90f),
@@ -123,7 +138,7 @@ void BackdropSettingsDialog::onPresetChanged(const int index) const
             QColor::fromRgbF(0.78f, 0.78f, 0.80f)
         );
         break;
-    case 3:
+    case 4:
         canvas->setBackdropCorners(
             QColor::fromRgbF(0.12f, 0.22f, 0.45f),
             QColor::fromRgbF(0.10f, 0.18f, 0.40f),
@@ -131,7 +146,7 @@ void BackdropSettingsDialog::onPresetChanged(const int index) const
             QColor::fromRgbF(0.04f, 0.08f, 0.20f)
         );
         break;
-    case 4:
+    case 5:
         canvas->setBackdropCorners(
             QColor::fromRgbF(0.15f, 0.15f, 0.18f),
             QColor::fromRgbF(0.10f, 0.10f, 0.12f),
@@ -139,7 +154,7 @@ void BackdropSettingsDialog::onPresetChanged(const int index) const
             QColor::fromRgbF(0.04f, 0.04f, 0.05f)
         );
         break;
-    case 5:
+    case 6:
         canvas->setBackdropCorners(
             QColor::fromRgbF(0.90f, 0.85f, 0.78f),
             QColor::fromRgbF(0.95f, 0.90f, 0.82f),
@@ -147,7 +162,7 @@ void BackdropSettingsDialog::onPresetChanged(const int index) const
             QColor::fromRgbF(0.68f, 0.60f, 0.50f)
         );
         break;
-    case 6:
+    case 7:
         canvas->setBackdropCorners(
             QColor::fromRgbF(0.22f, 0.05f, 0.32f),
             QColor::fromRgbF(0.05f, 0.32f, 0.38f),
@@ -155,7 +170,7 @@ void BackdropSettingsDialog::onPresetChanged(const int index) const
             QColor::fromRgbF(0.02f, 0.20f, 0.28f)
         );
         break;
-    case 7:
+    case 8:
         canvas->setBackdropCorners(
             QColor::fromRgbF(0.95f, 0.78f, 0.82f),
             QColor::fromRgbF(0.88f, 0.85f, 0.95f),
@@ -163,7 +178,7 @@ void BackdropSettingsDialog::onPresetChanged(const int index) const
             QColor::fromRgbF(0.90f, 0.78f, 0.92f)
         );
         break;
-    case 8:
+    case 9:
         canvas->setBackdropCorners(
             QColor::fromRgbF(0.05f, 0.18f, 0.32f),
             QColor::fromRgbF(0.06f, 0.30f, 0.42f),
@@ -171,7 +186,7 @@ void BackdropSettingsDialog::onPresetChanged(const int index) const
             QColor::fromRgbF(0.00f, 0.22f, 0.32f)
         );
         break;
-    case 9:
+    case 10:
         canvas->setBackdropCorners(
             QColor::fromRgbF(0.28f, 0.18f, 0.12f),
             QColor::fromRgbF(0.38f, 0.25f, 0.12f),
@@ -179,7 +194,7 @@ void BackdropSettingsDialog::onPresetChanged(const int index) const
             QColor::fromRgbF(0.22f, 0.15f, 0.08f)
         );
         break;
-    case 10:
+    case 11:
         canvas->setBackdropCorners(
             QColor::fromRgbF(1.0f, 0.0f, 0.0f),
             QColor::fromRgbF(0.0f, 1.0f, 0.0f),
@@ -203,44 +218,89 @@ static QColor pickColor(const QColor& initial, QWidget* parent)
 
 void BackdropSettingsDialog::onTLColorButtonClicked()
 {
+    if (!confirmCustomColorChange()) return;
     const QColor newColor = pickColor(canvas->backdropTL, this);
     if (newColor.isValid() != true) return;
     canvas->setBackdropTLCorner(newColor);
     buttonColorTL->setIcon(createColorPatch(newColor));
     canvas->update();
-    comboBackdropPresets->setCurrentIndex(0);
-    canvas->setBackdropPresetIndex(0);
+    applyCustomPreset();
 }
 
 void BackdropSettingsDialog::onTRColorButtonClicked()
 {
+    if (!confirmCustomColorChange()) return;
     const QColor newColor = pickColor(canvas->backdropTR, this);
     if (newColor.isValid() != true) return;
     canvas->setBackdropTRCorner(newColor);
     buttonColorTR->setIcon(createColorPatch(newColor));
     canvas->update();
-    comboBackdropPresets->setCurrentIndex(0);
-    canvas->setBackdropPresetIndex(0);
+    applyCustomPreset();
 }
 
 void BackdropSettingsDialog::onBLColorButtonClicked()
 {
+    if (!confirmCustomColorChange()) return;
     const QColor newColor = pickColor(canvas->backdropBL, this);
     if (newColor.isValid() != true) return;
     canvas->setBackdropBLCorner(newColor);
     buttonColorBL->setIcon(createColorPatch(newColor));
     canvas->update();
-    comboBackdropPresets->setCurrentIndex(0);
-    canvas->setBackdropPresetIndex(0);
+    applyCustomPreset();
 }
 
 void BackdropSettingsDialog::onBRColorButtonClicked()
 {
+    if (!confirmCustomColorChange()) return;
     const QColor newColor = pickColor(canvas->backdropBR, this);
     if (newColor.isValid() != true) return;
     canvas->setBackdropBRCorner(newColor);
     buttonColorBR->setIcon(createColorPatch(newColor));
     canvas->update();
+    applyCustomPreset();
+}
+
+void BackdropSettingsDialog::applyCustomPreset() const
+{
+    comboBackdropPresets->blockSignals(true);
     comboBackdropPresets->setCurrentIndex(0);
+    comboBackdropPresets->blockSignals(false);
     canvas->setBackdropPresetIndex(0);
+    setCustomBackdropCorners(canvas->backdropTL, canvas->backdropTR, canvas->backdropBL, canvas->backdropBR);
+}
+
+bool BackdropSettingsDialog::confirmCustomColorChange()
+{
+    if (comboBackdropPresets->currentIndex() == 0) return true;
+    const auto reply = QMessageBox::warning(
+        this,
+        "Confirm",
+        "Changing a color in a preset will replace your custom colors. Continue?",
+        QMessageBox::Yes | QMessageBox::No
+    );
+    return reply == QMessageBox::Yes;
+}
+
+void BackdropSettingsDialog::setCustomBackdropCorners(const QColor& tl, const QColor& tr,
+                                                      const QColor& bl, const QColor& br)
+{
+    QSettings settings;
+    settings.setValue(BACKDROP_TOP_LEFT_CUSTOM, tl);
+    settings.setValue(BACKDROP_TOP_RIGHT_CUSTOM, tr);
+    settings.setValue(BACKDROP_BOTTOM_LEFT_CUSTOM, bl);
+    settings.setValue(BACKDROP_BOTTOM_RIGHT_CUSTOM, br);
+}
+
+void BackdropSettingsDialog::restoreCustomBackdropCorners() const
+{
+    const QSettings settings;
+    auto tlCustom = settings.value(BACKDROP_TOP_LEFT_CUSTOM, canvas->tlStandardBackdrop).value<QColor>();
+    auto trCustom = settings.value(BACKDROP_TOP_RIGHT_CUSTOM, canvas->trStandardBackdrop).value<QColor>();
+    auto blCustom = settings.value(BACKDROP_BOTTOM_LEFT_CUSTOM, canvas->blStandardBackdrop).value<QColor>();
+    auto brCustom = settings.value(BACKDROP_BOTTOM_RIGHT_CUSTOM, canvas->brStandardBackdrop).value<QColor>();
+    buttonColorTL->setIcon(createColorPatch(tlCustom));
+    buttonColorTR->setIcon(createColorPatch(trCustom));
+    buttonColorBL->setIcon(createColorPatch(blCustom));
+    buttonColorBR->setIcon(createColorPatch(brCustom));
+    canvas->setBackdropCorners(tlCustom, trCustom, blCustom, brCustom);
 }

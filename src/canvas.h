@@ -88,6 +88,11 @@ public:
     QColor backdropBL;
     QColor backdropBR;
 
+    QColor tlStandardBackdrop = QColor::fromRgbF(0.03137255f, 0.20784314f, 0.25882353f);
+    QColor trStandardBackdrop = QColor::fromRgbF(0.05882353f, 0.25882353f, 0.29803922f);
+    QColor blStandardBackdrop = QColor::fromRgbF(0.00000000f, 0.10196078f, 0.15294118f);
+    QColor brStandardBackdrop = QColor::fromRgbF(0.00000000f, 0.12156863f, 0.18039216f);
+
     void loadBackdropFromSettings();
 
 public slots:
