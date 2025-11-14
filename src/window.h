@@ -11,6 +11,7 @@
 
 class Canvas;
 class ShaderLightPrefs;
+class BackdropSettingsDialog;
 class SpeedMouseDialog;
 
 class Window : public QMainWindow
@@ -63,6 +64,7 @@ private slots:
     void on_fullscreen();
     void on_hide_menuBar();
     void on_drawModePrefs();
+    void on_backdropSettings();
     void setViewportSize(QAction* act);
     void on_centerView();
     void onApplyView(QAction* act);
@@ -87,6 +89,7 @@ private:
     QAction* const surfaceangle_action;
     QAction* const meshlight_action;
     QAction* const drawModePrefs_action;
+    QAction* const backdropSettings_action;
     QAction* const axes_action;
     QAction* const invert_zoom_action;
     QAction* const reload_action;
@@ -130,6 +133,7 @@ private:
     const static QKeySequence shortcutScreenshot;
     const static QKeySequence shortcutQuit;
     const static QKeySequence shortcutDrawModeSettings;
+    const static QKeySequence shortcutBackdropSettings;
     const static QKeySequence shortcutDrawAxes;
     const static QKeySequence shortcutHideMenuBar;
     const static QKeySequence shortcutFullscreen;
@@ -154,6 +158,7 @@ private:
     Canvas* canvas;
 
     ShaderLightPrefs* meshlightprefs;
+    BackdropSettingsDialog* backdropsettingsdialog;
     SpeedMouseDialog* speedMouseDialog;
     QList<QAction*> dm_acts;
 };

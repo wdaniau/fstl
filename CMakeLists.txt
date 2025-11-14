@@ -36,6 +36,7 @@ src/main.cpp
 src/mesh.cpp
 src/window.cpp
 src/shaderlightprefs.cpp
+src/backdropsettingsdialog.cpp
 src/speedmousedialog.cpp)
 
 #set project headers. 
@@ -48,6 +49,7 @@ src/loader.h
 src/mesh.h
 src/window.h
 src/shaderlightprefs.h
+src/backdropsettingsdialog.h
 src/speedmousedialog.h)
 
 #set project resources and icon resource
