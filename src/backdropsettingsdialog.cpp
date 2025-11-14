@@ -5,6 +5,7 @@ const QString BackdropSettingsDialog::BACKDROP_TOP_LEFT_CUSTOM = "Backdrop/topLe
 const QString BackdropSettingsDialog::BACKDROP_TOP_RIGHT_CUSTOM = "Backdrop/topRightCustomColor";
 const QString BackdropSettingsDialog::BACKDROP_BOTTOM_LEFT_CUSTOM = "Backdrop/bottomLeftCustomColor";
 const QString BackdropSettingsDialog::BACKDROP_BOTTOM_RIGHT_CUSTOM = "Backdrop/bottomRightCustomColor";
+const QString BackdropSettingsDialog::SETTINGS_DIALOG_GEOMETRY = "Backdrop/settingsDialogGeometry";
 
 namespace
 {
@@ -104,6 +105,11 @@ BackdropSettingsDialog::BackdropSettingsDialog(QWidget* parent, Canvas* _canvas)
 
     colorLayoutBottom->addWidget(buttonColorBL);
     colorLayoutBottom->addWidget(buttonColorBR);
+
+    const QSettings settings;
+    if (!settings.value(SETTINGS_DIALOG_GEOMETRY).isNull()) {
+        restoreGeometry(settings.value(SETTINGS_DIALOG_GEOMETRY).toByteArray());
+    }
 }
 
 void BackdropSettingsDialog::onPresetChanged(const int index)
@@ -275,7 +281,7 @@ bool BackdropSettingsDialog::confirmCustomColorChange()
     const auto reply = QMessageBox::warning(
         this,
         "Confirm",
-        "Changing a color in a preset will replace your custom colors. Continue?",
+        "Changing a color in a preset will use the preset colors as a template replacing your current custom colors. Continue?",
         QMessageBox::Yes | QMessageBox::No
     );
     return reply == QMessageBox::Yes;
@@ -303,4 +309,16 @@ void BackdropSettingsDialog::restoreCustomBackdropCorners() const
     buttonColorBL->setIcon(createColorPatch(blCustom));
     buttonColorBR->setIcon(createColorPatch(brCustom));
     canvas->setBackdropCorners(tlCustom, trCustom, blCustom, brCustom);
+}
+
+void BackdropSettingsDialog::resizeEvent(QResizeEvent *event)
+{
+    QSettings().setValue(SETTINGS_DIALOG_GEOMETRY, saveGeometry());
+    QDialog::resizeEvent(event);
+}
+
+void BackdropSettingsDialog::moveEvent(QMoveEvent *event)
+{
+    QSettings().setValue(SETTINGS_DIALOG_GEOMETRY, saveGeometry());
+    QWidget::moveEvent(event);
 }

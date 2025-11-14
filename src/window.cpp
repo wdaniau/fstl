@@ -647,7 +647,11 @@ void Window::on_drawModePrefs() {
 }
 
 void Window::on_backdropSettings() {
-    backdropsettingsdialog->show();
+    if (backdropsettingsdialog->isVisible()) {
+        backdropsettingsdialog->hide();
+    } else {
+        backdropsettingsdialog->show();
+    }
 }
 
 void Window::on_open()

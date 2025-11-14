@@ -13,6 +13,10 @@ class BackdropSettingsDialog final : public QDialog
 public:
     BackdropSettingsDialog(QWidget* parent, Canvas* _canvas);
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+    void moveEvent(QMoveEvent *event) override;
+
 private slots:
     void onPresetChanged(int index);
     void onTLColorButtonClicked();
@@ -35,6 +39,7 @@ private:
     const static QString BACKDROP_TOP_RIGHT_CUSTOM;
     const static QString BACKDROP_BOTTOM_LEFT_CUSTOM;
     const static QString BACKDROP_BOTTOM_RIGHT_CUSTOM;
+    const static QString SETTINGS_DIALOG_GEOMETRY;
 };
 
 #endif // BACKDROPSETTINGSDIALOG_H
