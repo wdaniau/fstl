@@ -7,6 +7,10 @@
 ![Wireframe](./images/benchy_wire.png)
 
 ## Changelog
+### fstl-e v1.2.0
+  * Add configurable background (new feature by andreasbkrueger)
+  * Minor bug correction
+
 ### fstl-e v1.1.0
   * Add statusbar with statustip and current file name which can be used to drop the current file to another application like a slicer.
   * Add anti-aliasing functionality
@@ -48,7 +52,7 @@ Afterwards :
   * Wheel : zoom in/out
   * You may also drag the file name from the statusbar to another application. (Be carefull though as dropping on the desktop will move the file there).
 
-Here's an interface panorama :
+Here's an interface panorama (missing the new background settings button).
 
 ![Interface](./images/benchy_doc_1024.png)
 
@@ -59,6 +63,7 @@ Here's an interface panorama :
   * O : Open
   * R : Reload
   * P : Draw Mode Settings for current shader (if available)
+  * B : Background Settings
   * A : Draw Axes (and some informations)
   * M : Show/Hide Menu (and Toolbar as well)
   * S : Save Screenshot
@@ -73,9 +78,10 @@ Here's an interface panorama :
 
 ## Binary packages
 ### Latest
-  * [fstl-e-v1.1.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.1.0)
+  * fstl-e-v1.2.0 : coming soon
 
 ### Previous
+  * [fstl-e-v1.1.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.1.0)
   * [fstl-e-v1.0.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.0.0)
   * [fstl-e-release-1](https://github.com/wdaniau/fstl/releases/tag/fstl-e-release-1)
 
