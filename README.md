@@ -78,7 +78,7 @@ Here's an interface panorama (missing the new background settings button).
 
 ## Binary packages
 ### Latest
-  * fstl-e-v1.2.0 : coming soon
+  * [fstl-e-v1.2.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.2.0)
 
 ### Previous
   * [fstl-e-v1.1.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.1.0)
