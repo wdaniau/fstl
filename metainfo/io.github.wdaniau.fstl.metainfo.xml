@@ -17,6 +17,11 @@
         <control>pointing</control>
     </recommends>
 
+    <branding>
+      <color type="primary" scheme_preference="light">#3c7ea1</color>
+      <color type="primary" scheme_preference="dark">#3c7ea1</color>
+    </branding>
+
     <screenshots>
         <screenshot type="default">
             <image>https://raw.githubusercontent.com/wdaniau/fstl/1a533a4bd93a16820d1f26dca1af18fd5a86c085/images/benchy_light_source_position.png</image>
@@ -27,7 +32,7 @@
             <caption>Adding wireframe on shader</caption>
         </screenshot>
         <screenshot>
-            <image>https://raw.githubusercontent.com/wdaniau/fstl/1a533a4bd93a16820d1f26dca1af18fd5a86c085/images/benchy_doc_1024.png</image>
+            <image>https://raw.githubusercontent.com/wdaniau/fstl/4eb6b0a957eded6bed9ab9f45896cdd1646007a6/images/benchy_doc_1024.png</image>
             <caption>Interface panorama</caption>
         </screenshot>
     </screenshots>
@@ -38,6 +43,15 @@
         </p>
     </description>
     <releases>
+        <release version="1.2.0" date="2025-11-30">
+            <url>https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.2.0</url>
+            <description>
+                <ul>
+                    <li>Add configurable background (new feature by andreasbkrueger)</li>
+                    <li>Minor bug correction</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.1.0" date="2025-02-01">
             <url>https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.1.0</url>
             <description>
