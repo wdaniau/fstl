@@ -127,6 +127,9 @@ I'm mainly a linux user and have very little skill under windows. However I mana
 ### macOS
 I have absolutely no experience under macOS, however this should be possible to compile `fstl-e` by following the instructions on the [fstl github page](https://github.com/fstl-app/fstl).
 
+### Android
+There is an [Android port](https://github.com/Prj-m/fstl-e-android) ongoing project.
+
 
 --------------------------------------------------------------------------------
 # fstl License
