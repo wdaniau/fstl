@@ -3,7 +3,7 @@
 # Author: Paul Tsouchlos Copyright 2017-2024
 # Author: William Daniau Copyright 2023-2025 (forked version fstl-e)
 
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.10)
 
 project(fstl-e)
 
