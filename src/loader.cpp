@@ -73,7 +73,8 @@ Mesh* mesh_from_verts(uint32_t tri_count, QVector<Vertex>& verts)
     }
 
     // Sort the set of vertices (to deduplicate)
-    parallel_sort(verts.begin(), verts.end(), threads);
+    //parallel_sort(verts.begin(), verts.end(), threads);
+    parallel_sort(verts.data(), verts.data() + verts.size(), threads);
 
     // This vector will store triangles as sets of 3 indices
     std::vector<GLuint> indices(tri_count*3);
