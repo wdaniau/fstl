@@ -3,12 +3,12 @@
 # Author: Paul Tsouchlos Copyright 2017-2024
 # Author: William Daniau Copyright 2023-2025 (forked version fstl-e)
 
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.16)
 
 project(fstl-e)
 
 # Setting -std=c++11
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 # Setting standard to required, as requisted by DeveloperPaul123 on github
 set(CXX_STANDARD_REQUIRED ON)
 
@@ -16,7 +16,7 @@ set(CXX_STANDARD_REQUIRED ON)
 # Renumerotation for fstl-e
 set (FSTLE_VERSION_MAJOR "1")
 set (FSTLE_VERSION_MINOR "2")
-set (FSTLE_VERSION_PATCH "0")
+set (FSTLE_VERSION_PATCH "1")
 set (PROJECT_VERSION "${FSTLE_VERSION_MAJOR}.${FSTLE_VERSION_MINOR}.${FSTLE_VERSION_PATCH}")
 
 message(STATUS "Version: ${PROJECT_VERSION}")
@@ -72,14 +72,13 @@ find_package(OpenGL REQUIRED)
 find_package(Threads REQUIRED)
 
 #add resources to RCC
-#qt5_add_resources(Project_Resources_RCC ${Project_Resources})
 qt_add_resources(Project_Resources_RCC ${Project_Resources})
 
 #tell CMake AUTOGEN to skip autogen on the generated qrc files
 set_property(SOURCE ${Project_Resources_RCC} PROPERTY SKIP_AUTOGEN ON)
 
 #include opengl files. 
-include_directories(${QT_QTOPENGL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} )
+include_directories(${QT_QTOPENGL_INCLUDE_DIR} ${OPENGL_INCLqUDE_DIR} )
 
 if(WIN32)
   add_executable(fstl-e WIN32 ${Project_Sources} ${Project_Headers} ${Project_Resources_RCC} ${Icon_Resource})
