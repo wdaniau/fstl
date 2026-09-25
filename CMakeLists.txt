@@ -78,7 +78,7 @@ qt_add_resources(Project_Resources_RCC ${Project_Resources})
 set_property(SOURCE ${Project_Resources_RCC} PROPERTY SKIP_AUTOGEN ON)
 
 #include opengl files. 
-include_directories(${QT_QTOPENGL_INCLUDE_DIR} ${OPENGL_INCLqUDE_DIR} )
+include_directories(${QT_QTOPENGL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} )
 
 if(WIN32)
   add_executable(fstl-e WIN32 ${Project_Sources} ${Project_Headers} ${Project_Resources_RCC} ${Icon_Resource})
