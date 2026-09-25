@@ -11,6 +11,7 @@ class QCheckBox;
 class QSlider;
 class QFrame;
 class QButtonGroup;
+class QAbstractButton;
 
 class ShaderLightPrefs : public QDialog
 {
@@ -34,7 +35,7 @@ private slots:
 
     void comboDirectionsChanged(int ind);
     void resetDirection();
-    void radioSourceClicked(int ind);
+    void radioSourceClicked(QAbstractButton*);
 
     void checkboxUseWireFrameChanged();
     void buttonWireColorClicked();

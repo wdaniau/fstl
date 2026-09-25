@@ -144,10 +144,9 @@ ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QDialog(p
     lightSourceWidgetLayout->addWidget(radioRearButton,3,1);
     lightSourceWidgetLayout->addWidget(radioFrontButton,3,2);
     lightSourceWidgetLayout->addWidget(radioRFNoneButton,3,3);
-
-    connect(leftRight,SIGNAL(buttonClicked(int)),this,SLOT(radioSourceClicked(int)));
-    connect(topBottom,SIGNAL(buttonClicked(int)),this,SLOT(radioSourceClicked(int)));
-    connect(rearFront,SIGNAL(buttonClicked(int)),this,SLOT(radioSourceClicked(int)));
+    connect(leftRight,SIGNAL(buttonClicked(QAbstractButton*)),this,SLOT(radioSourceClicked(QAbstractButton*)));
+    connect(topBottom,SIGNAL(buttonClicked(QAbstractButton*)),this,SLOT(radioSourceClicked(QAbstractButton*)));
+    connect(rearFront,SIGNAL(buttonClicked(QAbstractButton*)),this,SLOT(radioSourceClicked(QAbstractButton*)));
     setRadio(canvas->getCurrentLightDirection());
 
     labelPix = new QLabel;
@@ -352,7 +351,7 @@ void ShaderLightPrefs::toggleUseWire() {
         checkboxUseWireFrame->toggle();
 }
 
-void ShaderLightPrefs::radioSourceClicked(int ind) {
+void ShaderLightPrefs::radioSourceClicked(QAbstractButton*) {
     int pos = leftRight->checkedId() * 9 + topBottom->checkedId() * 3 + rearFront->checkedId();
     // Forbidden : 13 off,off,off
     if (pos == 13) {
