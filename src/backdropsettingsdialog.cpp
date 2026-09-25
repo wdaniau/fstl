@@ -1,5 +1,11 @@
 #include "backdropsettingsdialog.h"
 #include "canvas.h"
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QApplication>
+#include <QPushButton>
+#include <QColorDialog>
+#include <QMessageBox>
 
 const QString BackdropSettingsDialog::BACKDROP_TOP_LEFT_CUSTOM = "Backdrop/topLeftCustomColor";
 const QString BackdropSettingsDialog::BACKDROP_TOP_RIGHT_CUSTOM = "Backdrop/topRightCustomColor";

@@ -1,6 +1,15 @@
 #include "shaderlightprefs.h"
 #include "canvas.h"
 #include <QColorDialog>
+#include <QVBoxLayout>
+#include <QApplication>
+#include <QLabel>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QCheckBox>
 
 const QString ShaderLightPrefs::PREFS_GEOM = "shaderPrefsGeometry";
 

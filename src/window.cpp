@@ -7,6 +7,9 @@
 #include "backdropsettingsdialog.h"
 #include "speedmousedialog.h"
 #include <QDrag>
+#include <QToolBar>
+#include <QMessageBox>
+#include <QFileDialog>
 
 const QString Window::RECENT_FILE_KEY = "recentFiles";
 const QString Window::INVERT_ZOOM_KEY = "invertZoom";
@@ -1243,9 +1246,9 @@ void Window::setCanvasSize(int w, int h) {
 
 void Window::setViewportSize(QAction* act) {
     QString t = act->text();
-    QRegExp rx = QRegExp("^\\s*(\\d+).+(\\d+).*");
-    rx.indexIn(t);
-    QStringList desc = rx.capturedTexts();
+    QRegularExpression rx = QRegularExpression("^\\s*(\\d+)\\s*[xX]\\s*(\\d+).*$");
+    QRegularExpressionMatch match = rx.match(t);
+    QStringList desc = match.capturedTexts();
     int w = desc.at(1).toInt();
     int h = desc.at(2).toInt();
     setCanvasSize(w, h);
@@ -1297,9 +1300,9 @@ void Window::on_centerView() {
 
 void Window::onApplyView(QAction* act) {
     QString t = act->text();
-    QRegExp rx = QRegExp("^\\s*(\\S+)\\s+.*$");
-    rx.indexIn(t);
-    QStringList desc = rx.capturedTexts();
+    QRegularExpression rx = QRegularExpression("^\\s*(\\S+)\\s+.*$");
+    QRegularExpressionMatch match = rx.match(t);
+    QStringList desc = match.capturedTexts();
     QString name = desc.at(1);
 
     if (name == "Default") {

@@ -2,6 +2,8 @@
 #include "canvas.h"
 #include <QSlider>
 #include <QStatusBar>
+#include <QVBoxLayout>
+#include <QLabel>
 
 SpeedMouseDialog::SpeedMouseDialog(QWidget* parent, Canvas* _canvas, QStatusBar* _sbar) : QDialog(parent)
 
