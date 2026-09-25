@@ -3,7 +3,7 @@
 # Author: Paul Tsouchlos Copyright 2017-2024
 # Author: William Daniau Copyright 2023-2025 (forked version fstl-e)
 
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21)
 
 project(fstl-e)
 
@@ -60,14 +60,20 @@ set(Icon_Resource exe/fstl-e.rc)
 set(OpenGL_GL_PREFERENCE GLVND)
 
 #find required packages. 
-#find_package(Qt5 5.12 REQUIRED COMPONENTS Core Gui Widgets OpenGL)
-find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED)
+set(QT_COMPONENTS Core Gui Widgets OpenGL)
+set(QT_MIN_VERSION 5.12)
+if(QT_VERSION_MAJOR EQUAL 6)
+    list(APPEND QT_COMPONENTS OpenGLWidgets)
+    set(QT_MIN_VERSION 6.2)
+endif()
+find_package(Qt${QT_VERSION_MAJOR} ${QT_MIN_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS})
 find_package(OpenGL REQUIRED)
 find_package(Threads REQUIRED)
 
 #add resources to RCC
 #qt5_add_resources(Project_Resources_RCC ${Project_Resources})
-qt6_add_resources(Project_Resources_RCC ${Project_Resources})
+qt_add_resources(Project_Resources_RCC ${Project_Resources})
 
 #tell CMake AUTOGEN to skip autogen on the generated qrc files
 set_property(SOURCE ${Project_Resources_RCC} PROPERTY SKIP_AUTOGEN ON)
@@ -85,10 +91,21 @@ else()
   add_executable(fstl-e ${Project_Sources} ${Project_Headers} ${Project_Resources_RCC} ${Icon_Resource})
 endif(WIN32)
 
-#target_link_libraries(fstl-e Qt5::Widgets Qt5::Core Qt5::Gui Qt5::OpenGL ${OPENGL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(fstl-e Qt6::Widgets Qt6::Core Qt6::Gui Qt6::OpenGL Qt6::OpenGLWidgets ${OPENGL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+set(EXTRA_LIBS "")
+if(QT_VERSION_MAJOR EQUAL 6)
+    list(APPEND EXTRA_LIBS Qt6::OpenGLWidgets)
+endif()
+target_link_libraries(fstl-e
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::OpenGL
+    ${EXTRA_LIBS}
+    ${OPENGL_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+)
 
-# Add version definitions to use within the code. 
+# Add version definitions to use within the code.
 target_compile_definitions(fstl-e PRIVATE -DFSTLE_VERSION="${PROJECT_VERSION}")
 
 #installer information that is platform independent
