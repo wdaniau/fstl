@@ -5,6 +5,8 @@ GLMesh::GLMesh(const Mesh* const mesh)
     : vertices(QOpenGLBuffer::VertexBuffer), indices(QOpenGLBuffer::IndexBuffer), baryBuffer(QOpenGLBuffer::VertexBuffer)
 {
     initializeOpenGLFunctions();
+    vao.create();
+    QOpenGLVertexArrayObject::Binder bind(&vao);
 
     vertexCount = 0;
 
@@ -50,17 +52,21 @@ GLMesh::GLMesh(const Mesh* const mesh)
     indices.allocate(mesh->indices.data(),
                      mesh->indices.size() * sizeof(uint32_t));
     indices.release();
+
 }
 
 void GLMesh::draw(GLuint vp, GLuint bp)
 {
-    vertices.bind();
+    QOpenGLVertexArrayObject::Binder bind(&vao);
 
+    vertices.bind();
     glVertexAttribPointer(vp, 3, GL_FLOAT, false, 3*sizeof(float), NULL);
+    glEnableVertexAttribArray(vp);
     vertices.release();
 
     baryBuffer.bind();
     glVertexAttribPointer(bp, 3, GL_FLOAT, false, 3*sizeof(float), NULL);
+    glEnableVertexAttribArray(bp);
     baryBuffer.release();
 
     glDrawArrays(GL_TRIANGLES, 0, vertexCount);

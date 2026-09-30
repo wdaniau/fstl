@@ -7,6 +7,7 @@
 #include "axis.h"
 #include "glmesh.h"
 #include "mesh.h"
+#include "addshaderheader.h"
 
 const float Canvas::P_PERSPECTIVE = 0.25f;
 const float Canvas::P_ORTHOGRAPHIC = 0.0f;
@@ -69,6 +70,7 @@ Canvas::Canvas(QSurfaceFormat format, QWidget *parent)
     msaa = settings.value(MSAA,defaultMsaa).value<int>();
 
     format.setSamples(msaa);
+    qDebug() << "actual format" << format.renderableType();
     //qDebug() << format.samples();
     setFormat(format);
 
@@ -133,7 +135,6 @@ Canvas::Canvas(QSurfaceFormat format, QWidget *parent)
 
     resetTransform();
     anim.setDuration(100);
-
 }
 
 Canvas::~Canvas()
@@ -246,20 +247,39 @@ void Canvas::clear_status()
 void Canvas::initializeGL()
 {
     initializeOpenGLFunctions();
+    // auto* logger = new QOpenGLDebugLogger(this);
+    // if (logger->initialize()) {
+    //     connect(logger, &QOpenGLDebugLogger::messageLogged, this,
+    //             [](const QOpenGLDebugMessage& msg) {
+    //                 qWarning() << msg.message();
+    //             });
+    //     logger->startLogging(QOpenGLDebugLogger::SynchronousLogging);
+    // } else {
+    //     qWarning() << "QOpenGLDebugLogger n'a pas pu s'initialiser (extension GL_KHR_debug absente ?)";
+    // }
+    qDebug() << "Rendering :" << this->context()->format().renderableType();
+    qDebug() << "isOpenGLES() =" << this->context()->isOpenGLES();
+    qDebug() << "GL_VERSION   =" << (const char*)this->context()->functions()->glGetString(GL_VERSION);
+    qDebug() << "GL_VENDOR    =" << (const char*)this->context()->functions()->glGetString(GL_VENDOR);
 
     mesh_vertshader = new QOpenGLShader(QOpenGLShader::Vertex);
-    mesh_vertshader->compileSourceFile(":/gl/mesh.vert");
+    //mesh_vertshader->compileSourceFile(":/gl/mesh.vert");
+    mesh_vertshader->compileSourceCode(addShaderHeader(QOpenGLShader::Vertex,":/gl/mesh.vert"));
     mesh_shader.addShader(mesh_vertshader);
-    mesh_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh.frag");
+    //mesh_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh.frag");
+    mesh_shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/mesh.frag"));
     mesh_shader.link();
     mesh_wireframe_shader.addShader(mesh_vertshader);
-    mesh_wireframe_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_wireframe.frag");
+    //mesh_wireframe_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_wireframe.frag");
+    mesh_wireframe_shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/mesh_wireframe.frag"));
     mesh_wireframe_shader.link();
     mesh_surfaceangle_shader.addShader(mesh_vertshader);
-    mesh_surfaceangle_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_surfaceangle.frag");
+    //mesh_surfaceangle_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_surfaceangle.frag");
+    mesh_surfaceangle_shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/mesh_surfaceangle.frag"));
     mesh_surfaceangle_shader.link();
     mesh_meshlight_shader.addShader(mesh_vertshader);
-    mesh_meshlight_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_light.frag");
+    //mesh_meshlight_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_light.frag");
+    mesh_meshlight_shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/mesh_light.frag"));
     // suppress fallback mechanism
     mesh_meshlight_shader.link();
 
@@ -306,7 +326,7 @@ void Canvas::draw_mesh()
     if(drawMode == wireframe)
     {
         selected_mesh_shader = &mesh_wireframe_shader;
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
     else
     {
@@ -322,7 +342,7 @@ void Canvas::draw_mesh()
         {
             selected_mesh_shader = &mesh_meshlight_shader;
         }
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
     selected_mesh_shader->bind();
@@ -338,6 +358,10 @@ void Canvas::draw_mesh()
     // Compensate for z-flattening when zooming
     glUniform1f(selected_mesh_shader->uniformLocation("zoom"), 1/zoom);
 
+    if (drawMode == wireframe) {
+        glUniform1f(selected_mesh_shader->uniformLocation("wireWidth"),0.5f);
+        // TODO pref
+    }
     // specific meshlight arguments
     if (drawMode == meshlight) {
         // Ambient Light Color, followed by the ambient light coefficient to use
@@ -359,7 +383,7 @@ void Canvas::draw_mesh()
         //glUniform3f(selected_mesh_shader->uniformLocation("directive_light_direction"),-1.0f,-1.0f,0.0f);
         glUniform3f(selected_mesh_shader->uniformLocation("directive_light_direction"),listDir.at(currentLightDirection).x(), listDir.at(currentLightDirection).y(), listDir.at(currentLightDirection).z());
         glUniform1i(selected_mesh_shader->uniformLocation("useWire"),useWire);
-        glUniform1f(selected_mesh_shader->uniformLocation("wireWidth"),wireWidth * 0.3f);
+        glUniform1f(selected_mesh_shader->uniformLocation("wireWidth"),wireWidth * 0.5f);
         // add empirical factor 0.3f to wireWidth as lines appears thicker with new fwidth method
         glUniform2f(selected_mesh_shader->uniformLocation("portSize"),(float)this->width(),(float)this->height());
         glUniform3f(selected_mesh_shader->uniformLocation("wireColor"),wireColor.redF(),wireColor.greenF(),wireColor.blueF());
@@ -375,7 +399,7 @@ void Canvas::draw_mesh()
     mesh->draw(vp, bp);
 
     // Reset draw mode for the background and anything else that needs to be drawn
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+   //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // Clean up state machine
     glDisableVertexAttribArray(vp);

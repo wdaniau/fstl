@@ -15,8 +15,8 @@ set(CXX_STANDARD_REQUIRED ON)
 # Set the version number
 # Renumerotation for fstl-e
 set (FSTLE_VERSION_MAJOR "1")
-set (FSTLE_VERSION_MINOR "2")
-set (FSTLE_VERSION_PATCH "1")
+set (FSTLE_VERSION_MINOR "3")
+set (FSTLE_VERSION_PATCH "0")
 set (PROJECT_VERSION "${FSTLE_VERSION_MAJOR}.${FSTLE_VERSION_MINOR}.${FSTLE_VERSION_PATCH}")
 
 message(STATUS "Version: ${PROJECT_VERSION}")
@@ -50,7 +50,8 @@ src/mesh.h
 src/window.h
 src/shaderlightprefs.h
 src/backdropsettingsdialog.h
-src/speedmousedialog.h)
+src/speedmousedialog.h
+src/addshaderheader.h)
 
 #set project resources and icon resource
 set(Project_Resources qt/qt.qrc gl/gl.qrc)

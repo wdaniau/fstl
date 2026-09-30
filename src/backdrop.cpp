@@ -1,4 +1,5 @@
 #include "backdrop.h"
+#include "addshaderheader.h"
 
 Backdrop::Backdrop()
 {
@@ -8,9 +9,14 @@ Backdrop::Backdrop()
     br = QColor();
 
     initializeOpenGLFunctions();
+    vao.create();
 
-    shader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/gl/quad.vert");
-    shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/quad.frag");
+    QOpenGLVertexArrayObject::Binder bind(&vao);
+
+    //shader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/gl/quad.vert");
+    shader.addShaderFromSourceCode(QOpenGLShader::Vertex,addShaderHeader(QOpenGLShader::Vertex, ":/gl/quad.vert"));
+    //shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/quad.frag");
+    shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/quad.frag"));
     shader.link();
 
     constexpr float vbuf[] = {
@@ -57,6 +63,8 @@ void Backdrop::setBottomRight(const QColor& color)
 
 void Backdrop::draw()
 {
+    QOpenGLVertexArrayObject::Binder bind(&vao);
+
     shader.bind();
     vertices.bind();
 

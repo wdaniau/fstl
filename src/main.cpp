@@ -2,6 +2,8 @@
 
 #include "app.h"
 
+
+
 int main(int argc, char *argv[])
 {
     // Force C locale to force decimal point
@@ -12,6 +14,5 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("fstl-e");
     QCoreApplication::setApplicationVersion(FSTLE_VERSION);
     App a(argc, argv);
-
     return a.exec();
 }

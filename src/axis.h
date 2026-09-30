@@ -4,6 +4,7 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFunctions>
+#include <QOpenGLVertexArrayObject>
 
 class Axis : protected QOpenGLFunctions
 {
@@ -17,6 +18,7 @@ private:
     QOpenGLBuffer vertices, //GL Buffer for model-space coords
         flowerAxisVertices; //GL Buffer for hud-space axis lines
     QOpenGLBuffer flowerLabelVertices[3];//Buffer for hud-space label lines
+    QOpenGLVertexArrayObject vao;
 };
 
 #endif // AXIS_H

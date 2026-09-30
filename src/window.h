@@ -8,6 +8,7 @@
 #include <QToolButton>
 #include <QStatusBar>
 #include <QLabel>
+#include <QSurfaceFormat>
 
 class Canvas;
 class ShaderLightPrefs;

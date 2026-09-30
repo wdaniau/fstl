@@ -1,4 +1,5 @@
 #include "axis.h"
+#include "addshaderheader.h"
 
 const float xLet[] = {
     -0.1, -0.2, 0,
@@ -28,9 +29,13 @@ const float* axisLabels[] = {xLet, yLet, zLet};
 Axis::Axis()
 {
     initializeOpenGLFunctions();
+    vao.create();
+    QOpenGLVertexArrayObject::Binder bind(&vao);
 
-    shader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/gl/colored_lines.vert");
-    shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/colored_lines.frag");
+    //shader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/gl/colored_lines.vert");
+    shader.addShaderFromSourceCode(QOpenGLShader::Vertex,addShaderHeader(QOpenGLShader::Vertex, ":/gl/colored_lines.vert"));
+    //shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/colored_lines.frag");
+    shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/colored_lines.frag"));
     shader.link();
     const int ptSize = 6*sizeof(float);
     for(int lIdx = 0; lIdx < 3; lIdx++)
@@ -96,6 +101,8 @@ void Axis::setScale(QVector3D min, QVector3D max)
 void Axis::draw(QMatrix4x4 transMat, QMatrix4x4 viewMat,
     QMatrix4x4 orientMat, QMatrix4x4 aspectMat, float aspectRatio)
 {
+    QOpenGLVertexArrayObject::Binder bind(&vao);
+
     shader.bind();
     vertices.bind();
     // Load the transform and view matrices into the shader

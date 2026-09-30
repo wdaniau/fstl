@@ -11,6 +11,42 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
+QSurfaceFormat::RenderableType resolveRenderable(QSurfaceFormat::RenderableType requested)
+{
+    // Prepare a test format with requested renderer
+    QSurfaceFormat testFmt;
+    testFmt.setRenderableType(requested);
+    testFmt.setVersion(requested == QSurfaceFormat::OpenGLES ? 3 : 3,
+                       requested == QSurfaceFormat::OpenGLES ? 0 : 3);
+
+    QOpenGLContext ctx;
+    ctx.setFormat(testFmt);
+
+    if (ctx.create()) {
+        // success
+        return requested;
+    }
+
+    // Fail, try the other one
+    QSurfaceFormat::RenderableType fallback =
+        (requested == QSurfaceFormat::OpenGL) ? QSurfaceFormat::OpenGLES
+                                              : QSurfaceFormat::OpenGL;
+
+    QSurfaceFormat fallbackFmt;
+    fallbackFmt.setRenderableType(fallback);
+    QOpenGLContext ctx2;
+    ctx2.setFormat(fallbackFmt);
+
+    if (ctx2.create()) {
+        qWarning() << "Requested renderer unavailable, switching to"
+                   << (fallback == QSurfaceFormat::OpenGLES ? "OpenGL ES" : "Desktop OpenGL");
+        return fallback;
+    }
+
+    qFatal("No OpenGL context (desktop or ES) could be created.");
+}
+
+
 const QString Window::RECENT_FILE_KEY = "recentFiles";
 const QString Window::INVERT_ZOOM_KEY = "invertZoom";
 const QString Window::AUTORELOAD_KEY = "autoreload";
@@ -114,14 +150,32 @@ Window::Window(QWidget *parent) :
     setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     setAcceptDrops(true);
 
-    QSurfaceFormat format;
-    format.setDepthBufferSize(24);
-    format.setStencilBufferSize(8);
-    format.setVersion(2, 1);
-    format.setProfile(QSurfaceFormat::CoreProfile);
+    // Behavior :
+    // If FSTLE_GL_BACKEND environment is set to es, will request OpenGL ES
+    // otherwise will request OpenGL
+    // If the requested backend is available use it
+    // If the requested backend is not available, try to use the other one
+    // If none is available will stop.
+    QByteArray v = qgetenv("FSTLE_GL_BACKEND").toLower();
+    QSurfaceFormat::RenderableType requested =
+        (v == "es") ? QSurfaceFormat::OpenGLES : QSurfaceFormat::OpenGL;
 
-    QSurfaceFormat::setDefaultFormat(format);
-    canvas = new Canvas(format, this);
+    QSurfaceFormat::RenderableType actual = resolveRenderable(requested);
+    QSurfaceFormat fmt;
+    fmt.setRenderableType(actual);
+    if (actual == QSurfaceFormat::OpenGL) {
+        fmt.setVersion(3, 3);
+        fmt.setProfile(QSurfaceFormat::CoreProfile);
+        //fmt.setOption(QSurfaceFormat::DebugContext);
+    } else {
+        fmt.setVersion(3, 0);
+    }
+    fmt.setDepthBufferSize(24);
+    fmt.setStencilBufferSize(8);
+    QSurfaceFormat::setDefaultFormat(fmt);
+
+
+    canvas = new Canvas(fmt, this);
     setCentralWidget(canvas);
     canvas->update();
 

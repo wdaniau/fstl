@@ -5,6 +5,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLFunctions>
 #include <QColor>
+#include <QOpenGLVertexArrayObject>
 
 class Backdrop : protected QOpenGLFunctions
 {
@@ -27,6 +28,8 @@ private:
     QOpenGLShaderProgram shader;
     QOpenGLBuffer vertices;
     QColor tl, tr, bl, br;
+    QOpenGLVertexArrayObject vao;
+
 };
 
 #endif // BACKDROP_H

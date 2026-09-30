@@ -3,6 +3,7 @@
 
 #include <QOpenGLBuffer>
 #include <QOpenGLFunctions>
+#include <QOpenGLVertexArrayObject>
 
 // forward declaration
 class Mesh;
@@ -17,6 +18,7 @@ private:
 	QOpenGLBuffer indices;
     QOpenGLBuffer baryBuffer;
     int vertexCount;
+    QOpenGLVertexArrayObject vao;
 };
 
 #endif // GLMESH_H
