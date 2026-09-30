@@ -11,10 +11,12 @@ class GLMesh : protected QOpenGLFunctions
 {
 public:
     GLMesh(const Mesh* const mesh);
-    void draw(GLuint vp);
+    void draw(GLuint vp, GLuint bp);
 private:
 	QOpenGLBuffer vertices;
 	QOpenGLBuffer indices;
+    QOpenGLBuffer baryBuffer;
+    int vertexCount;
 };
 
 #endif // GLMESH_H

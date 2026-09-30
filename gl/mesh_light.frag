@@ -9,7 +9,9 @@ uniform vec3 wireColor;
 uniform float wireWidth;
 
 in vec3 ec_pos;
-noperspective in vec3 altitude;
+in vec3 bary_pos;
+
+out vec4 fragColor;
 
 void main() {
     // Normalize light direction
@@ -24,10 +26,11 @@ void main() {
     vec3 color =  ambient_light_color.w * ambient_light_color.xyz + directive_light_color.w * dot(ec_normal,dir) * directive_light_color.xyz;
 
     if (useWire) {
-        float d = min(min(altitude.x, altitude.y),altitude.z);
-        float mixVal = smoothstep(wireWidth-1.0, wireWidth+1.0,d);
+        vec3 d = bary_pos / fwidth(bary_pos);
+        float minD = min(min(d.x, d.y),d.z);
+        float mixVal = smoothstep(wireWidth-1.0, wireWidth+1.0,minD);
         color = mix(wireColor,color,mixVal);
     }
 
-    gl_FragColor = vec4(color, 1.0);
+    fragColor = vec4(color, 1.0);
 }

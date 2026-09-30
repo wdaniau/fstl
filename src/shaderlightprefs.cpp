@@ -219,7 +219,6 @@ ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QDialog(p
         restoreGeometry(settings.value(PREFS_GEOM).toByteArray());
     }
 
-    connect(canvas,SIGNAL(fallbackGlslUpdated(bool)),this,SLOT(onFallbackGlslUpdated(bool)));
 }
 
 void ShaderLightPrefs::buttonAmbientColorClicked() {
@@ -341,9 +340,6 @@ void ShaderLightPrefs::resetWireWidthClicked() {
     sliderWireWidth->setValue((int)canvas->getWireWidth());
 }
 
-void ShaderLightPrefs::onFallbackGlslUpdated(bool b) {
-        groupWireFrame->setDisabled(b);
-}
 
 void ShaderLightPrefs::toggleUseWire() {
     // toggle if enable, no sense to do so otherwise

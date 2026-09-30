@@ -56,7 +56,6 @@ Canvas::Canvas(QSurfaceFormat format, QWidget *parent)
     setStyleSheet(styleFile.readAll());
     currentTransform = QMatrix4x4();
 
-    fallbackGlsl = false;
     QSettings settings;
     defaultView = settings.value(DEFAULT_VIEW,defaultDefaultView).value<QString>();
     abFactor = settings.value(AB_FACTOR,defaultAbFactor).value<float>();
@@ -248,8 +247,6 @@ void Canvas::initializeGL()
 {
     initializeOpenGLFunctions();
 
-    fallbackGlsl = false;
-
     mesh_vertshader = new QOpenGLShader(QOpenGLShader::Vertex);
     mesh_vertshader->compileSourceFile(":/gl/mesh.vert");
     mesh_shader.addShader(mesh_vertshader);
@@ -262,16 +259,8 @@ void Canvas::initializeGL()
     mesh_surfaceangle_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_surfaceangle.frag");
     mesh_surfaceangle_shader.link();
     mesh_meshlight_shader.addShader(mesh_vertshader);
-    bool loadSuccess330 = mesh_meshlight_shader.addShaderFromSourceFile(QOpenGLShader::Geometry, ":/gl/calc_altitudes.glsl") &&
-                          mesh_meshlight_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_light.frag");
-    if (!loadSuccess330) {
-        // fallback to 120
-        fallbackGlsl = true;
-        mesh_meshlight_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_light_120.frag");
-        qDebug() << "Cannot load a shader using glsl version 330, fall back to another using version 120";
-        qDebug() << "Adding wireframe on top of meshlight shader will be disabled.";
-    }
-    emit fallbackGlslUpdated(fallbackGlsl);
+    mesh_meshlight_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_light.frag");
+    // suppress fallback mechanism
     mesh_meshlight_shader.link();
 
     backdrop = new Backdrop();
@@ -369,26 +358,28 @@ void Canvas::draw_mesh()
         // -1,-1,0 Light from top right
         //glUniform3f(selected_mesh_shader->uniformLocation("directive_light_direction"),-1.0f,-1.0f,0.0f);
         glUniform3f(selected_mesh_shader->uniformLocation("directive_light_direction"),listDir.at(currentLightDirection).x(), listDir.at(currentLightDirection).y(), listDir.at(currentLightDirection).z());
-        if (!fallbackGlsl) {
-            glUniform1i(selected_mesh_shader->uniformLocation("useWire"),useWire);
-            glUniform1f(selected_mesh_shader->uniformLocation("wireWidth"),wireWidth);
-            glUniform2f(selected_mesh_shader->uniformLocation("portSize"),(float)this->width(),(float)this->height());
-            glUniform3f(selected_mesh_shader->uniformLocation("wireColor"),wireColor.redF(),wireColor.greenF(),wireColor.blueF());
-        }
+        glUniform1i(selected_mesh_shader->uniformLocation("useWire"),useWire);
+        glUniform1f(selected_mesh_shader->uniformLocation("wireWidth"),wireWidth * 0.3f);
+        // add empirical factor 0.3f to wireWidth as lines appears thicker with new fwidth method
+        glUniform2f(selected_mesh_shader->uniformLocation("portSize"),(float)this->width(),(float)this->height());
+        glUniform3f(selected_mesh_shader->uniformLocation("wireColor"),wireColor.redF(),wireColor.greenF(),wireColor.blueF());
     }
 
     // Find and enable the attribute location for vertex position
     const GLuint vp = selected_mesh_shader->attributeLocation("vertex_position");
+    const GLuint bp = selected_mesh_shader->attributeLocation("bary_position");
     glEnableVertexAttribArray(vp);
+    glEnableVertexAttribArray(bp);
 
     // Then draw the mesh with that vertex position
-    mesh->draw(vp);
+    mesh->draw(vp, bp);
 
     // Reset draw mode for the background and anything else that needs to be drawn
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     // Clean up state machine
     glDisableVertexAttribArray(vp);
+    glDisableVertexAttribArray(bp);
     selected_mesh_shader->release();
 }
 QMatrix4x4 Canvas::orient_matrix() const
@@ -679,10 +670,6 @@ void Canvas::setWireColor(QColor c) {
 
 void Canvas::resetWireColor() {
     setWireColor(defaultWireColor);
-}
-
-bool Canvas::isFallbackGlsl() {
-    return fallbackGlsl;
 }
 
 void Canvas::resetView() {

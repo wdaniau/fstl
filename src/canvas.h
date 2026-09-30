@@ -64,8 +64,6 @@ public:
     void setDefaultView(QString v);
     void recenterView();
 
-    bool isFallbackGlsl();
-
     void resetView();
     void applyRotation(QString name);
 
@@ -114,9 +112,6 @@ protected:
     void set_perspective(float p);
     void view_anim(float v);
 
-signals:
-    void fallbackGlslUpdated(bool b);
-
 private:
     void draw_mesh();
 
@@ -144,7 +139,6 @@ private:
     bool useWire;
     float wireWidth;
     QColor wireColor;
-    bool fallbackGlsl;
 
     QHash<QString,QList<float>> predefinedRotations;
     QString defaultView;

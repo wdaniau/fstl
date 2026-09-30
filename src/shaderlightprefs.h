@@ -44,7 +44,6 @@ private slots:
     void resetWireWidthClicked();
 
     void okButtonClicked();
-    void onFallbackGlslUpdated(bool b);
 
     void setRadio(int ind);
     void setPix(int ind);
