@@ -39,7 +39,7 @@ src/shaderlightprefs.cpp
 src/backdropsettingsdialog.cpp
 src/speedmousedialog.cpp)
 
-#set project headers. 
+#set project headers.
 set(Project_Headers src/app.h
 src/backdrop.h
 src/axis.h
@@ -60,7 +60,7 @@ set(Icon_Resource exe/fstl-e.rc)
 #set Policy CMP0072 FindOpenGL behavior
 set(OpenGL_GL_PREFERENCE GLVND)
 
-#find required packages. 
+#find required packages.
 find_package(QT NAMES Qt6 Qt5 REQUIRED)
 set(QT_COMPONENTS Core Gui Widgets OpenGL)
 set(QT_MIN_VERSION 5.12)
@@ -69,7 +69,6 @@ if(QT_VERSION_MAJOR EQUAL 6)
     set(QT_MIN_VERSION 6.2)
 endif()
 find_package(Qt${QT_VERSION_MAJOR} ${QT_MIN_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS})
-find_package(OpenGL REQUIRED)
 find_package(Threads REQUIRED)
 
 #add resources to RCC
@@ -77,9 +76,6 @@ qt_add_resources(Project_Resources_RCC ${Project_Resources})
 
 #tell CMake AUTOGEN to skip autogen on the generated qrc files
 set_property(SOURCE ${Project_Resources_RCC} PROPERTY SKIP_AUTOGEN ON)
-
-#include opengl files. 
-include_directories(${QT_QTOPENGL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR} )
 
 if(WIN32)
   add_executable(fstl-e WIN32 ${Project_Sources} ${Project_Headers} ${Project_Resources_RCC} ${Icon_Resource})
@@ -101,7 +97,6 @@ target_link_libraries(fstl-e
     Qt${QT_VERSION_MAJOR}::Gui
     Qt${QT_VERSION_MAJOR}::OpenGL
     ${EXTRA_LIBS}
-    ${OPENGL_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
 )
 
@@ -117,35 +112,56 @@ set(CPACK_PACKAGE_VERSION_PATCH ${FSTLE_VERSION_PATCH})
 if(WIN32)
 
     set(QT_USE_QTMAIN true)
-    
+
     if(MSVC)
         set_source_files_properties(fstl-e PROPERTIES LINKER_LANGUAGE "CXX")
         set_target_properties(fstl-e PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
 
         install(TARGETS fstl-e DESTINATION bin COMPONENT all)
-        
-        install(FILES
-            $<TARGET_FILE:Qt5::Gui_EGL>
-            $<TARGET_FILE:Qt5::Gui_GLESv2>
-            $<TARGET_FILE:Qt5::Core>
-            $<TARGET_FILE:Qt5::Gui> 
-            $<TARGET_FILE:Qt5::OpenGL>
-            $<TARGET_FILE:Qt5::Widgets>
-            DESTINATION bin COMPONENT all)
-        
-        #install file in the platforms directory.
+
+        # Base Qt DLLs, generic for Qt5/Qt6: the list adapts automatically
+        # to the detected major version (QT_VERSION_MAJOR) and to the
+        # OpenGLWidgets module, which only exists in Qt6.
+        set(QT_RUNTIME_TARGETS
+            Qt${QT_VERSION_MAJOR}::Core
+            Qt${QT_VERSION_MAJOR}::Gui
+            Qt${QT_VERSION_MAJOR}::OpenGL
+            Qt${QT_VERSION_MAJOR}::Widgets
+        )
+        if(QT_VERSION_MAJOR EQUAL 6)
+            list(APPEND QT_RUNTIME_TARGETS Qt6::OpenGLWidgets)
+        endif()
+
+        foreach(_qt_target ${QT_RUNTIME_TARGETS})
+            install(FILES $<TARGET_FILE:${_qt_target}> DESTINATION bin COMPONENT all)
+            add_custom_command(TARGET fstl-e POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    $<TARGET_FILE:${_qt_target}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            )
+        endforeach()
+
+        # EGL/GLESv2 DLLs: only present if this Qt ships dynamic EGL/ANGLE
+        # support (Qt5 "dynamic GL", or Qt6 with dynamic ES). if(TARGET ...)
+        # avoids a configuration failure when these targets don't exist in
+        # a desktop-only or static ES-only Qt build.
+        foreach(_gl_target Qt${QT_VERSION_MAJOR}::Gui_EGL Qt${QT_VERSION_MAJOR}::Gui_GLESv2)
+            if(TARGET ${_gl_target})
+                install(FILES $<TARGET_FILE:${_gl_target}> DESTINATION bin COMPONENT all)
+                add_custom_command(TARGET fstl-e POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                        $<TARGET_FILE:${_gl_target}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                )
+            else()
+                message(STATUS "${_gl_target} not found: this Qt build does not ship dynamic ANGLE/EGL, DLL not copied")
+            endif()
+        endforeach()
+
+        #install file in the platforms directory. The path is resolved from
+        #the Qt config directory that was actually found (Qt5 or Qt6).
         install (FILES
-            ${Qt5Core_DIR}/../../../plugins/platforms/qwindows.dll
+            ${Qt${QT_VERSION_MAJOR}Core_DIR}/../../../plugins/platforms/qwindows.dll
             DESTINATION bin/platforms COMPONENT all
         )
-
-        #custom commands based on: https://gist.github.com/Rod-Persky/e6b93e9ee31f9516261b
-        add_custom_command(TARGET fstl-e POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt5::Core>       $<TARGET_FILE_DIR:${PROJECT_NAME}>
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt5::Gui>        $<TARGET_FILE_DIR:${PROJECT_NAME}>
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt5::Widgets>    $<TARGET_FILE_DIR:${PROJECT_NAME}>
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:Qt5::OpenGL>     $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        )	
     endif(MSVC)
 
     # windows specific installer generation information
