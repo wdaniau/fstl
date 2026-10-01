@@ -14,8 +14,8 @@
 // For OpenGL we need an actual version >= 3.3 as we use glsl 330
 // For OpenGL ES we need an actual version >= 3.0 as we use glsl 300
 const QMap<QSurfaceFormat::RenderableType,QPair<int,int>> minRenderVersion = {
-    {QSurfaceFormat::OpenGLES,{4,0}},
-    {QSurfaceFormat::OpenGL,{5,3}}
+    {QSurfaceFormat::OpenGLES,{3,0}},
+    {QSurfaceFormat::OpenGL,{3,3}}
 };
 
 const QMap<QSurfaceFormat::RenderableType,QString> renderName = {
