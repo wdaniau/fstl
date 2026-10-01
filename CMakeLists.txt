@@ -61,7 +61,27 @@ set(Icon_Resource exe/fstl-e.rc)
 set(OpenGL_GL_PREFERENCE GLVND)
 
 #find required packages.
-find_package(QT NAMES Qt6 Qt5 REQUIRED)
+#find_package(QT NAMES Qt6 Qt5 REQUIRED)
+
+#find required packages.
+# Qt Behavior
+# Default is to look for Qt5 and Qt6
+# If both are found Qt6 will be used
+#
+# If cmake is called with -DQT_DESIRED_VERSION=5 or 6
+# it will look specifically for this version
+set(QT_DESIRED_VERSION "" CACHE STRING "Force Qt version (5 or 6), auto choose if empty")
+set_property(CACHE QT_DESIRED_VERSION PROPERTY STRINGS "" "5" "6")
+if(QT_DESIRED_VERSION STREQUAL "5")
+    find_package(QT NAMES Qt5 REQUIRED)
+elseif(QT_DESIRED_VERSION STREQUAL "6")
+    find_package(QT NAMES Qt6 REQUIRED)
+elseif(QT_DESIRED_VERSION STREQUAL "")
+    find_package(QT NAMES Qt6 Qt5 REQUIRED)
+else()
+    message(FATAL_ERROR "QT_DESIRED_VERSION invalid : '${QT_DESIRED_VERSION}' (valid values are '5', '6', or empty)")
+endif()
+
 set(QT_COMPONENTS Core Gui Widgets OpenGL)
 set(QT_MIN_VERSION 5.12)
 if(QT_VERSION_MAJOR EQUAL 6)
@@ -69,6 +89,7 @@ if(QT_VERSION_MAJOR EQUAL 6)
     set(QT_MIN_VERSION 6.2)
 endif()
 find_package(Qt${QT_VERSION_MAJOR} ${QT_MIN_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS})
+message(STATUS "Using Qt: ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}")
 find_package(Threads REQUIRED)
 
 #add resources to RCC
