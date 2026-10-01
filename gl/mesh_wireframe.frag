@@ -1,13 +1,6 @@
-
-// uniform float zoom;
-
-// in vec3 ec_pos;
-
-// out vec4 fragColor;
-
-// void main() {
-//     fragColor = vec4(1.0, 1.0, 1.0, 1.0);
-// }
+#version 300 es
+precision highp float;
+precision highp int;
 
 in vec3 bary_pos;
 uniform float wireWidth;

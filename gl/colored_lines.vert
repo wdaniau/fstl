@@ -1,6 +1,7 @@
+#version 300 es
 
-layout(location = 0) in vec3 vertex_position;
-layout(location = 1) in vec3 vertex_color;
+in vec3 vertex_position;
+in vec3 vertex_color;
 
 uniform mat4 transform_matrix;
 uniform mat4 view_matrix;

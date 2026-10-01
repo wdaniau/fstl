@@ -1,3 +1,6 @@
+#version 300 es
+precision highp float;
+precision highp int;
 
 uniform float zoom;
 uniform vec4 ambient_light_color;
