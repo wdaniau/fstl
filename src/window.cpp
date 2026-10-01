@@ -11,41 +11,60 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-QSurfaceFormat::RenderableType resolveRenderable(QSurfaceFormat::RenderableType requested)
-{
-    // Prepare a test format with requested renderer
-    QSurfaceFormat testFmt;
-    testFmt.setRenderableType(requested);
-    testFmt.setVersion(requested == QSurfaceFormat::OpenGLES ? 3 : 3,
-                       requested == QSurfaceFormat::OpenGLES ? 0 : 3);
+// For OpenGL we need an actual version >= 3.3 as we use glsl 330
+// For OpenGL ES we need an actual version >= 3.0 as we use glsl 300
+const QMap<QSurfaceFormat::RenderableType,QPair<int,int>> minRenderVersion = {
+    {QSurfaceFormat::OpenGLES,{4,0}},
+    {QSurfaceFormat::OpenGL,{5,3}}
+};
 
-    QOpenGLContext ctx;
-    ctx.setFormat(testFmt);
+const QMap<QSurfaceFormat::RenderableType,QString> renderName = {
+    {QSurfaceFormat::OpenGLES, QString("OpenGL ES")},
+    {QSurfaceFormat::OpenGL, QString("OpenGL")}
+};
 
-    if (ctx.create()) {
-        // success
-        return requested;
-    }
-
-    // Fail, try the other one
-    QSurfaceFormat::RenderableType fallback =
-        (requested == QSurfaceFormat::OpenGL) ? QSurfaceFormat::OpenGLES
-                                              : QSurfaceFormat::OpenGL;
-
-    QSurfaceFormat fallbackFmt;
-    fallbackFmt.setRenderableType(fallback);
-    QOpenGLContext ctx2;
-    ctx2.setFormat(fallbackFmt);
-
-    if (ctx2.create()) {
-        qWarning() << "Requested renderer unavailable, switching to"
-                   << (fallback == QSurfaceFormat::OpenGLES ? "OpenGL ES" : "Desktop OpenGL");
-        return fallback;
-    }
-
-    qFatal("No OpenGL context (desktop or ES) could be created.");
+QSurfaceFormat prepareFormat(QSurfaceFormat::RenderableType requested) {
+    QSurfaceFormat fmt;
+    fmt.setRenderableType(requested);
+    fmt.setVersion(minRenderVersion[requested].first,minRenderVersion[requested].second);
+    if (requested == QSurfaceFormat::OpenGL)
+        fmt.setProfile(QSurfaceFormat::CoreProfile);
+    return fmt;
 }
 
+bool testRender(QSurfaceFormat::RenderableType requested) {
+    // Prepare a test format with requested renderer
+    QSurfaceFormat testFmt = prepareFormat(requested);
+    QOpenGLContext ctx;
+    ctx.setFormat(testFmt);
+    if (ctx.create()) {
+        int vMaj = ctx.format().majorVersion();
+        int vMin = ctx.format().minorVersion();
+        if ( (vMaj < minRenderVersion[requested].first) || ((vMaj >= minRenderVersion[requested].first) && (vMin < minRenderVersion[requested].second)) ) {
+            qWarning() << "An " << renderName[requested] << " context has been successfully created "
+                       << "but it did not meet the minimal requirements.";
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        qWarning() << "Could not created an " << renderName << " context";
+        return false;
+    }
+}
+
+QSurfaceFormat::RenderableType resolveRenderable(QSurfaceFormat::RenderableType requested) {
+    QSurfaceFormat::RenderableType theOtherOne = (requested == QSurfaceFormat::OpenGLES) ?
+                                                  QSurfaceFormat::OpenGL :
+                                                  QSurfaceFormat::OpenGLES;
+    if (testRender(requested)) {
+        return requested;
+    } else if (testRender(theOtherOne)) {
+        return theOtherOne;
+    } else {
+        qFatal("No OpenGL context (desktop or ES) could be created.");
+    }
+}
 
 const QString Window::RECENT_FILE_KEY = "recentFiles";
 const QString Window::INVERT_ZOOM_KEY = "invertZoom";
@@ -161,19 +180,10 @@ Window::Window(QWidget *parent) :
         (v == "es") ? QSurfaceFormat::OpenGLES : QSurfaceFormat::OpenGL;
 
     QSurfaceFormat::RenderableType actual = resolveRenderable(requested);
-    QSurfaceFormat fmt;
-    fmt.setRenderableType(actual);
-    if (actual == QSurfaceFormat::OpenGL) {
-        fmt.setVersion(3, 3);
-        fmt.setProfile(QSurfaceFormat::CoreProfile);
-        //fmt.setOption(QSurfaceFormat::DebugContext);
-    } else {
-        fmt.setVersion(3, 0);
-    }
+    QSurfaceFormat fmt = prepareFormat(actual);
     fmt.setDepthBufferSize(24);
     fmt.setStencilBufferSize(8);
     QSurfaceFormat::setDefaultFormat(fmt);
-
 
     canvas = new Canvas(fmt, this);
     setCentralWidget(canvas);
