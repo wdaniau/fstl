@@ -32,60 +32,6 @@ void testRender() {
         qFatal("An OpenGL ES context could not been created.");
     }
 }
-// // For OpenGL we need an actual version >= 3.3 as we use glsl 330
-// // For OpenGL ES we need an actual version >= 3.0 as we use glsl 300
-// const QMap<QSurfaceFormat::RenderableType,QPair<int,int>> minRenderVersion = {
-//     {QSurfaceFormat::OpenGLES,{3,0}},
-//     {QSurfaceFormat::OpenGL,{3,3}}
-// };
-
-// const QMap<QSurfaceFormat::RenderableType,QString> renderName = {
-//     {QSurfaceFormat::OpenGLES, QString("OpenGL ES")},
-//     {QSurfaceFormat::OpenGL, QString("OpenGL")}
-// };
-
-// QSurfaceFormat prepareFormat(QSurfaceFormat::RenderableType requested) {
-//     QSurfaceFormat fmt;
-//     fmt.setRenderableType(requested);
-//     fmt.setVersion(minRenderVersion[requested].first,minRenderVersion[requested].second);
-//     if (requested == QSurfaceFormat::OpenGL)
-//         fmt.setProfile(QSurfaceFormat::CoreProfile);
-//     return fmt;
-// }
-
-// bool testRender(QSurfaceFormat::RenderableType requested) {
-//     // Prepare a test format with requested renderer
-//     QSurfaceFormat testFmt = prepareFormat(requested);
-//     QOpenGLContext ctx;
-//     ctx.setFormat(testFmt);
-//     if (ctx.create()) {
-//         int vMaj = ctx.format().majorVersion();
-//         int vMin = ctx.format().minorVersion();
-//         if ( (vMaj < minRenderVersion[requested].first) || ((vMaj >= minRenderVersion[requested].first) && (vMin < minRenderVersion[requested].second)) ) {
-//             qWarning() << "An " << renderName[requested] << " context has been successfully created "
-//                        << "but it did not meet the minimal requirements.";
-//             return false;
-//         } else {
-//             return true;
-//         }
-//     } else {
-//         qWarning() << "Could not created an " << renderName << " context";
-//         return false;
-//     }
-// }
-
-// QSurfaceFormat::RenderableType resolveRenderable(QSurfaceFormat::RenderableType requested) {
-//     QSurfaceFormat::RenderableType theOtherOne = (requested == QSurfaceFormat::OpenGLES) ?
-//                                                   QSurfaceFormat::OpenGL :
-//                                                   QSurfaceFormat::OpenGLES;
-//     if (testRender(requested)) {
-//         return requested;
-//     } else if (testRender(theOtherOne)) {
-//         return theOtherOne;
-//     } else {
-//         qFatal("No OpenGL context (desktop or ES) could be created.");
-//     }
-// }
 
 const QString Window::RECENT_FILE_KEY = "recentFiles";
 const QString Window::INVERT_ZOOM_KEY = "invertZoom";
@@ -189,22 +135,6 @@ Window::Window(QWidget *parent) :
     setWindowTitle("fstl-e " FSTLE_VERSION);
     setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     setAcceptDrops(true);
-
-    // Behavior :
-    // If FSTLE_GL_BACKEND environment is set to es, will request OpenGL ES
-    // otherwise will request OpenGL
-    // If the requested backend is available use it
-    // If the requested backend is not available, try to use the other one
-    // If none is available will stop.
-    // QByteArray v = qgetenv("FSTLE_GL_BACKEND").toLower();
-    // QSurfaceFormat::RenderableType requested =
-    //     (v == "es") ? QSurfaceFormat::OpenGLES : QSurfaceFormat::OpenGL;
-
-    // QSurfaceFormat::RenderableType actual = resolveRenderable(requested);
-    // QSurfaceFormat fmt = prepareFormat(actual);
-    // fmt.setDepthBufferSize(24);
-    // fmt.setStencilBufferSize(8);
-    // QSurfaceFormat::setDefaultFormat(fmt);
 
     // If testRender is not successfull application will end with a qFatal()
     testRender();
