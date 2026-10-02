@@ -16,7 +16,7 @@ set(CXX_STANDARD_REQUIRED ON)
 # Renumerotation for fstl-e
 set (FSTLE_VERSION_MAJOR "1")
 set (FSTLE_VERSION_MINOR "3")
-set (FSTLE_VERSION_PATCH "0-rc1")
+set (FSTLE_VERSION_PATCH "0-rc2")
 set (PROJECT_VERSION "${FSTLE_VERSION_MAJOR}.${FSTLE_VERSION_MINOR}.${FSTLE_VERSION_PATCH}")
 
 message(STATUS "Version: ${PROJECT_VERSION}")
@@ -89,7 +89,7 @@ if(QT_VERSION_MAJOR EQUAL 6)
     set(QT_MIN_VERSION 6.2)
 endif()
 find_package(Qt${QT_VERSION_MAJOR} ${QT_MIN_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS})
-message(STATUS "Using Qt: ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}")
+message(STATUS "Using Qt: ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} (can override auto choice with -DQT_DESIRED_VERSION=5 or 6)")
 find_package(Threads REQUIRED)
 
 #add resources to RCC
