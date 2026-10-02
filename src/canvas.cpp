@@ -40,7 +40,7 @@ const bool Canvas::defaultUseWire = false;
 const double Canvas::defaultWireWidth = 1.0;
 const QColor Canvas::defaultWireColor = QColor(255,128,0);
 const QString Canvas::defaultDefaultView = QString("default 1");
-const double Canvas::defaultAbFactor = 1.0;
+const double Canvas::defaultAbFactor = 4.0;
 const int Canvas::defaultMsaa = 2;
 
 Canvas::Canvas(QSurfaceFormat format, QWidget *parent)
