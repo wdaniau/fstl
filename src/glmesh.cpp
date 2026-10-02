@@ -2,7 +2,7 @@
 #include "mesh.h"
 
 GLMesh::GLMesh(const Mesh* const mesh)
-    : vertices(QOpenGLBuffer::VertexBuffer), indices(QOpenGLBuffer::IndexBuffer), baryBuffer(QOpenGLBuffer::VertexBuffer)
+    : vertices(QOpenGLBuffer::VertexBuffer), baryBuffer(QOpenGLBuffer::VertexBuffer)
 {
     initializeOpenGLFunctions();
     vao.create();
@@ -11,16 +11,14 @@ GLMesh::GLMesh(const Mesh* const mesh)
     vertexCount = 0;
 
     vertices.create();
-    indices.create();
     baryBuffer.create();
 
     vertices.setUsagePattern(QOpenGLBuffer::StaticDraw);
-    indices.setUsagePattern(QOpenGLBuffer::StaticDraw);
     baryBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
     std::vector<GLfloat> expandedVertices;
     std::vector<QVector3D> baryData;
-    expandedVertices.reserve(mesh->indices.size());
+    expandedVertices.reserve(mesh->indices.size() * 3);
     baryData.reserve(mesh->indices.size());
 
     static const QVector3D baryTable[3] = {
@@ -47,11 +45,6 @@ GLMesh::GLMesh(const Mesh* const mesh)
     baryBuffer.bind();
     baryBuffer.allocate(baryData.data(), int(baryData.size() * sizeof(QVector3D)));
     baryBuffer.release();
-
-    indices.bind();
-    indices.allocate(mesh->indices.data(),
-                     mesh->indices.size() * sizeof(uint32_t));
-    indices.release();
 
 }
 

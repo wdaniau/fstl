@@ -15,7 +15,6 @@ public:
     void draw(GLuint vp, GLuint bp);
 private:
 	QOpenGLBuffer vertices;
-	QOpenGLBuffer indices;
     QOpenGLBuffer baryBuffer;
     int vertexCount;
     QOpenGLVertexArrayObject vao;
