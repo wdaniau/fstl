@@ -263,23 +263,17 @@ void Canvas::initializeGL()
 
     mesh_vertshader = new QOpenGLShader(QOpenGLShader::Vertex);
     mesh_vertshader->compileSourceFile(":/gl/mesh.vert");
-    //mesh_vertshader->compileSourceCode(addShaderHeader(QOpenGLShader::Vertex,":/gl/mesh.vert"));
     mesh_shader.addShader(mesh_vertshader);
     mesh_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh.frag");
-    //mesh_shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/mesh.frag"));
     mesh_shader.link();
     mesh_wireframe_shader.addShader(mesh_vertshader);
     mesh_wireframe_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_wireframe.frag");
-    //mesh_wireframe_shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/mesh_wireframe.frag"));
     mesh_wireframe_shader.link();
     mesh_surfaceangle_shader.addShader(mesh_vertshader);
     mesh_surfaceangle_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_surfaceangle.frag");
-    //mesh_surfaceangle_shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/mesh_surfaceangle.frag"));
     mesh_surfaceangle_shader.link();
     mesh_meshlight_shader.addShader(mesh_vertshader);
     mesh_meshlight_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_light.frag");
-    //mesh_meshlight_shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/mesh_light.frag"));
-    // suppress fallback mechanism
     mesh_meshlight_shader.link();
 
     backdrop = new Backdrop();

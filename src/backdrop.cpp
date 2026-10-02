@@ -13,9 +13,7 @@ Backdrop::Backdrop()
     QOpenGLVertexArrayObject::Binder bind(&vao);
 
     shader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/gl/quad.vert");
-    //shader.addShaderFromSourceCode(QOpenGLShader::Vertex,addShaderHeader(QOpenGLShader::Vertex, ":/gl/quad.vert"));
     shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/quad.frag");
-    //shader.addShaderFromSourceCode(QOpenGLShader::Fragment,addShaderHeader(QOpenGLShader::Fragment, ":/gl/quad.frag"));
     shader.link();
 
     constexpr float vbuf[] = {
