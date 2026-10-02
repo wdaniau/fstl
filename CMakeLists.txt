@@ -161,20 +161,19 @@ if(WIN32)
             )
         endforeach()
 
-        # EGL/GLESv2 DLLs: only present if this Qt ships dynamic EGL/ANGLE
-        # support (Qt5 "dynamic GL", or Qt6 with dynamic ES). if(TARGET ...)
-        # avoids a configuration failure when these targets don't exist in
-        # a desktop-only or static ES-only Qt build.
+        # EGL/GLESv2 DLLs: mandatory, since the app targets OpenGL ES 3.0
+        # only. If this Qt build doesn't ship dynamic EGL/ANGLE support,
+        # fail configuration early with a clear message instead of
+        # producing a package that would crash at runtime.
         foreach(_gl_target Qt${QT_VERSION_MAJOR}::Gui_EGL Qt${QT_VERSION_MAJOR}::Gui_GLESv2)
-            if(TARGET ${_gl_target})
-                install(FILES $<TARGET_FILE:${_gl_target}> DESTINATION bin COMPONENT all)
-                add_custom_command(TARGET fstl-e POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                        $<TARGET_FILE:${_gl_target}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
-                )
-            else()
-                message(STATUS "${_gl_target} not found: this Qt build does not ship dynamic ANGLE/EGL, DLL not copied")
+            if(NOT TARGET ${_gl_target})
+                message(FATAL_ERROR "${_gl_target} not found: this Qt build does not ship dynamic EGL/ANGLE support, required since this app targets OpenGL ES 3.0 only.")
             endif()
+            install(FILES $<TARGET_FILE:${_gl_target}> DESTINATION bin COMPONENT all)
+            add_custom_command(TARGET fstl-e POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    $<TARGET_FILE:${_gl_target}> $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            )
         endforeach()
 
         #install file in the platforms directory. The path is resolved from
