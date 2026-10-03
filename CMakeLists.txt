@@ -51,7 +51,7 @@ src/window.h
 src/shaderlightprefs.h
 src/backdropsettingsdialog.h
 src/speedmousedialog.h
-)
+src/vertex.h)
 
 #set project resources and icon resource
 set(Project_Resources qt/qt.qrc gl/gl.qrc)
