@@ -196,6 +196,16 @@ private:
     QPoint mouse_pos;
     QString status;
     QString meshInfo;
+    float deltaX, deltaY, deltaZ;
+
+    bool drawInfo;
+    bool drawWatermark;
+    bool watermarkUseText;
+    QString watermarkText;
+    QImage watermark;
+    QImage renderWatermarkText();
+    bool drawLogo;
+    QImage logo;
 };
 
 #endif // CANVAS_H

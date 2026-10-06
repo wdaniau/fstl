@@ -134,6 +134,13 @@ Canvas::Canvas(QSurfaceFormat format, QWidget *parent)
 
     resetTransform();
     anim.setDuration(100);
+
+    watermarkText = QString("Watermark");
+    watermarkUseText = true;
+    watermark = renderWatermarkText();
+    drawWatermark = false; // --> TODO Key K
+    logo.load(":/qt/icons/fstl-e_64x64.png"); // Default logo
+    drawLogo = false; // --> TODO Key L
 }
 
 Canvas::~Canvas()
@@ -144,6 +151,38 @@ Canvas::~Canvas()
     delete backdrop;
     delete axis;
     doneCurrent();
+}
+
+QImage Canvas::renderWatermarkText() {
+    const qreal dpr = devicePixelRatioF();
+    QImage img(size() * dpr, QImage::Format_ARGB32_Premultiplied);
+    img.setDevicePixelRatio(dpr);
+    img.fill(Qt::transparent);
+
+    const qreal w = size().width();
+    const qreal h = size().height();
+    const qreal angle = qRadiansToDegrees(qAtan2(h, w));
+    const qreal diag  = qHypot(w, h);
+
+    // Font will use 70% of diag
+    QFont font = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
+    font.setBold(true);
+    const qreal textW = QFontMetricsF(font).horizontalAdvance(watermarkText);
+    font.setPointSizeF(font.pointSizeF() * (diag * 0.7) / textW);
+
+    QPainter p(&img);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setRenderHint(QPainter::TextAntialiasing);
+    p.translate(w / 2, h / 2);
+    p.rotate(-angle);
+    p.setFont(font);
+    p.setPen(QColor(255, 255, 255, 80));
+    p.drawText(QRectF(-diag / 2, -diag / 2, diag, diag),
+               Qt::AlignCenter, watermarkText);
+    p.end();
+
+    return img;
+
 }
 
 void Canvas::view_anim(float v)
@@ -212,7 +251,12 @@ void Canvas::load_mesh(Mesh* m, bool is_reload)
         }
     }
     meshInfo = QStringLiteral("Triangles: %1\nX: [%2, %3]\nY: [%4, %5]\nZ: [%6, %7]").arg(m->triCount());
-    for(int dIdx = 0; dIdx < 3; dIdx++) meshInfo = meshInfo.arg(lower[dIdx]).arg(upper[dIdx]);
+    for(int dIdx = 0; dIdx < 3; dIdx++) {
+        meshInfo = meshInfo.arg(lower[dIdx]).arg(upper[dIdx]);
+    }
+    deltaX = upper[0]-lower[0];
+    deltaY = upper[1]-lower[1];
+    deltaZ = upper[2]-lower[2];
     axis->setScale(lower, upper);
     update();
 
@@ -308,7 +352,47 @@ void Canvas::paintGL()
         int sHeightLength = painter.fontMetrics().horizontalAdvance(sHeight);
         int origin = std::min(sWidthLength,sHeightLength);
         painter.drawText(width() - origin - 10, textHeight + 10, sWidth);
-        painter.drawText(width() - origin - 10, 2* textHeight + 10, sHeight);
+        painter.drawText(width() - origin - 10, 2.5* textHeight + 10, sHeight);
+
+        QString deltaXString = QString("Delta X = %1 mm").arg(deltaX);
+        QString deltaYString = QString("Delta Y = %1 mm").arg(deltaY);
+        QString deltaZString = QString("Delta Z = %1 mm").arg(deltaZ);
+        int deltaXStringLength = painter.fontMetrics().horizontalAdvance(deltaXString);
+        int deltaYStringLength = painter.fontMetrics().horizontalAdvance(deltaYString);
+        int deltaZStringLength = painter.fontMetrics().horizontalAdvance(deltaZString);
+        origin = std::min(deltaXStringLength,std::min(deltaYStringLength,deltaZStringLength));
+        painter.setPen(QColor(76,76,255));
+        painter.drawText(width() - origin - 10, height() - 2 * textHeight + 10, deltaZString);
+        painter.setPen(QColor(76,255,76));
+        painter.drawText(width() - origin - 10, height() - 4 * textHeight + 10, deltaYString);
+        painter.setPen(QColor(255,76,76));
+        painter.drawText(width() - origin - 10, height() - 6 * textHeight + 10, deltaXString);
+        int z=1;
+    }
+
+    // Watermark
+    if (drawWatermark) {
+        QPainter painterW(this);
+        painterW.setRenderHint(QPainter::SmoothPixmapTransform);
+        painterW.setOpacity(0.3);                       // transparence
+
+        QSize target = watermark.size().scaled(size(), Qt::KeepAspectRatio);
+        QRect r(QPoint(0, 0), target);
+        r.moveCenter(rect().center());
+        painter.drawImage(r, watermark);
+    }
+
+    // Logo
+    if (drawLogo) {
+        QPainter painterL(this);
+        painterL.setOpacity(1.0);
+        const int margin = 10;
+        const QSizeF s = logo.size() / logo.devicePixelRatio();
+        QPointF topLeft     (margin, margin);
+        QPointF topRight    (width() - s.width() - margin, margin);
+        QPointF bottomLeft  (margin, height() - s.height() - margin);
+        QPointF bottomRight (width() - s.width() - margin, height() - s.height() - margin);
+        painterL.drawImage(bottomLeft, logo);
     }
 
 }
@@ -573,6 +657,8 @@ void Canvas::wheelEvent(QWheelEvent *event)
 void Canvas::resizeGL(int width, int height)
 {
     glViewport(0, 0, width, height);
+    if (drawWatermark && watermarkUseText)
+        watermark = renderWatermarkText();
 }
 
 QColor Canvas::getAmbientColor() {
