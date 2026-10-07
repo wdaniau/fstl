@@ -130,8 +130,8 @@ void Axis::addLabel(const QString &text, const QVector3D &pos, const QColor &col
 {
     QFont font = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
     font.setPixelSize(48);
-    //font.setBold(true);
-    //qDebug() << QFontInfo(font).family();
+    font.setBold(true);
+    qDebug() << QFontInfo(font).family();
     QFontMetrics fm(font);
     QImage img(fm.horizontalAdvance(text) + 8, fm.height() + 8, QImage::Format_ARGB32_Premultiplied);
     img.fill(Qt::transparent);
@@ -242,7 +242,12 @@ void Axis::setScale(const QVector3D &min, const QVector3D &max)
 void Axis::drawLabels(const QMatrix4x4 &transMat, const QMatrix4x4 &viewMat, float aspectRatio)
 {
     if (labels.empty()) return;
-    const float hNdc = 0.1f;   // text height in normalized coordinates (screen = 2)
+
+    GLint vp[4];
+    glGetIntegerv(GL_VIEWPORT, vp);
+    const float heightPx = 30.0f;
+    const float hNdc = 2.0f * heightPx / vp[3]; // Fixed height whatever viewport size.
+    //const float hNdc = 0.1f;   // text height in normalized coordinates (screen = 2)
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
