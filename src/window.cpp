@@ -42,6 +42,7 @@ const QString Window::DRAW_MODE_KEY = "drawMode";
 const QString Window::WINDOW_GEOM_KEY = "windowGeometry";
 const QString Window::RESET_TRANSFORM_ON_LOAD_KEY = "resetTransformOnLoad";
 const QString Window::HIDE_MENU_BAR = "hideMenuBar";
+const QString Window::DRAW_INFOS_KEY = "drawInfos";
 
 
 const QKeySequence Window::shortcutOpen = Qt::Key_O;
@@ -54,6 +55,7 @@ const QKeySequence Window::shortcutDrawAxes = Qt::Key_A;
 const QKeySequence Window::shortcutHideMenuBar = Qt::Key_M;
 const QKeySequence Window::shortcutFullscreen = Qt::Key_F;
 const QKeySequence Window::shortcutHelp = Qt::Key_H;
+const QKeySequence Window::shortcutDrawInfos = Qt::Key_I;
 
 const QKeySequence Window::shortcutCenterView = Qt::Key_C;
 const QKeySequence Window::shortcutDefaultView = Qt::Key_0;
@@ -78,7 +80,8 @@ Window::Window(QWidget *parent) :
     meshlight_action(new QAction("Shaded ambient and directive light source", this)),
     drawModePrefs_action(new QAction("Draw Mode Settings")),
     backdropSettings_action(new QAction("Background Settings")),
-    axes_action(new QAction("Draw Axes", this)),
+    axes_action(new QAction("Draw Axes and Rulers", this)),
+    infos_action(new QAction("Draw Infos", this)),
     invert_zoom_action(new QAction("Invert Zoom", this)),
     reload_action(new QAction("Reload", this)),
     autoreload_action(new QAction("Autoreload", this)),
@@ -116,6 +119,7 @@ Window::Window(QWidget *parent) :
     drawModePrefs_action->setStatusTip(drawModePrefs_action->toolTip());
     backdropSettings_action->setStatusTip(backdropSettings_action->toolTip());
     axes_action->setStatusTip(axes_action->toolTip());
+    infos_action->setStatusTip(infos_action->toolTip());
     invert_zoom_action->setStatusTip(invert_zoom_action->toolTip());
     reload_action->setStatusTip("Reload the file");
     autoreload_action->setStatusTip("Automatically reload file on file change");
@@ -289,10 +293,16 @@ Window::Window(QWidget *parent) :
     view_menu->addAction(axes_action);
     axes_action->setCheckable(true);
     axes_action->setShortcut(shortcutDrawAxes);
-    axes_action->setIcon(QIcon(":/qt/icons/axes.png"));
+    axes_action->setIcon(QIcon(":/qt/icons/benchy_rules_64.png"));
     this->addAction(axes_action);
     QObject::connect(axes_action, &QAction::toggled,
             this, &Window::on_drawAxes);
+    view_menu->addAction(infos_action);
+    infos_action->setCheckable(true);
+    infos_action->setShortcut(shortcutDrawInfos);
+    infos_action->setIcon(QIcon(":/qt/icons/information_64x64.png"));
+    this->addAction(infos_action);
+    QObject::connect(infos_action, &QAction::toggled,this,&Window::on_drawInfos);
 
     view_menu->addAction(invert_zoom_action);
     invert_zoom_action->setCheckable(true);
@@ -531,6 +541,7 @@ Window::Window(QWidget *parent) :
     windowToolBar->addAction(backdropSettings_action);
 
     windowToolBar->addAction(axes_action);
+    windowToolBar->addAction(infos_action);
     windowToolBar->addAction(invert_zoom_action);
     windowToolBar->addAction(resetTransformOnLoadAction);
 
@@ -614,6 +625,10 @@ void Window::load_persist_settings(){
     bool draw_axes = settings.value(DRAW_AXES_KEY, false).toBool();
     canvas->draw_axes(draw_axes);
     axes_action->setChecked(draw_axes);
+
+    bool draw_infos = settings.value(DRAW_INFOS_KEY, false).toBool();
+    canvas->draw_infos(draw_infos);
+    infos_action->setChecked(draw_infos);
 
     QString projection = settings.value(PROJECTION_KEY, "perspective").toString();
     QAction* currentProjection;
@@ -845,6 +860,12 @@ void Window::on_drawAxes(bool d)
 {
     canvas->draw_axes(d);
     QSettings().setValue(DRAW_AXES_KEY, d);
+}
+
+void Window::on_drawInfos(bool d)
+{
+    canvas->draw_infos(d);
+    QSettings().setValue(DRAW_INFOS_KEY, d);
 }
 
 void Window::on_invertZoom(bool d)
@@ -1300,7 +1321,8 @@ void Window::on_help() {
                      "<li><b>R</b> : Reload the file"
                      "<li><b>P</b> : Draw Mode Settings for current shader (if available)"
                      "<li><b>B</b> : Background Settings"
-                     "<li><b>A</b> : Draw Axes (and some informations)"
+                     "<li><b>A</b> : Draw Axes and Rulers"
+                     "<li><b>I</b> : Draw Infos"
                      "<li><b>M</b> : Show/Hide Menu (and Toolbar as well)"
                      "<li><b>S</b> : Save Screenshot"
                      "<li><b>F</b> : Toggle Fullscreen"

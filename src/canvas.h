@@ -26,6 +26,7 @@ public:
 
     void view_perspective(float p, bool animate);
     void draw_axes(bool d);
+    void draw_infos(bool d);
     void invert_zoom(bool d);
     void set_drawMode(enum DrawMode mode);
     void setResetTransformOnLoad(bool d);
@@ -198,7 +199,7 @@ private:
     QString meshInfo;
     float deltaX, deltaY, deltaZ;
 
-    bool drawInfo;
+    bool drawInfos;
     bool drawWatermark;
     bool watermarkUseText;
     QString watermarkText;

@@ -53,6 +53,7 @@ private slots:
     void on_drawMode(QAction* mode);
     void on_defaultView(QAction* view);
     void on_drawAxes(bool d);
+    void on_drawInfos(bool d);
     void on_invertZoom(bool d);
     void on_resetTransformOnLoad(bool d);
     void on_watched_change(const QString& filename);
@@ -92,6 +93,7 @@ private:
     QAction* const drawModePrefs_action;
     QAction* const backdropSettings_action;
     QAction* const axes_action;
+    QAction* const infos_action;
     QAction* const invert_zoom_action;
     QAction* const reload_action;
     QAction* const autoreload_action;
@@ -103,6 +105,7 @@ private:
     QActionGroup* defaultViewAction;
     QAction* centerAction;
     QAction* applyDefaultViewAction;
+
 
     QMenu* recent_files;
     QMenu* defaultViewMenu;
@@ -128,6 +131,7 @@ private:
     const static QString WINDOW_GEOM_KEY;
     const static QString RESET_TRANSFORM_ON_LOAD_KEY;
     const static QString HIDE_MENU_BAR;
+    const static QString DRAW_INFOS_KEY;
 
     const static QKeySequence shortcutOpen;
     const static QKeySequence shortcutReload;
@@ -139,6 +143,7 @@ private:
     const static QKeySequence shortcutHideMenuBar;
     const static QKeySequence shortcutFullscreen;
     const static QKeySequence shortcutHelp;
+    const static QKeySequence shortcutDrawInfos;
 
     const static QKeySequence shortcutCenterView;
     const static QKeySequence shortcutDefaultView;

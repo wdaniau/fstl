@@ -209,6 +209,13 @@ void Canvas::draw_axes(bool d)
     update();
 }
 
+void Canvas::draw_infos(bool d)
+{
+    drawInfos = d;
+    update();
+}
+
+
 void Canvas::invert_zoom(bool d)
 {
     invertZoom = d;
@@ -342,10 +349,10 @@ void Canvas::paintGL()
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     float textHeight = painter.fontInfo().pointSize();
-    if (drawAxes) painter.drawText(QRect(10, textHeight, width(), height()), meshInfo);
+    if (drawInfos) painter.drawText(QRect(10, textHeight, width(), height()), meshInfo);
     painter.drawText(10, height() - textHeight, status);
 
-    if (drawAxes) {
+    if (drawInfos) {
         QString sWidth = QString("GL Width = %1").arg(width());
         QString sHeight = QString("GL Height = %1").arg(height());
         int sWidthLength = painter.fontMetrics().horizontalAdvance(sWidth);
