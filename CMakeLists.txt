@@ -103,7 +103,7 @@ message(STATUS "Using Qt: ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} (can override 
 find_package(Threads REQUIRED)
 
 #add resources to RCC
-qt_add_resources(Project_Resources_RCC ${Project_Resources})
+qt${QT_VERSION_MAJOR}_add_resources(Project_Resources_RCC ${Project_Resources})
 
 #tell CMake AUTOGEN to skip autogen on the generated qrc files
 set_property(SOURCE ${Project_Resources_RCC} PROPERTY SKIP_AUTOGEN ON)
