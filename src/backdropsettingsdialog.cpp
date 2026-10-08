@@ -23,7 +23,7 @@ namespace
     };
 }
 
-BackdropSettingsDialog::BackdropSettingsDialog(QWidget* parent, Canvas* _canvas) : QDialog(parent)
+BackdropSettingsDialog::BackdropSettingsDialog(QWidget* parent, Canvas* _canvas) : QWidget(parent)
 {
     canvas = _canvas;
 
@@ -317,14 +317,14 @@ void BackdropSettingsDialog::restoreCustomBackdropCorners() const
     canvas->setBackdropCorners(tlCustom, trCustom, blCustom, brCustom);
 }
 
-void BackdropSettingsDialog::resizeEvent(QResizeEvent *event)
-{
-    QSettings().setValue(SETTINGS_DIALOG_GEOMETRY, saveGeometry());
-    QDialog::resizeEvent(event);
-}
+// void BackdropSettingsDialog::resizeEvent(QResizeEvent *event)
+// {
+//     QSettings().setValue(SETTINGS_DIALOG_GEOMETRY, saveGeometry());
+//     QDialog::resizeEvent(event);
+// }
 
-void BackdropSettingsDialog::moveEvent(QMoveEvent *event)
-{
-    QSettings().setValue(SETTINGS_DIALOG_GEOMETRY, saveGeometry());
-    QWidget::moveEvent(event);
-}
+// void BackdropSettingsDialog::moveEvent(QMoveEvent *event)
+// {
+//     QSettings().setValue(SETTINGS_DIALOG_GEOMETRY, saveGeometry());
+//     QWidget::moveEvent(event);
+// }

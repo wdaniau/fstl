@@ -6,7 +6,7 @@
 
 class Canvas;
 
-class BackdropSettingsDialog final : public QDialog
+class BackdropSettingsDialog final : public QWidget
 {
     Q_OBJECT
 
@@ -14,8 +14,8 @@ public:
     BackdropSettingsDialog(QWidget* parent, Canvas* _canvas);
 
 protected:
-    void resizeEvent(QResizeEvent *event) override;
-    void moveEvent(QMoveEvent *event) override;
+    // void resizeEvent(QResizeEvent *event) override;
+    // void moveEvent(QMoveEvent *event) override;
 
 private slots:
     void onPresetChanged(int index);

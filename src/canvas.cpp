@@ -135,12 +135,12 @@ Canvas::Canvas(QSurfaceFormat format, QWidget *parent)
     resetTransform();
     anim.setDuration(100);
 
-    watermarkText = QString("Watermark");
-    watermarkUseText = true;
-    watermark = renderWatermarkText();
-    drawWatermark = false; // --> TODO Key K
-    logo.load(":/qt/icons/fstl-e_64x64.png"); // Default logo
-    drawLogo = false; // --> TODO Key L
+    logo = new Logo(this);
+    connect(logo, &Logo::logoChanged,this,[this]{update();});
+    watermark = new Watermark(this);
+    connect(watermark,&Watermark::watermarkChanged,this,[this]{update();});
+    drawWatermark = false;
+    drawLogo = false;
 }
 
 Canvas::~Canvas()
@@ -153,37 +153,6 @@ Canvas::~Canvas()
     doneCurrent();
 }
 
-QImage Canvas::renderWatermarkText() {
-    const qreal dpr = devicePixelRatioF();
-    QImage img(size() * dpr, QImage::Format_ARGB32_Premultiplied);
-    img.setDevicePixelRatio(dpr);
-    img.fill(Qt::transparent);
-
-    const qreal w = size().width();
-    const qreal h = size().height();
-    const qreal angle = qRadiansToDegrees(qAtan2(h, w));
-    const qreal diag  = qHypot(w, h);
-
-    // Font will use 70% of diag
-    QFont font = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
-    font.setBold(true);
-    const qreal textW = QFontMetricsF(font).horizontalAdvance(watermarkText);
-    font.setPointSizeF(font.pointSizeF() * (diag * 0.7) / textW);
-
-    QPainter p(&img);
-    p.setRenderHint(QPainter::Antialiasing);
-    p.setRenderHint(QPainter::TextAntialiasing);
-    p.translate(w / 2, h / 2);
-    p.rotate(-angle);
-    p.setFont(font);
-    p.setPen(QColor(255, 255, 255, 80));
-    p.drawText(QRectF(-diag / 2, -diag / 2, diag, diag),
-               Qt::AlignCenter, watermarkText);
-    p.end();
-
-    return img;
-
-}
 
 void Canvas::view_anim(float v)
 {
@@ -215,6 +184,17 @@ void Canvas::draw_infos(bool d)
     update();
 }
 
+void Canvas::draw_logo(bool d) {
+    drawLogo = d;
+    emit(drawLogoChanged(d));
+    update();
+}
+
+void Canvas::draw_watermark(bool d) {
+    drawWatermark = d;
+    emit(drawWatermarkChanged(d));
+    update();
+}
 
 void Canvas::invert_zoom(bool d)
 {
@@ -285,7 +265,12 @@ void Canvas::set_perspective(float p)
 void Canvas::set_drawMode(enum DrawMode mode)
 {
     drawMode = mode;
+    emit(drawModeChanged(mode));
     update();
+}
+
+DrawMode Canvas::get_drawMode() {
+    return drawMode;
 }
 
 void Canvas::clear_status()
@@ -332,6 +317,16 @@ void Canvas::initializeGL()
     backdrop->setColors(backdropTL, backdropTR, backdropBL, backdropBR);
 
     axis = new Axis();
+
+    // watermark initialisation
+    // watermarkText = QString("Watermark");
+    // watermarkUseText = true;
+    // watermark = renderWatermarkText();
+
+    // logo initialisation
+    //logo.load(":/qt/icons/fstl-e_64x64.png"); // Default logo
+    //logo = zelogo->getImage();
+    watermark->setNeedRender(true);
 }
 
 
@@ -383,10 +378,10 @@ void Canvas::paintGL()
         painterW.setRenderHint(QPainter::SmoothPixmapTransform);
         painterW.setOpacity(0.3);                       // transparence
 
-        QSize target = watermark.size().scaled(size(), Qt::KeepAspectRatio);
+        QSize target = watermark->getImage().size().scaled(size(), Qt::KeepAspectRatio);
         QRect r(QPoint(0, 0), target);
         r.moveCenter(rect().center());
-        painter.drawImage(r, watermark);
+        painter.drawImage(r, watermark->getImage());
     }
 
     // Logo
@@ -394,12 +389,28 @@ void Canvas::paintGL()
         QPainter painterL(this);
         painterL.setOpacity(1.0);
         const int margin = 10;
-        const QSizeF s = logo.size() / logo.devicePixelRatio();
-        QPointF topLeft     (margin, margin);
-        QPointF topRight    (width() - s.width() - margin, margin);
-        QPointF bottomLeft  (margin, height() - s.height() - margin);
-        QPointF bottomRight (width() - s.width() - margin, height() - s.height() - margin);
-        painterL.drawImage(bottomLeft, logo);
+        QImage curLogo = logo->getImage();
+        const QSizeF s = curLogo.size() / curLogo.devicePixelRatio();
+        LogoPosition logopos = logo->getPosition();
+        QPointF pos;
+        switch (logopos) {
+        case topLeft:
+            pos = QPointF(margin, margin);
+            break;
+        case topRight:
+            pos = QPointF(width() - s.width() - margin, margin);
+            break;
+        case bottomLeft:
+            pos = QPointF(margin, height() - s.height() - margin);
+            break;
+        case bottomRight:
+            pos =QPointF(width() - s.width() - margin, height() - s.height() - margin);
+            break;
+        default: // should not be here
+            pos = QPointF(margin, margin);
+            break;
+        }
+        painterL.drawImage(pos, curLogo);
     }
 
 }
@@ -664,8 +675,9 @@ void Canvas::wheelEvent(QWheelEvent *event)
 void Canvas::resizeGL(int width, int height)
 {
     glViewport(0, 0, width, height);
-    if (drawWatermark && watermarkUseText)
-        watermark = renderWatermarkText();
+    if (drawWatermark && watermark->getUseText()) {
+        watermark->setNeedRender(true);
+    }
 }
 
 QColor Canvas::getAmbientColor() {
@@ -748,6 +760,7 @@ void Canvas::setUseWire(bool b) {
     useWire = b;
     QSettings settings;
     settings.setValue(USE_WIRE,useWire);
+    emit(meshLightUseWireChanged(b));
 }
 
 void Canvas::resetUseWire() {

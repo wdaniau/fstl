@@ -13,7 +13,7 @@ class QFrame;
 class QButtonGroup;
 class QAbstractButton;
 
-class ShaderLightPrefs : public QDialog
+class ShaderLightPrefs : public QWidget
 {
     Q_OBJECT
 public:
@@ -21,8 +21,8 @@ public:
     void toggleUseWire();
 
 protected:
-    void resizeEvent(QResizeEvent *event) override;
-    void moveEvent(QMoveEvent *event) override;
+    // void resizeEvent(QResizeEvent *event) override;
+    // void moveEvent(QMoveEvent *event) override;
 
 private slots:
     void buttonAmbientColorClicked();
@@ -43,7 +43,7 @@ private slots:
     void sliderWireWidthChanged();
     void resetWireWidthClicked();
 
-    void okButtonClicked();
+    // void okButtonClicked();
 
     void setRadio(int ind);
     void setPix(int ind);

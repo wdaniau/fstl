@@ -3,6 +3,7 @@
 #include <QFontMetrics>
 #include <QPainter>
 #include <QFontDatabase>
+#include <QtMath>
 
 const float xLet[] = {
     -0.1, -0.2, 0,
@@ -131,7 +132,7 @@ void Axis::addLabel(const QString &text, const QVector3D &pos, const QColor &col
     QFont font = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
     font.setPixelSize(48);
     font.setBold(true);
-    qDebug() << QFontInfo(font).family();
+    //qDebug() << QFontInfo(font).family();
     QFontMetrics fm(font);
     QImage img(fm.horizontalAdvance(text) + 8, fm.height() + 8, QImage::Format_ARGB32_Premultiplied);
     img.fill(Qt::transparent);

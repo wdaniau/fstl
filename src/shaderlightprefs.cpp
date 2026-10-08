@@ -13,7 +13,7 @@
 
 const QString ShaderLightPrefs::PREFS_GEOM = "shaderPrefsGeometry";
 
-ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QDialog(parent)
+ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QWidget(parent)
 {
     canvas = _canvas;
 
@@ -201,18 +201,20 @@ ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QDialog(p
 
     middleLayout->addWidget(groupWireFrame,6,0,3,5);
 
-    // Ok button
-    QWidget* boxButton = new QWidget;
-    QHBoxLayout* boxButtonLayout = new QHBoxLayout;
-    boxButton->setLayout(boxButtonLayout);
-    QFrame *spacerL = new QFrame;
-    spacerL->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding));
-    QPushButton* okButton = new QPushButton("Ok");
-    boxButtonLayout->addWidget(spacerL);
-    boxButtonLayout->addWidget(okButton);
-    this->layout()->addWidget(boxButton);
-    okButton->setFocusPolicy(Qt::NoFocus);
-    connect(okButton,SIGNAL(clicked(bool)),this,SLOT(okButtonClicked()));
+    // // Ok button
+    // QWidget* boxButton = new QWidget;
+    // QHBoxLayout* boxButtonLayout = new QHBoxLayout;
+    // boxButton->setLayout(boxButtonLayout);
+    // QFrame *spacerL = new QFrame;
+    // spacerL->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding));
+    // QPushButton* okButton = new QPushButton("Ok");
+    // boxButtonLayout->addWidget(spacerL);
+    // boxButtonLayout->addWidget(okButton);
+    // this->layout()->addWidget(boxButton);
+    // okButton->setFocusPolicy(Qt::NoFocus);
+    // connect(okButton,SIGNAL(clicked(bool)),this,SLOT(okButtonClicked()));
+    //connect(canvas,SIGNAL(meshLightUseWireChanged(bool)),this,SLOT)
+    connect(canvas, &Canvas::meshLightUseWireChanged, checkboxUseWireFrame, &QCheckBox::setChecked);
 
     QSettings settings;
     if (!settings.value(PREFS_GEOM).isNull()) {
@@ -273,9 +275,9 @@ void ShaderLightPrefs::resetDirectiveColorClicked() {
     canvas->update();
 }
 
-void ShaderLightPrefs::okButtonClicked() {
-    this->close();
-}
+// void ShaderLightPrefs::okButtonClicked() {
+//     this->close();
+// }
 
 void ShaderLightPrefs::comboDirectionsChanged(int ind) {
     setRadio(ind);
@@ -290,17 +292,17 @@ void ShaderLightPrefs::resetDirection() {
     canvas->update();
 }
 
-void ShaderLightPrefs::resizeEvent(QResizeEvent *event)
-{
-    QSettings().setValue(PREFS_GEOM, saveGeometry());
-    QWidget::resizeEvent(event);
-}
+// void ShaderLightPrefs::resizeEvent(QResizeEvent *event)
+// {
+//     QSettings().setValue(PREFS_GEOM, saveGeometry());
+//     QWidget::resizeEvent(event);
+// }
 
-void ShaderLightPrefs::moveEvent(QMoveEvent *event)
-{
-    QSettings().setValue(PREFS_GEOM, saveGeometry());
-    QWidget::moveEvent(event);
-}
+// void ShaderLightPrefs::moveEvent(QMoveEvent *event)
+// {
+//     QSettings().setValue(PREFS_GEOM, saveGeometry());
+//     QWidget::moveEvent(event);
+// }
 
 void ShaderLightPrefs::checkboxUseWireFrameChanged() {
     bool state = checkboxUseWireFrame->isChecked();

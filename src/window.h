@@ -14,6 +14,7 @@ class Canvas;
 class ShaderLightPrefs;
 class BackdropSettingsDialog;
 class SpeedMouseDialog;
+class SettingsDialog;
 
 class Window : public QMainWindow
 {
@@ -54,6 +55,8 @@ private slots:
     void on_defaultView(QAction* view);
     void on_drawAxes(bool d);
     void on_drawInfos(bool d);
+    void on_drawLogo(bool d);
+    void on_drawWatermark(bool d);
     void on_invertZoom(bool d);
     void on_resetTransformOnLoad(bool d);
     void on_watched_change(const QString& filename);
@@ -65,8 +68,9 @@ private slots:
     void on_save_screenshot();
     void on_fullscreen();
     void on_hide_menuBar();
-    void on_drawModePrefs();
-    void on_backdropSettings();
+    //void on_drawModePrefs();
+    //void on_backdropSettings();
+    void on_prefs();
     void setViewportSize(QAction* act);
     void on_centerView();
     void onApplyView(QAction* act);
@@ -90,10 +94,12 @@ private:
     QAction* const wireframe_action;
     QAction* const surfaceangle_action;
     QAction* const meshlight_action;
-    QAction* const drawModePrefs_action;
-    QAction* const backdropSettings_action;
+    QAction* const prefs_action;
+    //QAction* const backdropSettings_action;
     QAction* const axes_action;
     QAction* const infos_action;
+    QAction* const logo_action;
+    QAction* const watermark_action;
     QAction* const invert_zoom_action;
     QAction* const reload_action;
     QAction* const autoreload_action;
@@ -132,6 +138,8 @@ private:
     const static QString RESET_TRANSFORM_ON_LOAD_KEY;
     const static QString HIDE_MENU_BAR;
     const static QString DRAW_INFOS_KEY;
+    const static QString DRAW_LOGO_KEY;
+    const static QString DRAW_WATERMARK_KEY;
 
     const static QKeySequence shortcutOpen;
     const static QKeySequence shortcutReload;
@@ -144,6 +152,8 @@ private:
     const static QKeySequence shortcutFullscreen;
     const static QKeySequence shortcutHelp;
     const static QKeySequence shortcutDrawInfos;
+    const static QKeySequence shortcutDrawLogo;
+    const static QKeySequence shortcutDrawWatermark;
 
     const static QKeySequence shortcutCenterView;
     const static QKeySequence shortcutDefaultView;
@@ -163,9 +173,10 @@ private:
 
     Canvas* canvas;
 
-    ShaderLightPrefs* meshlightprefs;
-    BackdropSettingsDialog* backdropsettingsdialog;
+    //ShaderLightPrefs* meshlightprefs;
+    //BackdropSettingsDialog* backdropsettingsdialog;
     SpeedMouseDialog* speedMouseDialog;
+    SettingsDialog* settingsDialog;
     QList<QAction*> dm_acts;
 };
 

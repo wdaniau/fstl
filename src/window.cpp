@@ -6,6 +6,7 @@
 #include "shaderlightprefs.h"
 #include "backdropsettingsdialog.h"
 #include "speedmousedialog.h"
+#include "settingsdialog.h"
 #include <QDrag>
 #include <QToolBar>
 #include <QMessageBox>
@@ -43,6 +44,8 @@ const QString Window::WINDOW_GEOM_KEY = "windowGeometry";
 const QString Window::RESET_TRANSFORM_ON_LOAD_KEY = "resetTransformOnLoad";
 const QString Window::HIDE_MENU_BAR = "hideMenuBar";
 const QString Window::DRAW_INFOS_KEY = "drawInfos";
+const QString Window::DRAW_LOGO_KEY = "drawLogo";
+const QString Window::DRAW_WATERMARK_KEY = "drawWatermark";
 
 
 const QKeySequence Window::shortcutOpen = Qt::Key_O;
@@ -56,6 +59,8 @@ const QKeySequence Window::shortcutHideMenuBar = Qt::Key_M;
 const QKeySequence Window::shortcutFullscreen = Qt::Key_F;
 const QKeySequence Window::shortcutHelp = Qt::Key_H;
 const QKeySequence Window::shortcutDrawInfos = Qt::Key_I;
+const QKeySequence Window::shortcutDrawLogo = Qt::Key_L;
+const QKeySequence Window::shortcutDrawWatermark = Qt::Key_K;
 
 const QKeySequence Window::shortcutCenterView = Qt::Key_C;
 const QKeySequence Window::shortcutDefaultView = Qt::Key_0;
@@ -78,10 +83,12 @@ Window::Window(QWidget *parent) :
     wireframe_action(new QAction("Wireframe", this)),
     surfaceangle_action(new QAction("Surface Angle", this)),
     meshlight_action(new QAction("Shaded ambient and directive light source", this)),
-    drawModePrefs_action(new QAction("Draw Mode Settings")),
-    backdropSettings_action(new QAction("Background Settings")),
+    prefs_action(new QAction("Preferences")),
+    //backdropSettings_action(new QAction("Background Settings")),
     axes_action(new QAction("Draw Axes and Rulers", this)),
     infos_action(new QAction("Draw Infos", this)),
+    logo_action(new QAction("Draw Logo (config in prefs)", this)),
+    watermark_action(new QAction("Draw Watermark (config in prefs)", this)),
     invert_zoom_action(new QAction("Invert Zoom", this)),
     reload_action(new QAction("Reload", this)),
     autoreload_action(new QAction("Autoreload", this)),
@@ -116,10 +123,12 @@ Window::Window(QWidget *parent) :
     wireframe_action->setStatusTip(wireframe_action->toolTip());
     surfaceangle_action->setStatusTip(surfaceangle_action->toolTip());
     meshlight_action->setStatusTip(meshlight_action->toolTip());
-    drawModePrefs_action->setStatusTip(drawModePrefs_action->toolTip());
-    backdropSettings_action->setStatusTip(backdropSettings_action->toolTip());
+    prefs_action->setStatusTip(prefs_action->toolTip());
+    //backdropSettings_action->setStatusTip(backdropSettings_action->toolTip());
     axes_action->setStatusTip(axes_action->toolTip());
     infos_action->setStatusTip(infos_action->toolTip());
+    logo_action->setStatusTip(logo_action->toolTip());
+    watermark_action->setStatusTip(watermark_action->toolTip());
     invert_zoom_action->setStatusTip(invert_zoom_action->toolTip());
     reload_action->setStatusTip("Reload the file");
     autoreload_action->setStatusTip("Automatically reload file on file change");
@@ -155,8 +164,10 @@ Window::Window(QWidget *parent) :
 
     statusBar = new QStatusBar;
 
-    meshlightprefs = new ShaderLightPrefs(this, canvas);
-    backdropsettingsdialog = new BackdropSettingsDialog(this, canvas);
+    //meshlightprefs = new ShaderLightPrefs(this, canvas);
+    //backdropsettingsdialog = new BackdropSettingsDialog(this, canvas);
+    settingsDialog = new SettingsDialog(this,canvas);
+
     speedMouseDialog = new SpeedMouseDialog(this, canvas, statusBar);
 
     QObject::connect(watcher, &QFileSystemWatcher::fileChanged,
@@ -224,6 +235,13 @@ Window::Window(QWidget *parent) :
     file_menu->addAction(quit_action);
 
     auto view_menu = menuBar()->addMenu("View");
+    view_menu->addAction(prefs_action);
+    prefs_action->setShortcut(shortcutDrawModeSettings);
+    prefs_action->setIcon(QIcon(":/qt/icons/preferences-system.png"));
+    this->addAction(prefs_action);
+    prefs_action->setEnabled(true);
+    QObject::connect(prefs_action, &QAction::triggered, this, &Window::on_prefs);
+
     projection_menu = view_menu->addMenu("Projection");
     projection_menu->addAction(perspective_action);
     perspective_action->setIcon(QIcon(":/qt/icons/perspective.png"));
@@ -277,18 +295,12 @@ Window::Window(QWidget *parent) :
     QObject::connect(drawModes, &QActionGroup::triggered,
                      this, &Window::on_drawMode);
 
-    view_menu->addAction(drawModePrefs_action);
-    drawModePrefs_action->setShortcut(shortcutDrawModeSettings);
-    drawModePrefs_action->setIcon(QIcon(":/qt/icons/preferences-system.png"));
-    this->addAction(drawModePrefs_action);
-    drawModePrefs_action->setDisabled(true);
-    QObject::connect(drawModePrefs_action, &QAction::triggered, this, &Window::on_drawModePrefs);
 
-    view_menu->addAction(backdropSettings_action);
-    backdropSettings_action->setShortcut(shortcutBackdropSettings);
-    backdropSettings_action->setIcon(QIcon(":/qt/icons/backdrop-settings.png"));
-    this->addAction(backdropSettings_action);
-    QObject::connect(backdropSettings_action, &QAction::triggered, this, &Window::on_backdropSettings);
+    // view_menu->addAction(backdropSettings_action);
+    // backdropSettings_action->setShortcut(shortcutBackdropSettings);
+    // backdropSettings_action->setIcon(QIcon(":/qt/icons/backdrop-settings.png"));
+    // this->addAction(backdropSettings_action);
+    // QObject::connect(backdropSettings_action, &QAction::triggered, this, &Window::on_backdropSettings);
 
     view_menu->addAction(axes_action);
     axes_action->setCheckable(true);
@@ -303,6 +315,20 @@ Window::Window(QWidget *parent) :
     infos_action->setIcon(QIcon(":/qt/icons/information_64x64.png"));
     this->addAction(infos_action);
     QObject::connect(infos_action, &QAction::toggled,this,&Window::on_drawInfos);
+
+    view_menu->addAction((logo_action));
+    logo_action->setCheckable(true);
+    logo_action->setShortcut(shortcutDrawLogo);
+    logo_action->setIcon(QIcon(":/qt/icons/draw_logo_64x64.png"));
+    this->addAction(logo_action);
+    QObject::connect(logo_action, &QAction::toggled,this,&Window::on_drawLogo);
+
+    view_menu->addAction((watermark_action));
+    watermark_action->setCheckable(true);
+    watermark_action->setShortcut(shortcutDrawWatermark);
+    watermark_action->setIcon(QIcon(":/qt/icons/draw_watermark_64x64.png"));
+    this->addAction(watermark_action);
+    QObject::connect(watermark_action, &QAction::toggled,this,&Window::on_drawWatermark);
 
     view_menu->addAction(invert_zoom_action);
     invert_zoom_action->setCheckable(true);
@@ -507,6 +533,7 @@ Window::Window(QWidget *parent) :
 
     // preferences button here
     windowToolBar->addSeparator();
+    windowToolBar->addAction(prefs_action);
 
     // Second group
     QToolButton* msaaButton = new QToolButton;
@@ -536,12 +563,13 @@ Window::Window(QWidget *parent) :
     shaderButton->setMenu(draw_menu);
     shaderButton->setFocusPolicy(Qt::NoFocus); // we do not want the button to have keyboard focus
     windowToolBar->addWidget(shaderButton);
-    windowToolBar->addAction(drawModePrefs_action);
 
-    windowToolBar->addAction(backdropSettings_action);
+    //windowToolBar->addAction(backdropSettings_action);
 
     windowToolBar->addAction(axes_action);
     windowToolBar->addAction(infos_action);
+    windowToolBar->addAction(logo_action);
+    windowToolBar->addAction(watermark_action);
     windowToolBar->addAction(invert_zoom_action);
     windowToolBar->addAction(resetTransformOnLoadAction);
 
@@ -608,6 +636,7 @@ Window::Window(QWidget *parent) :
     this->setStatusBar(statusBar);
 
     load_persist_settings();
+    //settingsDialog->show();
 }
 
 void Window::load_persist_settings(){
@@ -629,6 +658,17 @@ void Window::load_persist_settings(){
     bool draw_infos = settings.value(DRAW_INFOS_KEY, false).toBool();
     canvas->draw_infos(draw_infos);
     infos_action->setChecked(draw_infos);
+
+    // TODO : yes/no/custom logo/resize etc
+    bool draw_logo = settings.value(DRAW_LOGO_KEY,false).toBool();
+    canvas->draw_logo(draw_logo);
+    logo_action->setChecked(draw_logo);
+
+    // TODO : yes/no/custom image/custom text
+    bool draw_watermark = settings.value(DRAW_WATERMARK_KEY,false).toBool();
+    canvas->draw_watermark(draw_watermark);
+    watermark_action->setChecked(draw_watermark);
+
 
     QString projection = settings.value(PROJECTION_KEY, "perspective").toString();
     QAction* currentProjection;
@@ -677,24 +717,33 @@ void Window::load_persist_settings(){
     }
  }
 
-void Window::on_drawModePrefs() {
-    // For now only one draw mode has settings
-    // when settings for other draw mode will be available
-    // we will need to check the current mode
-    if (meshlightprefs->isVisible()) {
-        meshlightprefs->hide();
-    } else {
-        meshlightprefs->show();
-    }
-}
 
-void Window::on_backdropSettings() {
-    if (backdropsettingsdialog->isVisible()) {
-        backdropsettingsdialog->hide();
-    } else {
-        backdropsettingsdialog->show();
-    }
-}
+ void Window::on_prefs() {
+     if (settingsDialog->isVisible()) {
+         settingsDialog->hide();
+     } else {
+         settingsDialog->show();
+     }
+ }
+
+// void Window::on_drawModePrefs() {
+//     // // For now only one draw mode has settings
+//     // // when settings for other draw mode will be available
+//     // // we will need to check the current mode
+//     // if (meshlightprefs->isVisible()) {
+//     //     meshlightprefs->hide();
+//     // } else {
+//     //     meshlightprefs->show();
+//     // }
+// }
+
+// void Window::on_backdropSettings() {
+//     // if (backdropsettingsdialog->isVisible()) {
+//     //     backdropsettingsdialog->hide();
+//     // } else {
+//     //     backdropsettingsdialog->show();
+//     // }
+// }
 
 void Window::on_open()
 {
@@ -715,13 +764,14 @@ void Window::on_open()
 
 void Window::on_about()
 {
-    QMessageBox::about(this, "",
+    QMessageBox::about(this, "",QString(
                        "<p align=\"center\">This is <b>fstl-e</b><br>" FSTLE_VERSION "</p>"
                        "<p>A fast viewer for <code>.stl</code> files.</p>"
+                       "Built with Qt %1"
                        "<p>source code of this version available here :"
                        "<a href=\"https://github.com/wdaniau/fstl\""
                        "   style=\"color: #93a1a1;\">https://github.com/wdaniau/fstl</a></p>"
-                       "<font size='small'>"
+                       "<font size='medium'>"
                        "<p>It is a forked version of <b>fstl</b> 0.10.0<br>"
                        "with some fancy enhancements"
                        "</p>"
@@ -731,7 +781,7 @@ void Window::on_about()
                        "<a href=\"mailto:matt.j.keeter@gmail.com\""
                        "   style=\"color: #93a1a1;\">matt.j.keeter@gmail.com</a></p>"
                        "</font>"
-                       );
+                                         ).arg(qVersion()));
 }
 
 void Window::on_bad_stl()
@@ -815,27 +865,23 @@ void Window::on_projection(QAction* proj)
 void Window::on_drawMode(QAction* act)
 {
     // On mode change hide prefs first
-    meshlightprefs->hide();
+    //meshlightprefs->hide();
 
     DrawMode mode;
     if (act == shaded_action)
     {
-        drawModePrefs_action->setEnabled(false);
         mode = shaded;
     }
     else if (act == wireframe_action)
     {
-        drawModePrefs_action->setEnabled(false);
         mode = wireframe;
     }
     else if (act == surfaceangle_action)
     {
-        drawModePrefs_action->setEnabled(false);
         mode = surfaceangle;
     }
     else if (act == meshlight_action)
     {
-        drawModePrefs_action->setEnabled(true);
         mode = meshlight;
     }
     canvas->set_drawMode(mode);
@@ -866,6 +912,17 @@ void Window::on_drawInfos(bool d)
 {
     canvas->draw_infos(d);
     QSettings().setValue(DRAW_INFOS_KEY, d);
+}
+
+void Window::on_drawLogo(bool d) {
+    canvas->draw_logo(d);
+
+    QSettings().setValue(DRAW_LOGO_KEY, d);
+}
+
+void Window::on_drawWatermark(bool d) {
+    canvas->draw_watermark(d);
+    QSettings().setValue(DRAW_WATERMARK_KEY, d);
 }
 
 void Window::on_invertZoom(bool d)
@@ -1240,7 +1297,9 @@ void Window::keyPressEvent(QKeyEvent* event)
         return;
     } else if (event->key() == Qt::Key_W) {
         if (dm_acts.at(getCurrentShader()) == meshlight_action) {
-            meshlightprefs->toggleUseWire();
+            //meshlightprefs->toggleUseWire();
+            bool currentState = canvas->getUseWire();
+            canvas->setUseWire(currentState?false:true);
             return;
         }
     }
@@ -1319,10 +1378,11 @@ void Window::on_help() {
                      "<li><b>Q</b> : Quit"
                      "<li><b>O</b> : Open"
                      "<li><b>R</b> : Reload the file"
-                     "<li><b>P</b> : Draw Mode Settings for current shader (if available)"
-                     "<li><b>B</b> : Background Settings"
+                     "<li><b>P</b> : Preferences"
                      "<li><b>A</b> : Draw Axes and Rulers"
                      "<li><b>I</b> : Draw Infos"
+                     "<li><b>L</b> : Draw Logo"
+                     "<li><b>K</b> : Draw Watermark"
                      "<li><b>M</b> : Show/Hide Menu (and Toolbar as well)"
                      "<li><b>S</b> : Save Screenshot"
                      "<li><b>F</b> : Toggle Fullscreen"

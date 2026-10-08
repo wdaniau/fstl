@@ -5,6 +5,8 @@
 #include <QOpenGLWidget>
 #include <QSurfaceFormat>
 #include <QOpenGLShaderProgram>
+#include "logo.h"
+#include "watermark.h"
 
 class GLMesh;
 class Mesh;
@@ -27,8 +29,11 @@ public:
     void view_perspective(float p, bool animate);
     void draw_axes(bool d);
     void draw_infos(bool d);
+    void draw_logo(bool d);
+    void draw_watermark(bool d);
     void invert_zoom(bool d);
     void set_drawMode(enum DrawMode mode);
+    DrawMode get_drawMode();
     void setResetTransformOnLoad(bool d);
 
     QColor getAmbientColor();
@@ -95,6 +100,14 @@ public:
 
     void loadBackdropFromSettings();
 
+    Logo* getLogo() {
+        return logo;
+    }
+
+    Watermark* getWatermark() {
+        return watermark;
+    }
+
 public slots:
     void set_status(const QString& s);
     void clear_status();
@@ -112,6 +125,12 @@ protected:
 
     void set_perspective(float p);
     void view_anim(float v);
+
+signals:
+    void drawModeChanged(DrawMode m);
+    void meshLightUseWireChanged(bool b);
+    void drawLogoChanged(bool b);
+    void drawWatermarkChanged(bool b);
 
 private:
     void draw_mesh();
@@ -201,12 +220,13 @@ private:
 
     bool drawInfos;
     bool drawWatermark;
-    bool watermarkUseText;
-    QString watermarkText;
-    QImage watermark;
-    QImage renderWatermarkText();
+    //bool watermarkUseText;
+    //QString watermarkText;
+    //QImage watermark;
+    //QImage renderWatermarkText();
     bool drawLogo;
-    QImage logo;
+    Logo* logo;
+    Watermark* watermark;
 };
 
 #endif // CANVAS_H

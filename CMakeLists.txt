@@ -16,7 +16,7 @@ set(CXX_STANDARD_REQUIRED ON)
 # Renumerotation for fstl-e
 set (FSTLE_VERSION_MAJOR "1")
 set (FSTLE_VERSION_MINOR "3")
-set (FSTLE_VERSION_PATCH "0-rc2")
+set (FSTLE_VERSION_PATCH "0-rc3")
 set (PROJECT_VERSION "${FSTLE_VERSION_MAJOR}.${FSTLE_VERSION_MINOR}.${FSTLE_VERSION_PATCH}")
 
 message(STATUS "Version: ${PROJECT_VERSION}")
@@ -37,7 +37,12 @@ src/mesh.cpp
 src/window.cpp
 src/shaderlightprefs.cpp
 src/backdropsettingsdialog.cpp
-src/speedmousedialog.cpp)
+src/speedmousedialog.cpp
+src/settingsdialog.cpp
+src/logosettings.cpp
+src/watermarksettings.cpp
+src/logo.cpp
+src/watermark.cpp)
 
 #set project headers.
 set(Project_Headers src/app.h
@@ -51,7 +56,12 @@ src/window.h
 src/shaderlightprefs.h
 src/backdropsettingsdialog.h
 src/speedmousedialog.h
-src/vertex.h)
+src/vertex.h
+src/settingsdialog.h
+src/logosettings.h
+src/watermarksettings.h
+src/logo.h
+src/watermark.h)
 
 #set project resources and icon resource
 set(Project_Resources qt/qt.qrc gl/gl.qrc)

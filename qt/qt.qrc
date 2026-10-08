@@ -63,5 +63,7 @@
         <file>icons/backdrop-settings.png</file>
         <file>icons/information_64x64.png</file>
         <file>icons/benchy_rules_64.png</file>
+        <file>icons/draw_logo_64x64.png</file>
+        <file>icons/draw_watermark_64x64.png</file>
     </qresource>
 </RCC>
