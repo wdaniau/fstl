@@ -47,7 +47,7 @@ bool testRender(QSurfaceFormat::RenderableType requested) {
                        << "but it did not meet the minimal requirements.";
             return false;
         } else {
-            QString infoReq = QString("Requested %1 version %2.%3\n")
+            QString infoReq = QString("Requested %1 version %2.%3")
                                .arg(renderName[requested])
                                .arg(minRenderVersion[requested].first)
                                .arg(minRenderVersion[requested].second);
