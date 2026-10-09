@@ -12,27 +12,91 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-const int minRenderMajor = 3;
-const int minRenderMinor = 0;
 
-void testRender() {
-    QSurfaceFormat testFmt;
-    testFmt.setRenderableType(QSurfaceFormat::OpenGLES);
-    testFmt.setVersion(minRenderMajor,minRenderMinor);
+// For OpenGL we need an actual version >= 3.3 as we use glsl 330
+// For OpenGL ES we need an actual version >= 3.0 as we use glsl 300
+const QMap<QSurfaceFormat::RenderableType,QPair<int,int>> minRenderVersion = {
+    {QSurfaceFormat::OpenGLES,{3,0}},
+    {QSurfaceFormat::OpenGL,{3,3}}
+};
+
+const QMap<QSurfaceFormat::RenderableType,QString> renderName = {
+    {QSurfaceFormat::OpenGLES, QString("OpenGL ES")},
+    {QSurfaceFormat::OpenGL, QString("OpenGL")}
+};
+
+QSurfaceFormat prepareFormat(QSurfaceFormat::RenderableType requested) {
+    QSurfaceFormat fmt;
+    fmt.setRenderableType(requested);
+    fmt.setVersion(minRenderVersion[requested].first,minRenderVersion[requested].second);
+    if (requested == QSurfaceFormat::OpenGL)
+        fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
+    return fmt;
+}
+
+bool testRender(QSurfaceFormat::RenderableType requested) {
+    // Prepare a test format with requested renderer
+    QSurfaceFormat testFmt = prepareFormat(requested);
     QOpenGLContext ctx;
     ctx.setFormat(testFmt);
     if (ctx.create()) {
         int vMaj = ctx.format().majorVersion();
         int vMin = ctx.format().minorVersion();
-        qDebug() << QString("Requested OpenGL ES : %1.%2").arg(minRenderMajor).arg(minRenderMinor);
-        qDebug() << QString("Obtained OpenGL ES : %1.%2").arg(vMaj).arg(vMin);
-        if ( (vMaj < minRenderMajor) || ((vMaj >= minRenderMajor) && (vMin < minRenderMinor)) ) {
-            qFatal("An OpenGL ES context has been created but did not meet the minimal requirements");
+        if ( (vMaj < minRenderVersion[requested].first) || ((vMaj >= minRenderVersion[requested].first) && (vMin < minRenderVersion[requested].second)) ) {
+            qWarning() << "An " << renderName[requested] << " context has been successfully created "
+                       << "but it did not meet the minimal requirements.";
+            return false;
+        } else {
+            QString infoReq = QString("Requested %1 version %2.%3\n")
+                               .arg(renderName[requested])
+                               .arg(minRenderVersion[requested].first)
+                               .arg(minRenderVersion[requested].second);
+            QString infoGet = QString("Obtained version %1.%2").arg(vMaj).arg(vMin);
+            qDebug() << infoReq << infoGet;
+            return true;
         }
     } else {
-        qFatal("An OpenGL ES context could not been created.");
+        qWarning() << "Could not created an " << renderName << " context";
+        return false;
     }
 }
+
+QSurfaceFormat::RenderableType resolveRenderable(QSurfaceFormat::RenderableType requested) {
+    QSurfaceFormat::RenderableType theOtherOne = (requested == QSurfaceFormat::OpenGLES) ?
+                                                     QSurfaceFormat::OpenGL :
+                                                     QSurfaceFormat::OpenGLES;
+    if (testRender(requested)) {
+        return requested;
+    } else if (testRender(theOtherOne)) {
+        return theOtherOne;
+    } else {
+        qFatal("No OpenGL context (desktop or ES) could be created.");
+    }
+}
+
+
+// This part for OpenGL ES Only
+// const int minRenderMajor = 3;
+// const int minRenderMinor = 0;
+
+// void testRender() {
+//     QSurfaceFormat testFmt;
+//     testFmt.setRenderableType(QSurfaceFormat::OpenGLES);
+//     testFmt.setVersion(minRenderMajor,minRenderMinor);
+//     QOpenGLContext ctx;
+//     ctx.setFormat(testFmt);
+//     if (ctx.create()) {
+//         int vMaj = ctx.format().majorVersion();
+//         int vMin = ctx.format().minorVersion();
+//         qDebug() << QString("Requested OpenGL ES : %1.%2").arg(minRenderMajor).arg(minRenderMinor);
+//         qDebug() << QString("Obtained OpenGL ES : %1.%2").arg(vMaj).arg(vMin);
+//         if ( (vMaj < minRenderMajor) || ((vMaj >= minRenderMajor) && (vMin < minRenderMinor)) ) {
+//             qFatal("An OpenGL ES context has been created but did not meet the minimal requirements");
+//         }
+//     } else {
+//         qFatal("An OpenGL ES context could not been created.");
+//     }
+// }
 
 const QString Window::RECENT_FILE_KEY = "recentFiles";
 const QString Window::INVERT_ZOOM_KEY = "invertZoom";
@@ -149,14 +213,31 @@ Window::Window(QWidget *parent) :
     setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     setAcceptDrops(true);
 
-    // If testRender is not successfull application will end with a qFatal()
-    testRender();
-    QSurfaceFormat fmt;
-    fmt.setRenderableType(QSurfaceFormat::OpenGLES);
-    fmt.setVersion(minRenderMajor,minRenderMinor);
+    // Behavior :
+    // If FSTLE_GL_BACKEND environment is set to es, will request OpenGL ES
+    // otherwise will request OpenGL
+    // If the requested backend is available use it
+    // If the requested backend is not available, try to use the other one
+    // If none is available will stop.
+    QByteArray v = qgetenv("FSTLE_GL_BACKEND").toLower();
+    QSurfaceFormat::RenderableType requested =
+        (v == "es") ? QSurfaceFormat::OpenGLES : QSurfaceFormat::OpenGL;
+
+    QSurfaceFormat::RenderableType actual = resolveRenderable(requested);
+    QSurfaceFormat fmt = prepareFormat(actual);
     fmt.setDepthBufferSize(24);
     fmt.setStencilBufferSize(8);
-    QSurfaceFormat::setDefaultFormat(fmt);
+    //QSurfaceFormat::setDefaultFormat(fmt);
+
+    // Version OpenGL ES Only
+    // // If testRender is not successfull application will end with a qFatal()
+    // testRender();
+    // QSurfaceFormat fmt;
+    // fmt.setRenderableType(QSurfaceFormat::OpenGLES);
+    // fmt.setVersion(minRenderMajor,minRenderMinor);
+    // fmt.setDepthBufferSize(24);
+    // fmt.setStencilBufferSize(8);
+    // QSurfaceFormat::setDefaultFormat(fmt);
 
     canvas = new Canvas(fmt, this);
     setCentralWidget(canvas);
@@ -219,9 +300,9 @@ Window::Window(QWidget *parent) :
     save_screenshot_action->setShortcut(shortcutScreenshot);
     save_screenshot_action->setIcon(QIcon(":/qt/icons/screenshot.png"));
     this->addAction(save_screenshot_action);
-    QObject::connect(save_screenshot_action, &QAction::triggered, 
+    QObject::connect(save_screenshot_action, &QAction::triggered,
         this, &Window::on_save_screenshot);
-    
+
     rebuild_recent_files();
 
     // file_menu declared at the beginning of the constructor
@@ -334,7 +415,7 @@ Window::Window(QWidget *parent) :
     invert_zoom_action->setCheckable(true);
     invert_zoom_action->setIcon(QIcon(":/qt/icons/invert_zoom.png"));
     QObject::connect(invert_zoom_action, &QAction::triggered,
-            this, &Window::on_invertZoom);       
+            this, &Window::on_invertZoom);
 
     view_menu->addAction(resetTransformOnLoadAction);
     resetTransformOnLoadAction->setCheckable(true);
@@ -692,7 +773,7 @@ void Window::load_persist_settings(){
     }
 
     DrawMode draw_mode = (DrawMode)settings.value(DRAW_MODE_KEY, meshlight).toInt();
-    
+
     if(draw_mode >= DRAWMODECOUNT)
     {
         draw_mode = shaded;
@@ -976,7 +1057,7 @@ void Window::on_save_screenshot()
 {
     const auto image = canvas->grabFramebuffer();
     auto file_name = QFileDialog::getSaveFileName(
-        this, 
+        this,
         tr("Save Screenshot Image"),
         QStandardPaths::standardLocations(QStandardPaths::StandardLocation::PicturesLocation).first(),
         "Images (*.png *.jpg)");
@@ -998,7 +1079,7 @@ void Window::on_save_screenshot()
     {
         file_name.append(".png");
     }
-    
+
     const auto save_ok = image.save(file_name);
     if(!save_ok)
     {
