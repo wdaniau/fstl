@@ -3,6 +3,7 @@
 #include <QLabel>
 #include <QApplication>
 #include <QFileDialog>
+#include <QColorDialog>
 
 WatermarkSettings::WatermarkSettings(QWidget *parent, Canvas* _canvas) : QWidget(parent) {
     canvas = _canvas;
@@ -24,8 +25,16 @@ WatermarkSettings::WatermarkSettings(QWidget *parent, Canvas* _canvas) : QWidget
     textGroup = new QGroupBox("Text");
     textEdit = new QLineEdit(textGroup);
     textEdit->setPlaceholderText("Watermark text");
+
+    colorButton = new QPushButton(textGroup);
+    QHBoxLayout* colorLayout = new QHBoxLayout;
+    colorLayout->addWidget(new QLabel("Text color :", textGroup));
+    colorLayout->addWidget(colorButton);
+    colorLayout->addStretch(1);
+
     QVBoxLayout* textLayout = new QVBoxLayout(textGroup);
     textLayout->addWidget(textEdit);
+    textLayout->addLayout(colorLayout);
 
     imageGroup = new QGroupBox("Image");
     filePathEdit = new QLineEdit(imageGroup);
@@ -50,9 +59,22 @@ WatermarkSettings::WatermarkSettings(QWidget *parent, Canvas* _canvas) : QWidget
     imageLayout->addWidget(previewLabel, 0, Qt::AlignHCenter);
     imageLayout->addWidget(infoLabel);
 
+    opacitySlider = new QSlider(Qt::Horizontal, this);
+    opacitySlider->setRange(0, 100);
+    opacityValueLabel = new QLabel(this);
+    opacityValueLabel->setMinimumWidth(40);
+    opacityValueLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+    QHBoxLayout* opacityLayout = new QHBoxLayout;
+    opacityLayout->addWidget(new QLabel("Opacity :", this));
+    opacityLayout->addWidget(opacitySlider, 1);
+    opacityLayout->addWidget(opacityValueLabel);
+
+
     mainLayout->addWidget(useTextCheck);
     mainLayout->addWidget(textGroup);
     mainLayout->addWidget(imageGroup);
+    mainLayout->addLayout(opacityLayout);
 
     mainLayout->addStretch();
 
@@ -62,6 +84,12 @@ WatermarkSettings::WatermarkSettings(QWidget *parent, Canvas* _canvas) : QWidget
     useTextCheck->setChecked(settings.value(Watermark::WATERMARK_USETEXT,true).value<bool>());
     filePathEdit->setText(settings.value(Watermark::WATERMARK_FILEPATH,"").value<QString>());
     textEdit->setText(settings.value(Watermark::WATERMARK_TEXT,"Watermark").value<QString>());
+    QPixmap dummy(20, 20);
+    dummy.fill(settings.value(Watermark::WATERMARK_TEXT_COLOR,QColor(Qt::white)).value<QColor>());
+    colorButton->setIcon(QIcon(dummy));
+    int opacityInt = (int)(settings.value(Watermark::WATERMARK_OPACITY,0.3f).value<float>() * 100.0f);
+    opacitySlider->setValue(opacityInt);
+    opacityValueLabel->setText(QString("%1 %").arg(opacityInt));
 
     // initialize preview
     getPix(filePathEdit->text());
@@ -76,8 +104,12 @@ WatermarkSettings::WatermarkSettings(QWidget *parent, Canvas* _canvas) : QWidget
     // general dialog connections
     connect(useTextCheck, &QCheckBox::toggled, this, &WatermarkSettings::updateEnabledState);
     connect(browseButton, &QPushButton::clicked, this, &WatermarkSettings::browseFile);
+    connect(opacitySlider,&QSlider::sliderMoved,this,[this](int i){
+        opacityValueLabel->setText(QString("%1 %").arg(i));
+    });
 
     // functional connections
+    // use text checkbox
     connect(useTextCheck,&QCheckBox::toggled,this,[this](bool b){
         canvas->getWatermark()->setUseText(b);
     });
@@ -89,6 +121,13 @@ WatermarkSettings::WatermarkSettings(QWidget *parent, Canvas* _canvas) : QWidget
     connect(textEdit,&QLineEdit::textChanged,this,[this](const QString& t){
         canvas->getWatermark()->setText(t);
     });
+    // slider moved
+    connect(opacitySlider,&QSlider::sliderMoved,this,[this](int i){
+        float opacity = (float)i / 100.0f;
+        canvas->getWatermark()->setOpacity(opacity);
+    });
+    // choose color
+    connect(colorButton,&QPushButton::clicked,this,&WatermarkSettings::chooseColor);
 }
 
 void WatermarkSettings::browseFile() {
@@ -150,4 +189,15 @@ void WatermarkSettings::updatePreview()
                        .arg(pixmap.height());
 
     infoLabel->setText(info);
+}
+
+void WatermarkSettings::chooseColor() {
+    QColor newColor = QColorDialog::getColor(canvas->getWatermark()->getTextColor(), this, QString("Choose color"),QColorDialog::DontUseNativeDialog);
+    if (newColor.isValid() == true)
+    {
+        canvas->getWatermark()->setTextColor(newColor);
+        QPixmap dummy(20, 20);
+        dummy.fill(newColor);
+        colorButton->setIcon(QIcon(dummy));
+    }
 }

@@ -8,6 +8,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QLabel>
+#include <QSlider>
 #include "watermark.h"
 
 class WatermarkSettings : public QWidget
@@ -20,6 +21,7 @@ private slots:
     void browseFile();
     void updatePreview();
     void updateEnabledState();
+    void chooseColor();
 
 private:
     void getPix(const QString& path);
@@ -36,6 +38,11 @@ private:
     QPushButton* browseButton;
     QLabel* previewLabel;
     QLabel* infoLabel;
+
+    QSlider* opacitySlider;
+    QLabel* opacityValueLabel;
+    QColor textColor;
+    QPushButton* colorButton;
 
     QPixmap pixmap;
 };
