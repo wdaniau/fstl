@@ -376,7 +376,7 @@ void Canvas::paintGL()
     if (drawWatermark) {
         QPainter painterW(this);
         painterW.setRenderHint(QPainter::SmoothPixmapTransform);
-        painterW.setOpacity(0.3);                       // transparence
+        painterW.setOpacity(watermark->getOpacity());                       // transparence
 
         QSize target = watermark->getImage().size().scaled(size(), Qt::KeepAspectRatio);
         QRect r(QPoint(0, 0), target);

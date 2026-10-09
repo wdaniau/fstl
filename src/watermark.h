@@ -22,9 +22,17 @@ public:
     const QString& getFilePath() {
         return filePath;
     }
+    float getOpacity() {
+        return opacity;
+    }
+    const QColor& getTextColor() {
+        return textColor;
+    }
     void setUseText(bool b);
     void setFilePath(const QString& f);
     void setText(const QString& t);
+    void setOpacity(float f);
+    void setTextColor(const QColor& c);
     bool loadFromFile();
     void update();
     void setNeedRender(bool b);
@@ -32,6 +40,8 @@ public:
     const static QString WATERMARK_USETEXT;
     const static QString WATERMARK_FILEPATH;
     const static QString WATERMARK_TEXT;
+    const static QString WATERMARK_OPACITY;
+    const static QString WATERMARK_TEXT_COLOR;
 
 signals:
     void watermarkChanged();
@@ -45,6 +55,8 @@ private:
     QString filePath = QStringLiteral("");
     bool needReload = true;
     bool needRender = true;
+    float opacity = 0.3f;
+    QColor textColor = QColor(Qt::white);
 
 };
 

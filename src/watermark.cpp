@@ -9,6 +9,9 @@
 const QString Watermark::WATERMARK_USETEXT = "Watermark/useText";
 const QString Watermark::WATERMARK_FILEPATH = "Watermark/filePath";
 const QString Watermark::WATERMARK_TEXT = "Watermark/text";
+const QString Watermark::WATERMARK_OPACITY = "Watermark/opacity";
+const QString Watermark::WATERMARK_TEXT_COLOR = "Watermark/textColor";
+
 
 Watermark::Watermark(Canvas* _canvas) : QObject(_canvas) {
     canvas = _canvas;
@@ -17,6 +20,8 @@ Watermark::Watermark(Canvas* _canvas) : QObject(_canvas) {
     useText = settings.value(WATERMARK_USETEXT, true).value<bool>();
     filePath = settings.value(WATERMARK_FILEPATH, QString("")).value<QString>();
     text = settings.value(WATERMARK_TEXT, QString("Watermark")).value<QString>();
+    opacity = settings.value(WATERMARK_OPACITY, 0.3f).value<float>();
+    textColor = settings.value(WATERMARK_TEXT_COLOR,QColor(Qt::white)).value<QColor>();
     update();
 }
 
@@ -111,7 +116,8 @@ void Watermark::renderWatermarkText() {
     p.translate(w / 2, h / 2);
     p.rotate(-angle);
     p.setFont(font);
-    p.setPen(QColor(255, 255, 255, 80));
+    //p.setPen(QColor(255, 255, 255, 80));
+    p.setPen(textColor);
     p.drawText(QRectF(-diag / 2, -diag / 2, diag, diag),
                Qt::AlignCenter, text);
     p.end();
@@ -123,4 +129,19 @@ void Watermark::setNeedRender(bool b) {
     needRender = b;
     if (needRender)
         update();
+}
+
+void Watermark::setOpacity(float f) {
+    opacity = f;
+    QSettings settings;
+    settings.setValue(WATERMARK_OPACITY,opacity);
+    emit(watermarkChanged());
+}
+
+void Watermark::setTextColor(const QColor& c) {
+    textColor = c;
+    QSettings settings;
+    settings.setValue(WATERMARK_TEXT_COLOR,textColor);
+    needRender = true;
+    update();
 }
