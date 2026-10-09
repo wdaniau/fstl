@@ -42,17 +42,20 @@ bool testRender(QSurfaceFormat::RenderableType requested) {
     if (ctx.create()) {
         int vMaj = ctx.format().majorVersion();
         int vMin = ctx.format().minorVersion();
+        QString infoReq = QString("Requested %1 version %2.%3 -->")
+                              .arg(renderName[requested])
+                              .arg(minRenderVersion[requested].first)
+                              .arg(minRenderVersion[requested].second);
+        QString infoGet = QString(" Obtained version %1.%2").arg(vMaj).arg(vMin);
+        qDebug().noquote() << infoReq << infoGet;
         if ( (vMaj < minRenderVersion[requested].first) || ((vMaj >= minRenderVersion[requested].first) && (vMin < minRenderVersion[requested].second)) ) {
-            qWarning() << "An " << renderName[requested] << " context has been successfully created "
-                       << "but it did not meet the minimal requirements.";
+            qDebug().noquote() << QString("  An %1 context has been successfully created\n"
+                    "  but it did not meet the minimal requirements %2.%3")
+                    .arg(renderName[requested])
+                    .arg(minRenderVersion[requested].first)
+                    .arg(minRenderVersion[requested].second);
             return false;
         } else {
-            QString infoReq = QString("Requested %1 version %2.%3")
-                               .arg(renderName[requested])
-                               .arg(minRenderVersion[requested].first)
-                               .arg(minRenderVersion[requested].second);
-            QString infoGet = QString("Obtained version %1.%2").arg(vMaj).arg(vMin);
-            qDebug() << infoReq << infoGet;
             return true;
         }
     } else {
@@ -213,12 +216,22 @@ Window::Window(QWidget *parent) :
     setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
     setAcceptDrops(true);
 
+
     // Behavior :
     // If FSTLE_GL_BACKEND environment is set to es, will request OpenGL ES
     // otherwise will request OpenGL
     // If the requested backend is available use it
     // If the requested backend is not available, try to use the other one
     // If none is available will stop.
+    qDebug().noquote() << QString("fstl-e run with OpenGL %1.%2 and OpenGL ES %3.%4")
+                              .arg(minRenderVersion[QSurfaceFormat::OpenGL].first)
+                              .arg(minRenderVersion[QSurfaceFormat::OpenGL].second)
+                              .arg(minRenderVersion[QSurfaceFormat::OpenGLES].first)
+                              .arg(minRenderVersion[QSurfaceFormat::OpenGLES].second);
+    qDebug() << "It will first try OpenGL, then OpenGL ES";
+    qDebug() << "If FSTLE_GL_BACKEND environment is set to es, it will try OpenGL ES first.";
+    qDebug() << "If will use the first one available.";
+    qDebug() << "If none is available will stop.";
     QByteArray v = qgetenv("FSTLE_GL_BACKEND").toLower();
     QSurfaceFormat::RenderableType requested =
         (v == "es") ? QSurfaceFormat::OpenGLES : QSurfaceFormat::OpenGL;
