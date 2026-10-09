@@ -338,6 +338,15 @@ void Canvas::initializeGL()
 
 void Canvas::paintGL()
 {
+    // Debugging purpose
+    // #ifndef QT_OPENGL_ES_2
+    //     if (!context()->isOpenGLES())
+    //         qDebug() << "GL_MULTISAMPLE before:" << (glIsEnabled(GL_MULTISAMPLE) ? "ON" : "off");
+    // #endif
+    // GLint samples = 0;
+    // glGetIntegerv(GL_SAMPLES, &samples);   // current framebuffer samples
+    // qDebug() << "GL_SAMPLES (FBO du widget):" << samples;
+
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -381,6 +390,8 @@ void Canvas::paintGL()
     // Watermark
     if (drawWatermark) {
         QPainter painterW(this);
+        // This is necessary to keep multisampling with OpenGL
+        painterW.setRenderHint(QPainter::Antialiasing,true);
         painterW.setRenderHint(QPainter::SmoothPixmapTransform);
         painterW.setOpacity(watermark->getOpacity());                       // transparence
 
@@ -393,6 +404,8 @@ void Canvas::paintGL()
     // Logo
     if (drawLogo) {
         QPainter painterL(this);
+        // This is necessary to keep multisampling with OpenGL
+        painterL.setRenderHint(QPainter::Antialiasing,true);
         painterL.setOpacity(1.0);
         const int margin = 10;
         QImage curLogo = logo->getImage();

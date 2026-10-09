@@ -30,7 +30,7 @@ QSurfaceFormat prepareFormat(QSurfaceFormat::RenderableType requested) {
     fmt.setRenderableType(requested);
     fmt.setVersion(minRenderVersion[requested].first,minRenderVersion[requested].second);
     if (requested == QSurfaceFormat::OpenGL)
-        fmt.setProfile(QSurfaceFormat::CompatibilityProfile);
+        fmt.setProfile(QSurfaceFormat::CoreProfile);
     return fmt;
 }
 
