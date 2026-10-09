@@ -61,7 +61,8 @@ src/settingsdialog.h
 src/logosettings.h
 src/watermarksettings.h
 src/logo.h
-src/watermark.h)
+src/watermark.h
+src/addshaderheader.h)
 
 #set project resources and icon resource
 set(Project_Resources qt/qt.qrc gl/gl.qrc)

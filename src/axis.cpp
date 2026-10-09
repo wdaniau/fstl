@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QFontDatabase>
 #include <QtMath>
+#include "addshaderheader.h"
 
 const float xLet[] = {
     -0.1, -0.2, 0,
@@ -55,8 +56,11 @@ Axis::Axis()
     vao.create();
     QOpenGLVertexArrayObject::Binder bind(&vao);
 
-    shader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/gl/colored_lines.vert");
-    shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/colored_lines.frag");
+    //shader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/gl/colored_lines.vert");
+    addHeaderlessShaderFromFile(shader,QOpenGLShader::Vertex, ":/gl/colored_lines.vert");
+    //shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/colored_lines.frag");
+    addHeaderlessShaderFromFile(shader,QOpenGLShader::Fragment, ":/gl/colored_lines.frag");
+
     shader.link();
     const int ptSize = 6*sizeof(float);
     for(int lIdx = 0; lIdx < 3; lIdx++)
@@ -102,8 +106,10 @@ Axis::Axis()
     rulesVertices.allocate(l.data(),l.size()*sizeof(ligne));
 
     // Init labels
-    labelShader.addShaderFromSourceFile(QOpenGLShader::Vertex,":/gl/labels.vert");
-    labelShader.addShaderFromSourceFile(QOpenGLShader::Fragment,":/gl/labels.frag");
+    //labelShader.addShaderFromSourceFile(QOpenGLShader::Vertex,":/gl/labels.vert");
+    addHeaderlessShaderFromFile(labelShader,QOpenGLShader::Vertex,":/gl/labels.vert");
+    //labelShader.addShaderFromSourceFile(QOpenGLShader::Fragment,":/gl/labels.frag");
+    addHeaderlessShaderFromFile(labelShader,QOpenGLShader::Fragment,":/gl/labels.frag");
     labelShader.link();
 
     // unit quad centered on origin

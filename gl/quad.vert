@@ -1,4 +1,3 @@
-#version 300 es
 
 in vec2 vertex_position;
 in vec2 vertex_uv;

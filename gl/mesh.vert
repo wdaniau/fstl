@@ -1,4 +1,3 @@
-#version 300 es
 
 in vec3 vertex_position;
 in vec3 bary_position;   // (1,0,0) (0,1,0) (0,0,1)

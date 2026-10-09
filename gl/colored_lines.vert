@@ -1,4 +1,3 @@
-#version 300 es
 
 in vec3 vertex_position;
 in vec3 vertex_color;

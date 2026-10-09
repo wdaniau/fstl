@@ -1,4 +1,4 @@
-#version 300 es
+
 in vec2 corner_position;               // -0.5 .. 0.5
 uniform mat4 transform_matrix;
 uniform mat4 view_matrix;

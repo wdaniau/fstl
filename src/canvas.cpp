@@ -7,6 +7,7 @@
 #include "axis.h"
 #include "glmesh.h"
 #include "mesh.h"
+#include "addshaderheader.h"
 
 const float Canvas::P_PERSPECTIVE = 0.25f;
 const float Canvas::P_ORTHOGRAPHIC = 0.0f;
@@ -298,18 +299,23 @@ void Canvas::initializeGL()
     qDebug() << "GL_VENDOR    =" << (const char*)this->context()->functions()->glGetString(GL_VENDOR);
 
     mesh_vertshader = new QOpenGLShader(QOpenGLShader::Vertex);
-    mesh_vertshader->compileSourceFile(":/gl/mesh.vert");
+    //mesh_vertshader->compileSourceFile(":/gl/mesh.vert");
+    mesh_vertshader->compileSourceCode(addShaderHeader(QOpenGLShader::Vertex,":/gl/mesh.vert"));
     mesh_shader.addShader(mesh_vertshader);
-    mesh_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh.frag");
+    //mesh_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh.frag");
+    addHeaderlessShaderFromFile(mesh_shader,QOpenGLShader::Fragment, ":/gl/mesh.frag");
     mesh_shader.link();
     mesh_wireframe_shader.addShader(mesh_vertshader);
-    mesh_wireframe_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_wireframe.frag");
+    //mesh_wireframe_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_wireframe.frag");
+    addHeaderlessShaderFromFile(mesh_wireframe_shader,QOpenGLShader::Fragment, ":/gl/mesh_wireframe.frag");
     mesh_wireframe_shader.link();
     mesh_surfaceangle_shader.addShader(mesh_vertshader);
-    mesh_surfaceangle_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_surfaceangle.frag");
+    //mesh_surfaceangle_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_surfaceangle.frag");
+    addHeaderlessShaderFromFile(mesh_surfaceangle_shader,QOpenGLShader::Fragment, ":/gl/mesh_surfaceangle.frag");
     mesh_surfaceangle_shader.link();
     mesh_meshlight_shader.addShader(mesh_vertshader);
-    mesh_meshlight_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_light.frag");
+    //mesh_meshlight_shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/gl/mesh_light.frag");
+    addHeaderlessShaderFromFile(mesh_meshlight_shader,QOpenGLShader::Fragment, ":/gl/mesh_light.frag");
     mesh_meshlight_shader.link();
 
     backdrop = new Backdrop();
