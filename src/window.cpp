@@ -972,39 +972,110 @@ void Window::on_loaded(const QString& filename)
     filenameStatusLabel->setText("File:"+fileInfo.fileName());
 }
 
-void Window::on_save_screenshot()
-{
-    const auto image = canvas->grabFramebuffer();
-    auto file_name = QFileDialog::getSaveFileName(
-        this, 
-        tr("Save Screenshot Image"),
-        QStandardPaths::standardLocations(QStandardPaths::StandardLocation::PicturesLocation).first(),
-        "Images (*.png *.jpg)");
+/*
 
-    auto get_file_extension = [](const std::string& file_name) -> std::string
-    {
-        const auto location = std::find(file_name.rbegin(), file_name.rend(), '.');
-        if (location == file_name.rend())
-        {
-            return "";
+Screenshot
+
+New mechanism to allow
+1) Get last screenshot name and set directory
+2) if it has a number at the end, increment it, otherwise add a number, then
+suggest it as the new file name.
+
+*/
+void Window::on_save_screenshot() {
+    QImage image = canvas->grabFramebuffer();
+
+    QSettings settings;
+    QString lastFile = settings.value(QString("Screenshot/lastFile"),QString()).toString();
+    QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString defaultName = QString("fstl-e_screenshot_001.png");
+    QString suggested;
+
+    QString initialPath;
+    if (!lastFile.isEmpty()) {
+        QFileInfo fi(lastFile);
+        QString dir = fi.absolutePath(); // file path without file name
+        QString ext = fi.suffix().isEmpty() ? QString("png") : fi.suffix(); // this should not happen but we ensure ext is not empty
+
+        // Add increment
+        QRegularExpression re(QString("^(.*?)(\\d+)$")); // try to match number at the end
+        QRegularExpressionMatch m = re.match(fi.completeBaseName()); // fi.completeBaseName() -> file name without last extension
+        if (m.hasMatch()) {
+            QString prefix = m.captured(1);       // before the number
+            QString digits = m.captured(2);       // the number
+            int width = qMax(3, digits.size());   // we want to write min 3 digits
+            int next = digits.toInt() + 1;        // increment
+            suggested = prefix + QString::number(next).rightJustified(width, '0'); // 2 -> 002
+        } else {
+            suggested = fi.completeBaseName() + QString("_001"); // no match means no number at the end of last file so we add one
         }
+        suggested += QString(".") + ext;
+        // suggested = last file name with increment if it has a number or _001
 
-        const auto index = std::distance(file_name.rbegin(), location);
-        return file_name.substr(file_name.size() - index);
-    };
+        // We verify that the directory exists
+        // If directory does not exists use default
+        const QString baseDir = QDir(dir).exists() ? dir : defaultDir;
+        initialPath = QDir(baseDir).filePath(suggested);
+    } else {
+        // empty last file -> default directory and default name
+        initialPath = QDir(defaultDir).filePath(defaultName);
+    }
+    QString fileName = QFileDialog::getSaveFileName(
+        nullptr,
+        QString("Save screenshot"),
+        initialPath,
+        QString("Images (*.png *.jpg *.jpeg);;All files (*.* *)"));
 
-    const auto extension = get_file_extension(file_name.toStdString());
-    if(extension.empty() || (extension != "png" && extension != "jpg"))
-    {
-        file_name.append(".png");
+    if (fileName.isEmpty())
+        return;   // cancel on QFileDialog
+
+    // Add extension if not present defaulting to png
+    const QString suffix = QFileInfo(fileName).suffix().toLower();
+    if (QFileInfo(fileName).suffix().isEmpty()) {
+        fileName += QString(".png");
     }
-    
-    const auto save_ok = image.save(file_name);
-    if(!save_ok)
-    {
-        QMessageBox::warning(this, tr("Error Saving Image"), tr("Unable to save screen shot image."));
+
+    const bool ok = image.save(fileName);
+    if(!ok) {
+        QMessageBox::warning(this, "Error Saving Image", "Unable to save screen shot image.");
+        return;
     }
+    settings.setValue(QStringLiteral("Screenshot/lastFile"), fileName);
 }
+
+// void Window::on_save_screenshot()
+// {
+//     const auto image = canvas->grabFramebuffer();
+//     auto file_name = QFileDialog::getSaveFileName(
+//         this,
+//         tr("Save Screenshot Image"),
+//         QStandardPaths::standardLocations(QStandardPaths::StandardLocation::PicturesLocation).first(),
+//         "Images (*.png *.jpg)");
+
+//     auto get_file_extension = [](const std::string& file_name) -> std::string
+//     {
+//         const auto location = std::find(file_name.rbegin(), file_name.rend(), '.');
+//         if (location == file_name.rend())
+//         {
+//             return "";
+//         }
+
+//         const auto index = std::distance(file_name.rbegin(), location);
+//         return file_name.substr(file_name.size() - index);
+//     };
+
+//     const auto extension = get_file_extension(file_name.toStdString());
+//     if(extension.empty() || (extension != "png" && extension != "jpg"))
+//     {
+//         file_name.append(".png");
+//     }
+    
+//     const auto save_ok = image.save(file_name);
+//     if(!save_ok)
+//     {
+//         QMessageBox::warning(this, tr("Error Saving Image"), tr("Unable to save screen shot image."));
+//     }
+// }
 
 void Window::on_hide_menuBar()
 {
