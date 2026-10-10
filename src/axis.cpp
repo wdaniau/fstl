@@ -250,11 +250,14 @@ void Axis::drawLabels(const QMatrix4x4 &transMat, const QMatrix4x4 &viewMat, flo
 {
     if (labels.empty()) return;
 
-    GLint vp[4];
-    glGetIntegerv(GL_VIEWPORT, vp);
-    const float heightPx = 30.0f;
-    const float hNdc = 2.0f * heightPx / vp[3]; // Fixed height whatever viewport size.
-    //const float hNdc = 0.1f;   // text height in normalized coordinates (screen = 2)
+    // For a fixed height label whatever the port
+    // GLint vp[4];
+    // glGetIntegerv(GL_VIEWPORT, vp);
+    // const float heightPx = 30.0f;
+    // const float hNdc = 2.0f * heightPx / vp[3]; // Fixed height whatever viewport size.
+
+    // For a label normalize by the port height
+    const float hNdc = 0.1f;   // text height in normalized coordinates (screen = 2)
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
