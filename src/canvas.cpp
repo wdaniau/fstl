@@ -352,17 +352,17 @@ void Canvas::paintGL()
         QString sHeight = QString("GL Height = %1").arg(height());
         int sWidthLength = painter.fontMetrics().horizontalAdvance(sWidth);
         int sHeightLength = painter.fontMetrics().horizontalAdvance(sHeight);
-        int origin = std::min(sWidthLength,sHeightLength);
+        int origin = std::max(sWidthLength,sHeightLength);
         painter.drawText(width() - origin - 10, textHeight + 10, sWidth);
         painter.drawText(width() - origin - 10, 2.5* textHeight + 10, sHeight);
 
-        QString deltaXString = QString("Delta X = %1 mm").arg(deltaX);
-        QString deltaYString = QString("Delta Y = %1 mm").arg(deltaY);
-        QString deltaZString = QString("Delta Z = %1 mm").arg(deltaZ);
+        QString deltaXString = QString("Delta X = %1 mm").arg(deltaX, 0, 'f', 2);
+        QString deltaYString = QString("Delta Y = %1 mm").arg(deltaY, 0, 'f', 2);
+        QString deltaZString = QString("Delta Z = %1 mm").arg(deltaZ, 0, 'f', 2);
         int deltaXStringLength = painter.fontMetrics().horizontalAdvance(deltaXString);
         int deltaYStringLength = painter.fontMetrics().horizontalAdvance(deltaYString);
         int deltaZStringLength = painter.fontMetrics().horizontalAdvance(deltaZString);
-        origin = std::min(deltaXStringLength,std::min(deltaYStringLength,deltaZStringLength));
+        origin = std::max(deltaXStringLength,std::max(deltaYStringLength,deltaZStringLength));
         painter.setPen(QColor(76,76,255));
         painter.drawText(width() - origin - 10, height() - 2 * textHeight + 10, deltaZString);
         painter.setPen(QColor(76,255,76));
