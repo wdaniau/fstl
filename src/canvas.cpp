@@ -375,6 +375,7 @@ void Canvas::paintGL()
     // Watermark
     if (drawWatermark) {
         QPainter painterW(this);
+        painterW.setRenderHint(QPainter::Antialiasing);
         painterW.setRenderHint(QPainter::SmoothPixmapTransform);
         painterW.setOpacity(watermark->getOpacity());                       // transparence
 
@@ -387,6 +388,7 @@ void Canvas::paintGL()
     // Logo
     if (drawLogo) {
         QPainter painterL(this);
+        painterL.setRenderHint(QPainter::Antialiasing);
         painterL.setOpacity(1.0);
         const int margin = 10;
         QImage curLogo = logo->getImage();
