@@ -200,6 +200,7 @@ ShaderLightPrefs::ShaderLightPrefs(QWidget *parent, Canvas *_canvas) : QWidget(p
     connect(buttonResetLineWidth,SIGNAL(clicked(bool)),this,SLOT(resetWireWidthClicked()));
 
     middleLayout->addWidget(groupWireFrame,6,0,3,5);
+    prefsLayout->addStretch();
 
     // // Ok button
     // QWidget* boxButton = new QWidget;
