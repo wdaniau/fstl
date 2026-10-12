@@ -126,10 +126,10 @@ Axis::Axis()
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
     quadBuffer.release();
 
-    // get max line width available
-    GLfloat range[2];
-    glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, range);
-    maxLineWidth = range[1];
+    // // get max line width available
+    // GLfloat range[2];
+    // glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, range);
+    // maxLineWidth = range[1];
 }
 
 
@@ -289,7 +289,7 @@ void Axis::draw(const QMatrix4x4 &transMat, const QMatrix4x4 &viewMat,
 
     shader.bind();
 
-    glLineWidth(qMin(2.0f,maxLineWidth));
+    // glLineWidth(qMin(2.0f,maxLineWidth));
 
     // Load the transform and view matrices into the shader
     auto loadMatrixUniforms = [&](QMatrix4x4 transform, QMatrix4x4 view)

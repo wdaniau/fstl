@@ -36,7 +36,7 @@ private:
     QOpenGLBuffer quadBuffer;
     QOpenGLVertexArrayObject quadVao;
 
-    GLfloat maxLineWidth;
+    //GLfloat maxLineWidth;
 };
 
 #endif // AXIS_H
