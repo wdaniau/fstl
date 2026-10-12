@@ -7,7 +7,11 @@ out vec4 fragColor;
 void main() {
     vec3 d = bary_pos / fwidth(bary_pos);
     float minD = min(min(d.x, d.y), d.z);
-    if (minD > wireWidth) discard;   // ne garder que les pixels proches d'une arête
-    fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+
+    float alpha = 1.0 - smoothstep(wireWidth - 0.5, wireWidth + 0.5, minD);
+
+    if (alpha < 0.01) discard;
+
+    fragColor = vec4(1.0, 1.0, 1.0, alpha);
 }
 

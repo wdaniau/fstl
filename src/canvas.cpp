@@ -473,6 +473,8 @@ void Canvas::draw_mesh()
     if (drawMode == wireframe) {
         glUniform1f(selected_mesh_shader->uniformLocation("wireWidth"),0.5f);
         // TODO pref
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
     // specific meshlight arguments
     if (drawMode == meshlight) {
@@ -509,6 +511,8 @@ void Canvas::draw_mesh()
 
     // Then draw the mesh with that vertex position
     mesh->draw(vp, bp);
+
+    if (drawMode == wireframe) glDisable(GL_BLEND);
 
     // Reset draw mode for the background and anything else that needs to be drawn
    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
