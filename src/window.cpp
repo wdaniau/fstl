@@ -59,7 +59,7 @@ bool testRender(QSurfaceFormat::RenderableType requested) {
             return true;
         }
     } else {
-        qWarning() << "Could not created an " << renderName << " context";
+        qWarning() << "Could not created an " << renderName[requested] << " context";
         return false;
     }
 }
