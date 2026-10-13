@@ -4,13 +4,17 @@
 #include <QDialog>
 #include <QTabWidget>
 #include "canvas.h"
+#include "window.h"
 
 
 class SettingsDialog : public QDialog
 {
     Q_OBJECT
 public:
-    SettingsDialog(QWidget* parent, Canvas* _canvas);
+    SettingsDialog(Window* parent, Canvas* _canvas);
+    Window* getWindow() {
+        return window;
+    }
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -23,6 +27,7 @@ private slots:
     void okButtonClicked();
 
 private:
+    Window* window;
     QTabWidget* tabs;
     Canvas* canvas;
     QWidget* shaderPrefPage;

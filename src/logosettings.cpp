@@ -8,7 +8,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-LogoSettings::LogoSettings(QWidget *parent, Canvas *_canvas) : QWidget(parent) {
+LogoSettings::LogoSettings(SettingsDialog *parent, Canvas *_canvas) : QWidget(parent) {
+    settingsDialog = parent;
     canvas = _canvas;
 
     QVBoxLayout* mainLayout = new QVBoxLayout;
@@ -96,7 +97,10 @@ LogoSettings::LogoSettings(QWidget *parent, Canvas *_canvas) : QWidget(parent) {
 
     // connections for drawLogoCheckbox
     connect(canvas, &Canvas::drawLogoChanged, this, [this](bool b) {drawLogoCheckbox->setChecked(b);});
-    connect(drawLogoCheckbox, &QCheckBox::toggled, this, [this](bool b){canvas->draw_logo(b);});
+    connect(drawLogoCheckbox, &QCheckBox::toggled, this, [this](bool b){
+        settingsDialog->getWindow()->getDrawLogoAction()->setChecked(b);
+        //canvas->draw_logo(b);
+    });
 
     // general dialog connections
     connect(useDefaultCheck, &QCheckBox::toggled, this, &LogoSettings::updateEnabledState);

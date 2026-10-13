@@ -27,6 +27,12 @@ public:
     int getCurrentShader();
     void cycleShader(bool);
     void setCanvasSize(int w, int h);
+    QAction* getDrawLogoAction() {
+        return logo_action;
+    }
+    QAction* getDrawWatermarkAction() {
+        return watermark_action;
+    }
 
 protected:
     void dragEnterEvent(QDragEnterEvent* event) override;

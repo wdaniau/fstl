@@ -7,12 +7,14 @@
 #include <QPushButton>
 #include "logosettings.h"
 #include "watermarksettings.h"
+#include "window.h"
 
 const QString SettingsDialog::PREFS_GEOM = "prefsGeometry";
 
-SettingsDialog::SettingsDialog(QWidget *parent, Canvas* _canvas) : QDialog(parent) {
+SettingsDialog::SettingsDialog(Window *parent, Canvas* _canvas) : QDialog(parent) {
     setWindowTitle(tr("Preferences"));
 
+    window = parent;
     canvas = _canvas;
     tabs = new QTabWidget(this);
 

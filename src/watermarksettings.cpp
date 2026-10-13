@@ -5,7 +5,8 @@
 #include <QFileDialog>
 #include <QColorDialog>
 
-WatermarkSettings::WatermarkSettings(QWidget *parent, Canvas* _canvas) : QWidget(parent) {
+WatermarkSettings::WatermarkSettings(SettingsDialog *parent, Canvas* _canvas) : QWidget(parent) {
+    settingsDialog = parent;
     canvas = _canvas;
 
     QVBoxLayout* mainLayout = new QVBoxLayout;
@@ -99,7 +100,10 @@ WatermarkSettings::WatermarkSettings(QWidget *parent, Canvas* _canvas) : QWidget
 
     // connections for drawWatermarkCheckbox
     connect(canvas, &Canvas::drawWatermarkChanged, this, [this](bool b){drawWatermarkCheckbox->setChecked(b);});
-    connect(drawWatermarkCheckbox,&QCheckBox::toggled,this,[this](bool b){canvas->draw_watermark(b);});
+    connect(drawWatermarkCheckbox,&QCheckBox::toggled,this,[this](bool b){
+        settingsDialog->getWindow()->getDrawWatermarkAction()->setChecked(b);
+        //canvas->draw_watermark(b);
+    });
 
     // general dialog connections
     connect(useTextCheck, &QCheckBox::toggled, this, &WatermarkSettings::updateEnabledState);

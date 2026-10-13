@@ -10,12 +10,13 @@
 #include <QLabel>
 #include <QSlider>
 #include "watermark.h"
+#include "settingsdialog.h"
 
 class WatermarkSettings : public QWidget
 {
     Q_OBJECT
 public:
-    WatermarkSettings(QWidget *parent, Canvas* _canvas);
+    WatermarkSettings(SettingsDialog *parent, Canvas* _canvas);
 
 private slots:
     void browseFile();
@@ -25,6 +26,7 @@ private slots:
 
 private:
     void getPix(const QString& path);
+    SettingsDialog* settingsDialog;
     Canvas* canvas;
 
     QCheckBox* drawWatermarkCheckbox;

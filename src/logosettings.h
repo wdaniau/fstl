@@ -9,12 +9,13 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include <QLabel>
+#include "settingsdialog.h"
 
 class LogoSettings : public QWidget
 {
     Q_OBJECT
 public:
-    LogoSettings(QWidget* parent, Canvas* _canvas);
+    LogoSettings(SettingsDialog* parent, Canvas* _canvas);
 
 signals:
 private slots:
@@ -24,6 +25,7 @@ private slots:
 
 private:
     void getPix(const QString& path);
+    SettingsDialog* settingsDialog;
     Canvas* canvas;
     QCheckBox* drawLogoCheckbox;
     QCheckBox* useDefaultCheck;
