@@ -696,7 +696,7 @@ void Canvas::wheelEvent(QWheelEvent *event)
 void Canvas::resizeGL(int width, int height)
 {
     glViewport(0, 0, width, height);
-    if (drawWatermark && watermark->getUseText()) {
+    if (watermark->getUseText()) {
         watermark->setNeedRender(true);
     }
 }
