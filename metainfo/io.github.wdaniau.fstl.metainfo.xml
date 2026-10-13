@@ -24,15 +24,19 @@
 
     <screenshots>
         <screenshot type="default">
-            <image>https://raw.githubusercontent.com/wdaniau/fstl/1a533a4bd93a16820d1f26dca1af18fd5a86c085/images/benchy_light_source_position.png</image>
-            <caption>Changing shader light source position</caption>
+            <image>https://raw.githubusercontent.com/wdaniau/fstl/effc34979a6a9ebe39ba08e6e37877aad339ffbc/images/benchy_overlays.png</image>
+            <caption>Add custom logo and watermark - Draw axis and rulers</caption>
         </screenshot>
         <screenshot>
-            <image>https://raw.githubusercontent.com/wdaniau/fstl/1a533a4bd93a16820d1f26dca1af18fd5a86c085/images/benchy_wire.png</image>
-            <caption>Adding wireframe on shader</caption>
+            <image>https://raw.githubusercontent.com/wdaniau/fstl/effc34979a6a9ebe39ba08e6e37877aad339ffbc/images/benchy_light_source_position.png</image>
+            <caption>Light source shader configuration</caption>
         </screenshot>
         <screenshot>
-            <image>https://raw.githubusercontent.com/wdaniau/fstl/4eb6b0a957eded6bed9ab9f45896cdd1646007a6/images/benchy_doc_1024.png</image>
+            <image>https://raw.githubusercontent.com/wdaniau/fstl/effc34979a6a9ebe39ba08e6e37877aad339ffbc/images/benchy_shaders.png</image>
+            <caption>Shaders</caption>
+        </screenshot>
+        <screenshot>
+            <image>https://raw.githubusercontent.com/wdaniau/fstl/effc34979a6a9ebe39ba08e6e37877aad339ffbc/images/benchy_doc_1024.png</image>
             <caption>Interface panorama</caption>
         </screenshot>
     </screenshots>
@@ -47,8 +51,13 @@
             <url>https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.3.0</url>
             <description>
                 <ul>
-                    <li>Moved to OpenGL ES 3.0</li>
-                    <li>Compilation with both Qt5 and Qt6</li>
+                    <li>Now runs on both OpenGL 3.3 and OpenGL ES 3.0</li>
+                    <li>Support both Qt5 and Qt6</li>
+                    <li>when drawing axes, draw rulers with mesh dimension.</li>
+                    <li>draw informations on mesh is now separated from axes</li>
+                    <li>add new overlay to draw custom logo</li>
+                    <li>add new overlay to draw custom watermark</li>
+                    <li>all preferences (background, logo, watermatk and shader) are now grouped in one tabbed dialog.</li>
                 </ul>
             </description>
         </release>
