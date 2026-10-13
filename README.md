@@ -3,10 +3,30 @@
 `fstl-e` is a fork of `fstl` a very fast [.stl file](http://en.wikipedia.org/wiki/STL_\(file_format\)) viewer, available on github at [https://github.com/fstl-app/fstl](https://github.com/fstl-app/fstl). After making some contributions to it, I forked this version which retains `fstl` core functionalities but with some fancy enhancements.
 
 ## Screenshots
-![Light Source Position](./images/benchy_light_source_position.png)
-![Wireframe](./images/benchy_wire.png)
+<figure>
+  <img src="./images/benchy_light_source_position.png" alt="Light Source Position">
+  <figcaption>Light source shader configuration</figcaption>
+</figure>
+<figure>
+  <img src="./images/benchy_overlays.png" alt="Overlays">
+  <figcaption>Add custom logo and watermark - Draw axis and rulers</figcaption>
+</figure>
+<figure>
+  <img src="./images/benchy_shaders.png" alt="Shaders">
+  <figcaption>Shaders</figcaption>
+</figure>
+
 
 ## Changelog
+### fstl-e v1.3.0
+  * Now runs on both `OpenGL 3.3` and `OpenGL ES 3.0`.
+  * Support both `Qt5` and `Qt6`
+  * when drawing axes, draw rulers with mesh dimension.
+  * draw informations on mesh is now separated from axes
+  * add new overlay to draw custom logo
+  * add new overlay to draw custom watermark
+  * all preferences (background, logo, watermatk and shader) are now grouped in one tabbed dialog.
+
 ### fstl-e v1.2.0
   * Add configurable background (new feature by andreasbkrueger)
   * Minor bug correction
@@ -24,18 +44,15 @@
   * In shader preferences, add a new way of choosing light source position.
 
 ## Known Issues
-### aarch64 (tested on a raspberry5)
-  * Compile and run perfectly well however :
-    * the wireframe shader do not work.
-    * available glsl version is 1.40, so the wireframe on top of mesh light shader do not work as 3.3 is needed.
-    * With "Raspberry PI OS (bookworm)", rendering under `Wayland` is a little bit ugly. Either use X11 (`raspi-config`->`Advanced Options`->`Wayland`->`X11`) or force using `xcb` by either setting environment variable `QT_QPA_PLATFORM=xcb` either launch `fstl-e -platform xcb`. With "Ubuntu Desktop 24.04" however rendering is ok using wayland or x11.
-  * It seems that for aarch64, both flatpak and snap runtimes for Qt do not support OpenGL but only OpenGL ES. As porting to OpenGL ES is not completely trivial, there will be not flatpak nor snap package for the moment.
 
 ### Wayland
   * The fullscreen function do not work under `Wayland` and therefore is deactivated. If you want it to work you can either:
     * run X11 instead of Wayland
     * set the environment variable `QT_QPA_PLATFORM=xcb`
     * run the program with option `-platform xcb`
+
+## Backend
+  * At launch, `fstl-e` will try to use `OpenGL 3.3`, then `OpenGL ES 3.0` and will use the first one available. You can reverse the search order by setting environment variable `FSTLE_GL_BACKEND=es`
 
 ## Usage
 Usage should be quite straightforward. You may :
@@ -51,10 +68,15 @@ Afterwards :
   * Right clic : translate the object
   * Wheel : zoom in/out
   * You may also drag the file name from the statusbar to another application. (Be carefull though as dropping on the desktop will move the file there).
+  * Use Left/Right Arrows to display Previous/Next stl file in directory.
 
-Here's an interface panorama (missing the new background settings button).
 
-![Interface](./images/benchy_doc_1024.png)
+Here's an interface panorama.
+
+<figure>
+  <img src="./images/benchy_doc_1024.png" alt="Interface">
+  <figcaption>Interface Panorama</figcaption>
+</figure>
 
 ### Shortcuts
 
@@ -62,9 +84,12 @@ Here's an interface panorama (missing the new background settings button).
   * Q : Quit
   * O : Open
   * R : Reload
-  * P : Draw Mode Settings for current shader (if available)
+  * P : Preferences
   * B : Background Settings
-  * A : Draw Axes (and some informations)
+  * A : Draw Axes and Rulers
+  * I : Draw Infos
+  * L : Draw Logo
+  * K : Draw Watermark
   * M : Show/Hide Menu (and Toolbar as well)
   * S : Save Screenshot
   * F : Toggle Fullscreen
@@ -78,9 +103,10 @@ Here's an interface panorama (missing the new background settings button).
 
 ## Binary packages
 ### Latest
-  * [fstl-e-v1.2.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.2.0)
+  * [fstl-e-v1.3.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.3.0)
 
 ### Previous
+  * [fstl-e-v1.2.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.2.0)
   * [fstl-e-v1.1.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.1.0)
   * [fstl-e-v1.0.0](https://github.com/wdaniau/fstl/releases/tag/fstl-e-v1.0.0)
   * [fstl-e-release-1](https://github.com/wdaniau/fstl/releases/tag/fstl-e-release-1)
@@ -88,7 +114,7 @@ Here's an interface panorama (missing the new background settings button).
 
 ## Build and Install from source
 
-The only dependencies to build for `fstl-e` are [`Qt 5`](https://www.qt.io), [`cmake`](https://cmake.org/) and [`OpenGL`](https://www.opengl.org)
+The only dependencies to build for `fstl-e` are [`Qt 5`](https://www.qt.io)(min 5.12) or [`Qt 6`](https://www.qt.io)(min 6.2), [`cmake`](https://cmake.org/) and [`OpenGL/OpenGL ES`](https://www.opengl.org). 
 
 ### Linux
 ```
@@ -111,6 +137,10 @@ Standard choices are :
   * `/usr/local` : this is the default if `-DCMAKE_INSTALL_PREFIX` is omitted. Needs root privileges
   * `/usr` : not a good choice in my opinion as it may interfere with system packages. Needs root privileges
   * `$HOME/.local` : in most modern systems it is a good choice for a user installation as `$HOME/.local/bin` will be in `PATH` variable as well as `$HOME/.local/share` will be in `XDG_DATA_DIRS` variable. Add these if this is not the case.
+
+Note on Qt 5/6 :
+
+`cmake` will try to find `Qt6` then `Qt5`. On a system where you have both, if you want to force `Qt5` use `-DQT_DESIRED_VERSION=5` on the `cmake` command line
 
 #### Create a package using cpack
 Alternatively after having run `make`, you can use `cpack` the packaging system integrated with `cmake` to build a package :
