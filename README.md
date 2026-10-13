@@ -3,19 +3,14 @@
 `fstl-e` is a fork of `fstl` a very fast [.stl file](http://en.wikipedia.org/wiki/STL_\(file_format\)) viewer, available on github at [https://github.com/fstl-app/fstl](https://github.com/fstl-app/fstl). After making some contributions to it, I forked this version which retains `fstl` core functionalities but with some fancy enhancements.
 
 ## Screenshots
-<figure>
-  <img src="./images/benchy_light_source_position.png" alt="Light Source Position">
-  <figcaption>Light source shader configuration</figcaption>
-</figure>
-<figure>
-  <img src="./images/benchy_overlays.png" alt="Overlays">
-  <figcaption>Add custom logo and watermark - Draw axis and rulers</figcaption>
-</figure>
-<figure>
-  <img src="./images/benchy_shaders.png" alt="Shaders">
-  <figcaption>Shaders</figcaption>
-</figure>
+![Light Source Position](images/benchy_light_source_position.png)
+*Fig 1 : Light source shader configuration*  
 
+![Overlays](./images/benchy_overlays.png)
+*Fig 2 : Add custom logo and watermark - Draw axis and rulers*  
+
+![Shaders](./images/benchy_shaders.png)
+*Fig 3 : Shaders*  
 
 ## Changelog
 ### fstl-e v1.3.0
@@ -73,10 +68,8 @@ Afterwards :
 
 Here's an interface panorama.
 
-<figure>
-  <img src="./images/benchy_doc_1024.png" alt="Interface">
-  <figcaption>Interface Panorama</figcaption>
-</figure>
+![Interface](./images/benchy_doc_1024.png)
+*Fig 4 : Interface Panorama*  
 
 ### Shortcuts
 
