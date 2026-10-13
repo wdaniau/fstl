@@ -144,6 +144,8 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Fast .stl file viewer.")
 set(CPACK_PACKAGE_VERSION_MAJOR ${FSTLE_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${FSTLE_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${FSTLE_VERSION_PATCH})
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt")
+set(CPACK_PACKAGE_VENDOR "Fstl-e Project")
 
 if(WIN32)
 
@@ -219,6 +221,26 @@ if(WIN32)
     else (CMAKE_CL_64)
         set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
     endif (CMAKE_CL_64)
+
+    # File association
+    set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+      WriteRegStr SHCTX 'Software\\\\Classes\\\\.stl' '' 'fstl-e.STLFile'
+      WriteRegStr SHCTX 'Software\\\\Classes\\\\.stl\\\\OpenWithProgids' 'fstl-e.STLFile' ''
+      WriteRegStr SHCTX 'Software\\\\Classes\\\\fstl-e.STLFile' '' 'STL mesh'
+      WriteRegStr SHCTX 'Software\\\\Classes\\\\fstl-e.STLFile\\\\DefaultIcon' '' '$INSTDIR\\\\bin\\\\fstl-e.exe,0'
+      WriteRegStr SHCTX 'Software\\\\Classes\\\\fstl-e.STLFile\\\\shell\\\\open\\\\command' '' '\\\"$INSTDIR\\\\bin\\\\fstl-e.exe\\\" \\\"%1\\\"'
+      System::Call 'shell32::SHChangeNotify(i 0x08000000, i 0, p 0, p 0)'
+    ")
+
+    set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+      ReadRegStr $0 SHCTX 'Software\\\\Classes\\\\.stl' ''
+      StrCmp $0 'fstl-e.STLFile' 0 +2
+        DeleteRegValue SHCTX 'Software\\\\Classes\\\\.stl' ''
+      DeleteRegKey SHCTX 'Software\\\\Classes\\\\fstl-e.STLFile'
+      DeleteRegValue SHCTX 'Software\\\\Classes\\\\.stl\\\\OpenWithProgids' 'fstl-e.STLFile'
+      System::Call 'shell32::SHChangeNotify(i 0x08000000, i 0, p 0, p 0)'
+    ")
+
 elseif(APPLE)
     set(CPACK_GENERATOR "DragNDrop")
     set(CPACK_DMG_FORMAT "UDBZ")
