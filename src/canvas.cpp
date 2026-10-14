@@ -297,6 +297,7 @@ void Canvas::initializeGL()
     //qDebug() << "isOpenGLES() =" << this->context()->isOpenGLES();
     qDebug() << "GL_VERSION   =" << (const char*)this->context()->functions()->glGetString(GL_VERSION);
     qDebug() << "GL_VENDOR    =" << (const char*)this->context()->functions()->glGetString(GL_VENDOR);
+    qDebug() << "GL_RENDERER  =" << (const char*)this->context()->functions()->glGetString(GL_RENDERER);
 
     mesh_vertshader = new QOpenGLShader(QOpenGLShader::Vertex);
     //mesh_vertshader->compileSourceFile(":/gl/mesh.vert");
