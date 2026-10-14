@@ -74,6 +74,9 @@ QSurfaceFormat::RenderableType resolveRenderable(QSurfaceFormat::RenderableType 
     } else if (testRender(theOtherOne)) {
         return theOtherOne;
     } else {
+        QMessageBox::critical(nullptr,"fstl-e Critical","No OpenGL context (desktop or ES) could be created.\n"
+                                                        "OpenGL 3.3 or OpenGL ES 3.0 is required.\n"
+                                                        "Run on the command line to see actual context obatined.");
         qFatal("No OpenGL context (desktop or ES) could be created.");
     }
 }
