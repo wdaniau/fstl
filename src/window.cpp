@@ -882,7 +882,7 @@ void Window::on_about()
                        "<p align=\"center\">This is <b>fstl-e</b><br>" FSTLE_VERSION "</p>"
                        "<p>A fast viewer for <code>.stl</code> files.</p>"
                        "Built with Qt %1"
-                       "<p>source code of this version available here :"
+                       "<p>source code of this version available here :<br>"
                        "<a href=\"https://github.com/wdaniau/fstl\""
                        "   style=\"color: #93a1a1;\">https://github.com/wdaniau/fstl</a></p>"
                        "<font size='medium'>"
