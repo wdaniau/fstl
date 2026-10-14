@@ -741,6 +741,12 @@ Window::Window(QWidget *parent) :
     statusBar->addPermanentWidget(boxDnd);
     statusBar->addPermanentWidget(labelMsaa);
 
+    // To avoid problem with DnD under KDE
+    QList<QWidget*> statusBarWidgets = {statusBar, boxDnd, icDnd, filenameStatusLabel, labelMsaa};
+    for (QWidget* w : statusBarWidgets) {
+        w->setProperty("_kde_no_window_grab", true);
+    }
+
     this->setStatusBar(statusBar);
 
     load_persist_settings();
