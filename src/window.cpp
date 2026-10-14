@@ -11,6 +11,7 @@
 #include <QToolBar>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QHBoxLayout>
 
 
 // For OpenGL we need an actual version >= 3.3 as we use glsl 330
@@ -715,6 +716,7 @@ Window::Window(QWidget *parent) :
 
     this->addToolBar(windowToolBar);
 
+    // Add an icon to the filename for DnD
     QLabel* labelMsaa = new QLabel;
     int msaaValue = canvas->getMsaa();
     QString labelMsaaText = msaaValue == -1 ? QString("AA:Off") : QString("AA:%1x").arg(msaaValue);
@@ -724,7 +726,16 @@ Window::Window(QWidget *parent) :
     filenameStatusLabel = new QLabel("File:none");
     filenameStatusLabel->setStatusTip("Current file (click and hold to drop to another application)");
 
-    statusBar->addPermanentWidget(filenameStatusLabel);
+    QFrame* boxDnd = new QFrame;
+    boxDnd->setFrameStyle(QFrame::Panel|QFrame::Raised);
+    boxDnd->setLayout(new QHBoxLayout);
+    boxDnd->layout()->setContentsMargins(0,0,0,0);
+    QLabel* icDnd = new QLabel;
+    icDnd->setPixmap(QPixmap(":/qt/icons/dnd_22.png"));
+    boxDnd->layout()->addWidget(icDnd);
+    boxDnd->layout()->addWidget(filenameStatusLabel);
+
+    statusBar->addPermanentWidget(boxDnd);
     statusBar->addPermanentWidget(labelMsaa);
 
     this->setStatusBar(statusBar);
@@ -1268,6 +1279,20 @@ bool Window::load_stl(QString filename, bool is_reload)
 
     loader->start();
     return true;
+}
+
+bool Window::load_lastFile() {
+    // Try to load last file
+    // if it does not succeed load default
+    QSettings settings;
+    QString lastFile;
+    QStringList recentFileList = settings.value(RECENT_FILE_KEY).toStringList();
+    if (!recentFileList.isEmpty()) {
+        lastFile = recentFileList.at(0);
+        return load_stl(lastFile);
+    } else {
+        return load_stl(":/gl/sphere.stl");
+    }
 }
 
 void Window::dragEnterEvent(QDragEnterEvent *event)

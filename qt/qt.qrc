@@ -65,5 +65,7 @@
         <file>icons/benchy_rules_64.png</file>
         <file>icons/draw_logo_64x64.png</file>
         <file>icons/draw_watermark_64x64.png</file>
+        <file>icons/dnd_64.png</file>
+        <file>icons/dnd_22.png</file>
     </qresource>
 </RCC>

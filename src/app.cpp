@@ -10,7 +10,8 @@ App::App(int& argc, char *argv[]) :
     if (argc > 1)
         window->load_stl(argv[1]);
     else
-        window->load_stl(":gl/sphere.stl");
+        //window->load_stl(":gl/sphere.stl");
+        window->load_lastFile();
     window->show();
 }
 

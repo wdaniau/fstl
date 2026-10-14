@@ -24,6 +24,7 @@ public:
     bool load_stl(QString filename, bool is_reload=false);
     bool load_prev(void);
     bool load_next(void);
+    bool load_lastFile();
     int getCurrentShader();
     void cycleShader(bool);
     void setCanvasSize(int w, int h);
