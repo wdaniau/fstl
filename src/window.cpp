@@ -624,6 +624,15 @@ Window::Window(QWidget *parent) :
     // Toolbar
     // First group
     windowToolBar = new QToolBar;
+
+    // menu indicator is missing with some themes
+    // This ensure it will be drawn
+    windowToolBar->setStyleSheet(R"(
+        QToolBar QToolButton::menu-indicator {
+            width: 10px;
+            height: 6px;
+        })");
+
     windowToolBar->addAction(quit_action);
     windowToolBar->addAction(open_action);
     windowToolBar->addAction(reload_action);
