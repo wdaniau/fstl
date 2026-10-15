@@ -47,10 +47,15 @@ BackdropSettingsDialog::BackdropSettingsDialog(QWidget* parent, Canvas* _canvas)
 
     mainLayout->addStretch();
 
+    QWidget* presetHolder = new QWidget;;
+    QHBoxLayout* presetHolderLayout = new QHBoxLayout;
+    presetHolder->setLayout(presetHolderLayout);
+
     QLabel* presetLabel = new QLabel("Preset:");
     presetLabel->setFont(boldFont);
     presetLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    mainGrid->addWidget(presetLabel, 0, 0);
+    //mainGrid->addWidget(presetLabel,0,0);
+    presetHolderLayout->addWidget(presetLabel);
 
     comboBackdropPresets = new QComboBox;
     comboBackdropPresets->setFocusPolicy(Qt::NoFocus);
@@ -68,49 +73,44 @@ BackdropSettingsDialog::BackdropSettingsDialog(QWidget* parent, Canvas* _canvas)
     comboBackdropPresets->addItem("Extreme RGB", 11);
     comboBackdropPresets->setCurrentIndex(canvas->getBackdropPresetIndex());
 
-    mainGrid->addWidget(comboBackdropPresets, 0, 1);
+    //mainGrid->addWidget(comboBackdropPresets, 0, 4);
+    presetHolderLayout->addWidget(comboBackdropPresets);
+    mainGrid->addWidget(presetHolder,0,0,1,5);
     connect(comboBackdropPresets,SIGNAL(currentIndexChanged(int)), this, SLOT(onPresetChanged(int)));
 
     canvas->loadBackdropFromSettings();
 
-    const QString colorButtonStyleLeft = "QPushButton { text-align: left; padding: 8px;}";
-    const QString colorButtonStyleRight = "QPushButton { text-align: left; padding: 8px;}";
-
-    auto* colorLayoutTop = new QHBoxLayout;
-    mainGrid->addLayout(colorLayoutTop, 1, 0, 1, 2); // spans 2 columns
-
-    buttonColorTL = new QPushButton("Top Left");
-    buttonColorTL->setStyleSheet(colorButtonStyleLeft);
+    // Top line
+    // left
+    buttonColorTL = new QPushButton;
     buttonColorTL->setIcon(createColorPatch(canvas->backdropTL));
     buttonColorTL->setFocusPolicy(Qt::NoFocus);
     connect(buttonColorTL,SIGNAL(clicked(bool)), this,SLOT(onTLColorButtonClicked()));
-
-    buttonColorTR = new QPushButton("Top Right");
-    buttonColorTR->setStyleSheet(colorButtonStyleRight);
+    mainGrid->addWidget(buttonColorTL,1,0);
+    mainGrid->addWidget(new QLabel("Top Left"),1,1);
+    mainGrid->setColumnStretch(2,1);
+    // right
+    buttonColorTR = new QPushButton;
     buttonColorTR->setIcon(createColorPatch(canvas->backdropTR));
     buttonColorTR->setFocusPolicy(Qt::NoFocus);
     connect(buttonColorTR,SIGNAL(clicked(bool)), this,SLOT(onTRColorButtonClicked()));
-
-    colorLayoutTop->addWidget(buttonColorTL);
-    colorLayoutTop->addWidget(buttonColorTR);
-
-    auto* colorLayoutBottom = new QHBoxLayout;
-    mainGrid->addLayout(colorLayoutBottom, 2, 0, 1, 2);
-
-    buttonColorBL = new QPushButton("Bottom Left");
-    buttonColorBL->setStyleSheet(colorButtonStyleLeft);
+    mainGrid->addWidget(new QLabel("Top Right"),1,3);
+    mainGrid->addWidget(buttonColorTR,1,4);
+    // bottom line
+    // left
+    buttonColorBL = new QPushButton;
     buttonColorBL->setIcon(createColorPatch(canvas->backdropBL));
     buttonColorBL->setFocusPolicy(Qt::NoFocus);
     connect(buttonColorBL,SIGNAL(clicked(bool)), this,SLOT(onBLColorButtonClicked()));
-
-    buttonColorBR = new QPushButton("Bottom Right");
-    buttonColorBR->setStyleSheet(colorButtonStyleRight);
+    mainGrid->addWidget(buttonColorBL,2,0);
+    mainGrid->addWidget((new QLabel("Bottom Left")));
+    // right
+    buttonColorBR = new QPushButton;
     buttonColorBR->setIcon(createColorPatch(canvas->backdropBR));
     buttonColorBR->setFocusPolicy(Qt::NoFocus);
     connect(buttonColorBR,SIGNAL(clicked(bool)), this,SLOT(onBRColorButtonClicked()));
-
-    colorLayoutBottom->addWidget(buttonColorBL);
-    colorLayoutBottom->addWidget(buttonColorBR);
+    mainGrid->addWidget(new QLabel("Top Right"),2,3);
+    mainGrid->addWidget(buttonColorBR,2,4);
 
     const QSettings settings;
     if (!settings.value(SETTINGS_DIALOG_GEOMETRY).isNull()) {
