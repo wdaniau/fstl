@@ -180,8 +180,7 @@ Window::Window(QWidget *parent) :
 
     QString currentPlatform = QGuiApplication::platformName();
     isWayland = QGuiApplication::platformName() == "wayland" ? true : false;
-
-    //qDebug() << isWayland << currentPlatform;
+    qDebug() << "Current platform : " << currentPlatform;
 
     // Define status tip for actions
     open_action->setStatusTip(open_action->toolTip());
@@ -208,13 +207,13 @@ Window::Window(QWidget *parent) :
     resetTransformOnLoadAction->setStatusTip(resetTransformOnLoadAction->toolTip());
     setGLSizeAction->setStatusTip(setGLSizeAction->toolTip());
     recent_files_clear_action->setStatusTip(recent_files_clear_action->toolTip());
-    if (isWayland) {
-        fullscreen_action->setToolTip("Fullscreen deactivated under Wayland");
-        fullscreen_action->setStatusTip("Fullscreen is deactivated under wayland. "
-                                        "Look at \"Known Issues\" in Help.");
-    } else {
+    // if (isWayland) {
+    //     fullscreen_action->setToolTip("Fullscreen deactivated under Wayland");
+    //     fullscreen_action->setStatusTip("Fullscreen is deactivated under wayland. "
+    //                                     "Look at \"Known Issues\" in Help.");
+    // } else {
         fullscreen_action->setStatusTip(fullscreen_action->toolTip());
-    }
+    // }
 
     setWindowTitle("fstl-e " FSTLE_VERSION);
     setWindowIcon(QIcon(":/qt/icons/fstl-e_64x64.png"));
@@ -452,12 +451,12 @@ Window::Window(QWidget *parent) :
     fullscreen_action->setShortcut(shortcutFullscreen);
     fullscreen_action->setIcon(QIcon(":/qt/icons/view-fullscreen.png"));
     fullscreen_action->setCheckable(true);
-    if (!isWayland) {
+    // if (!isWayland) {
         QObject::connect(fullscreen_action, &QAction::toggled,
             this, &Window::on_fullscreen);
-    } else {
-        fullscreen_action->setDisabled(true);
-    }
+    // } else {
+    //     fullscreen_action->setDisabled(true);
+    // }
     this->addAction(fullscreen_action);
 
     QMenu *resolutionMenu = view_menu->addMenu("Set Viewport Size");
