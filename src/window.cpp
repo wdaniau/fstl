@@ -13,7 +13,6 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 
-
 // For OpenGL we need an actual version >= 3.3 as we use glsl 330
 // For OpenGL ES we need an actual version >= 3.0 as we use glsl 300
 const QMap<QSurfaceFormat::RenderableType,QPair<int,int>> minRenderVersion = {
@@ -179,9 +178,18 @@ Window::Window(QWidget *parent) :
     recent_files = new QMenu("Open recent", file_menu);
 
     QString currentPlatform = QGuiApplication::platformName();
-    isWayland = QGuiApplication::platformName() == "wayland" ? true : false;
+    qDebug() << "Current platform : " << currentPlatform;
 
-    //qDebug() << isWayland << currentPlatform;
+    // showFullScreen seems to work well beginning with Qt 6.3.0
+    if (currentPlatform == "wayland") {
+        if (QLibraryInfo::version() < QVersionNumber(6, 3, 0)) {
+            waylandQtStatus = WAYLAND_OLD_QT;
+        } else {
+            waylandQtStatus = WAYLAND_RECENT_QT;
+        }
+    } else {
+        waylandQtStatus = NOT_WAYLAND;
+    }
 
     // Define status tip for actions
     open_action->setStatusTip(open_action->toolTip());
@@ -208,9 +216,13 @@ Window::Window(QWidget *parent) :
     resetTransformOnLoadAction->setStatusTip(resetTransformOnLoadAction->toolTip());
     setGLSizeAction->setStatusTip(setGLSizeAction->toolTip());
     recent_files_clear_action->setStatusTip(recent_files_clear_action->toolTip());
-    if (isWayland) {
-        fullscreen_action->setToolTip("Fullscreen deactivated under Wayland");
-        fullscreen_action->setStatusTip("Fullscreen is deactivated under wayland. "
+    if (waylandQtStatus == WAYLAND_OLD_QT) {
+        fullscreen_action->setToolTip("Fullscreen deactivated with wayland platform and Qt lower than 6.3.0");
+        fullscreen_action->setStatusTip("Fullscreen deactivated with wayland platform and Qt lower than 6.3.0. "
+                                        "Look at \"Known Issues\" in Help.");
+    } else if (waylandQtStatus == WAYLAND_RECENT_QT) {
+        fullscreen_action->setToolTip("Fullscreen (not guaranteed with wayland platform).");
+        fullscreen_action->setStatusTip("Fullscreen (not guaranteed with wqayland platform). "
                                         "Look at \"Known Issues\" in Help.");
     } else {
         fullscreen_action->setStatusTip(fullscreen_action->toolTip());
@@ -452,7 +464,7 @@ Window::Window(QWidget *parent) :
     fullscreen_action->setShortcut(shortcutFullscreen);
     fullscreen_action->setIcon(QIcon(":/qt/icons/view-fullscreen.png"));
     fullscreen_action->setCheckable(true);
-    if (!isWayland) {
+    if (waylandQtStatus != WAYLAND_OLD_QT) {
         QObject::connect(fullscreen_action, &QAction::toggled,
             this, &Window::on_fullscreen);
     } else {

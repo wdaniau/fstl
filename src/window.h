@@ -16,6 +16,9 @@ class BackdropSettingsDialog;
 class SpeedMouseDialog;
 class SettingsDialog;
 
+enum WaylandQtStatus {NOT_WAYLAND, WAYLAND_OLD_QT, WAYLAND_RECENT_QT};
+
+
 class Window : public QMainWindow
 {
     Q_OBJECT
@@ -174,7 +177,8 @@ private:
     QString current_file;
     QString lookup_folder;
     QStringList lookup_folder_files;
-    bool isWayland;
+    //bool isWayland;
+    WaylandQtStatus waylandQtStatus;
 
     QFileSystemWatcher* watcher;
 
