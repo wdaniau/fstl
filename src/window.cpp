@@ -256,18 +256,10 @@ Window::Window(QWidget *parent) :
     QSurfaceFormat fmt = prepareFormat(actual);
     fmt.setDepthBufferSize(24);
     fmt.setStencilBufferSize(8);
-    //QSurfaceFormat::setDefaultFormat(fmt);
+    // Define this format to be the default
+    QSurfaceFormat::setDefaultFormat(fmt);
 
-    // Version OpenGL ES Only
-    // // If testRender is not successfull application will end with a qFatal()
-    // testRender();
-    // QSurfaceFormat fmt;
-    // fmt.setRenderableType(QSurfaceFormat::OpenGLES);
-    // fmt.setVersion(minRenderMajor,minRenderMinor);
-    // fmt.setDepthBufferSize(24);
-    // fmt.setStencilBufferSize(8);
-    // QSurfaceFormat::setDefaultFormat(fmt);
-
+    // Canvas will use this format and will add multisampling
     canvas = new Canvas(fmt, this);
     setCentralWidget(canvas);
     canvas->update();
@@ -899,24 +891,52 @@ void Window::on_open()
 
 void Window::on_about()
 {
-    QMessageBox::about(this, "",QString(
-                       "<p align=\"center\">This is <b>fstl-e</b><br>" FSTLE_VERSION "</p>"
-                       "<p>A fast viewer for <code>.stl</code> files.</p>"
-                       "Built with Qt %1"
-                       "<p>source code of this version available here :<br>"
-                       "<a href=\"https://github.com/wdaniau/fstl\""
-                       "   style=\"color: #93a1a1;\">https://github.com/wdaniau/fstl</a></p>"
-                       "<font size='medium'>"
-                       "<p>It is a forked version of <b>fstl</b> 0.10.0<br>"
-                       "with some fancy enhancements"
-                       "</p>"
-                       "<p>Original version © 2014-2024 Matthew Keeter<br>"
-                       "<a href=\"https://github.com/fstl-app/fstl\""
-                       "   style=\"color: #93a1a1;\">https://github.com/fstl-app/fstl</a><br>"
-                       "<a href=\"mailto:matt.j.keeter@gmail.com\""
-                       "   style=\"color: #93a1a1;\">matt.j.keeter@gmail.com</a></p>"
-                       "</font>"
-                                         ).arg(qVersion()));
+    // to be sure to get canvas context and not default context informations : makeCurrent()/doneCurrent()
+    canvas->makeCurrent();
+    QString glContext = canvas->context()->isOpenGLES() ? QString("OpenGL ES") : QString("OpenGL");
+    QString glVersion = (const char*)canvas->context()->functions()->glGetString(GL_VERSION);
+    QString glVendor = (const char*)canvas->context()->functions()->glGetString(GL_VENDOR);
+    QString glRenderer = (const char*)canvas->context()->functions()->glGetString(GL_RENDERER);
+    GLint samples = 0;
+    canvas->context()->functions()->glGetIntegerv(GL_SAMPLES, &samples);
+    QString multisamplingString = samples == 0 ? QString("Off") : QString("%1x").arg(samples);
+    canvas->doneCurrent();
+
+    QString message = QString("<p align=\"center\">This is <b>fstl-e</b><br>" FSTLE_VERSION "</p>"
+                                        "<p>A fast viewer for <code>.stl</code> files.</p>"
+                                        "<p>Using Qt %1</p>"
+                                        "<p style=\"margin-bottom:0px;\">Current cpu architecture : %2<br>"
+                                        "Current platform : %3<br>"
+                                        "GL Context : %4</p>"
+                                        "<ul style=\"margin-top:0px; margin-bottom:0px;\">"
+                                        "<li>Version : %5</li>"
+                                        "<li>Vendor : %6</li>"
+                                        "<li>Renderer : %7</li>"
+                                        "<li>Anti-Aliasing : %8</li>"
+                                        "</ul>"
+                                        "<p>source code of this version available here :<br>"
+                                        "<a href=\"https://github.com/wdaniau/fstl\""
+                                        "   style=\"color: #93a1a1;\">https://github.com/wdaniau/fstl</a></p>"
+                                        "<font size='medium'>"
+                                        "<p>It is a forked version of <b>fstl</b> 0.10.0<br>"
+                                        "with some fancy enhancements"
+                                        "</p>"
+                                        "<p>Original version © 2014-2024 Matthew Keeter<br>"
+                                        "<a href=\"https://github.com/fstl-app/fstl\""
+                                        "   style=\"color: #93a1a1;\">https://github.com/fstl-app/fstl</a><br>"
+                                        "<a href=\"mailto:matt.j.keeter@gmail.com\""
+                                        "   style=\"color: #93a1a1;\">matt.j.keeter@gmail.com</a></p>"
+                                        "</font>"
+                                    ).arg(qVersion())
+                                    .arg(QSysInfo::currentCpuArchitecture())
+                                    .arg(QGuiApplication::platformName())
+                                    .arg(glContext)
+                                    .arg(glVersion)
+                                    .arg(glVendor)
+                                    .arg(glRenderer)
+                                    .arg(multisamplingString);
+    QMessageBox::about(this, "",message);
+
 }
 
 void Window::on_bad_stl()
