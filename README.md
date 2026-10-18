@@ -41,7 +41,7 @@
 ## Known Issues
 
 ### Wayland
-  * The fullscreen function when using `wayland` platform is only activated if `Qt` is at least `6.3.0`. Although it is not guaranteed to work. If you need it you can either :
+  * The fullscreen function when using `wayland` platform is only activated if `Qt` is at least `6.3.0`. Although it is not guaranteed to work. If it don't work and you need it you can either :
     * run X11 instead of Wayland
     * set the environment variable `QT_QPA_PLATFORM=xcb`
     * run the program with option `-platform xcb`
