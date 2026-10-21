@@ -1350,7 +1350,7 @@ void Window::dragEnterEvent(QDragEnterEvent *event)
     if (event->mimeData()->hasUrls())
     {
         auto urls = event->mimeData()->urls();
-        if (urls.size() == 1 && urls.front().path().endsWith(".stl"))
+        if (urls.size() == 1 && urls.front().path().toLower().endsWith(".stl"))
             event->acceptProposedAction();
     }
 }
@@ -1358,6 +1358,7 @@ void Window::dragEnterEvent(QDragEnterEvent *event)
 void Window::dropEvent(QDropEvent *event)
 {
     load_stl(event->mimeData()->urls().front().toLocalFile());
+    event->acceptProposedAction();
 }
 
 void Window::mousePressEvent(QMouseEvent *event) {
